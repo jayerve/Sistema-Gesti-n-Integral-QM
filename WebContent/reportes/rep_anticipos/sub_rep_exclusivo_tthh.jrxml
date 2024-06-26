@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rep_exclusivo_tthh" language="groovy" pageWidth="555" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="be503726-e305-4a14-9954-5ba37aa845df">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="77"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="IDE_NRANT" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT ANT.IDE_NRANT,
+ANT.monto_aprobado_nrant AS MONTO_APROBADO,
+ANT.APROBADO_NRANT AS APROBADO,
+ANT.OBSERVACION_NRANT AS OBSERVACION,
+CAP.cuota_mensual_nrcap
+FROM NRH_ANTICIPO ANT
+LEFT JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR EDP ON EDP.IDE_GEEDP=ANT.IDE_GEEDP
+LEFT JOIN nrh_capacidad_pago CAP ON CAP.IDE_NRANT=ANT.IDE_NRANT
+WHERE ANT.IDE_NRANT=$P{IDE_NRANT}]]>
+	</queryString>
+	<field name="ide_nrant" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla nrh_anticipo, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="monto_aprobado" class="java.math.BigDecimal"/>
+	<field name="aprobado" class="java.lang.Boolean"/>
+	<field name="observacion" class="java.lang.String"/>
+	<field name="cuota_mensual_nrcap" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el valor de la cuota mensual que tendria que pagar el empleado por el monto del anticipo solicitado.]]></fieldDescription>
+	</field>
+	<pageHeader>
+		<band height="55">
+			<staticText>
+				<reportElement uuid="bebf0a17-3ce5-4634-bc54-1ab7f1506fda" positionType="Float" x="0" y="0" width="555" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[USO EXCLUSIVO PARA TALENTO HUMANO]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="125c9c3c-1898-4706-9b0a-d2636ab84a8c" positionType="Float" x="145" y="12" width="104" height="10"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{monto_aprobado}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="9e66dc8f-916c-4972-a530-783b44ea483b" x="0" y="12" width="145" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[MONTO APROBADO:]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="79da4912-cf78-496c-a08c-1d746ce93c5b" positionType="Float" x="451" y="12" width="104" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cuota_mensual_nrcap}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="6c6c75b1-3578-4d3e-8b02-84ae0455f396" x="337" y="12" width="114" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[CUOTA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5ef9c4f3-6ad9-45e9-aaa7-dea372c16e2b" positionType="Float" x="0" y="32" width="555" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[VISTO BUENO JEFE TALENTO HUMANO :]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="e417f2df-75bf-4d36-8813-1efdd6710732" positionType="Float" x="73" y="42" width="482" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{observacion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c2b66d4d-84e7-4fad-851b-1b04dc0092e2" x="0" y="42" width="73" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[OBSERVACIONES: ]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="0740a057-35c8-40c3-a4dd-cdf75308ba26" positionType="Float" x="0" y="22" width="555" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{aprobado}==true?"APROBADO":"DENEGADO"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="aae4ce35-3dbd-4bc6-b252-4222a47d423b" positionType="Float" x="145" y="12" width="192" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+</jasperReport>

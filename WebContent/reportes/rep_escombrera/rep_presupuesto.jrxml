@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_presupuesto" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="BlankPage" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e417e812-fc9d-4d5d-81e0-d26a47801e5c">
+	<property name="ireport.zoom" value="1.6105100000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:/eclipse-jee-kepler-SR2-win32/Proyectos/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_appry" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT pry.ide_appry, funcionario, fecha_appry, descripcion_appry, cat_codigo_apcap,
+                capitulo,sub_capitulo,detalle_bounm,um.abreviatura_bounm,cantidad_apprd,precio_apprd,costo_apprd, materiales,
+                equipos, mano_obra, transporte,total_costo_directo_apitc, costo_indirecto_apitc,costo_total_apitc as precio_unit,
+                total_costo_appry, activo_appry
+
+                FROM apu_proyecto pry
+
+                  left join ( select ide_gtemp, apellido_paterno_gtemp || ' ' || (case when apellido_materno_gtemp is null then '' else apellido_materno_gtemp end)
+                          || ' ' || primer_nombre_gtemp || ' ' || (case when segundo_nombre_gtemp is null then '' else segundo_nombre_gtemp end) as funcionario,
+                          documento_identidad_gtemp from gth_empleado ) fu on fu.ide_gtemp=pry.ide_gtemp
+
+                left join apu_proyecto_detalle pryd on pryd.ide_appry=pry.ide_appry
+                left join bodt_unidad_medida um on um.ide_bounm=pryd.ide_bounm
+                left join (SELECT ic.ide_apitc, padre.descripcion_apcap as capitulo,
+                     ch.descripcion_apcap as sub_capitulo, abreviatura_bounm,
+                     ch.cat_codigo_apcap,
+                     coalesce(materiales,0) as materiales,
+                     coalesce(equipos,0) as equipos,
+                     coalesce(mano_obra,0) as mano_obra,
+                     coalesce(transporte,0) as transporte,
+                     total_costo_directo_apitc,costo_indirecto_apitc,
+                     costo_total_apitc,ic.ide_bounm
+                     FROM public.apu_item_construccion ic
+                     left join apu_capitulo ch on ch.ide_apcap=ic.ide_apcap
+                     LEFT JOIN apu_capitulo padre ON ch.con_ide_apcap=padre.ide_apcap
+                     left join bodt_unidad_medida um on um.ide_bounm=ic.ide_bounm
+                     left join (select ide_apitc, sum(coalesce(costo_total_apmat,0)) as materiales from apu_material group by ide_apitc) mat on mat.ide_apitc=ic.ide_apitc
+                     left join (select ide_apitc, sum(coalesce(costo_apequ,0)) as equipos from apu_equipo group by ide_apitc) eq on eq.ide_apitc=ic.ide_apitc
+                     left join (select ide_apitc, sum(coalesce(costo_apmao,0)) as mano_obra from apu_mano_obra group by ide_apitc) mo on mo.ide_apitc=ic.ide_apitc
+                     left join (select ide_apitc, sum(coalesce(costo_total_aptra,0)) as transporte from apu_transporte group by ide_apitc) tr on tr.ide_apitc=ic.ide_apitc) rub on rub.ide_apitc=pryd.ide_apitc
+                where pry.ide_appry=$P{ide_appry}]]>
+	</queryString>
+	<field name="ide_appry" class="java.lang.Long"/>
+	<field name="funcionario" class="java.lang.String"/>
+	<field name="fecha_appry" class="java.sql.Date"/>
+	<field name="descripcion_appry" class="java.lang.String"/>
+	<field name="cat_codigo_apcap" class="java.lang.String"/>
+	<field name="capitulo" class="java.lang.String"/>
+	<field name="sub_capitulo" class="java.lang.String"/>
+	<field name="detalle_bounm" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_bounm]]></fieldDescription>
+	</field>
+	<field name="abreviatura_bounm" class="java.lang.String"/>
+	<field name="cantidad_apprd" class="java.math.BigDecimal"/>
+	<field name="precio_apprd" class="java.math.BigDecimal"/>
+	<field name="costo_apprd" class="java.math.BigDecimal"/>
+	<field name="materiales" class="java.math.BigDecimal"/>
+	<field name="equipos" class="java.math.BigDecimal"/>
+	<field name="mano_obra" class="java.math.BigDecimal"/>
+	<field name="transporte" class="java.math.BigDecimal"/>
+	<field name="total_costo_directo_apitc" class="java.math.BigDecimal"/>
+	<field name="costo_indirecto_apitc" class="java.math.BigDecimal"/>
+	<field name="precio_unit" class="java.math.BigDecimal"/>
+	<field name="total_costo_appry" class="java.math.BigDecimal"/>
+	<field name="activo_appry" class="java.lang.Boolean"/>
+	<variable name="total_capitulo" class="java.math.BigDecimal" resetType="Group" resetGroup="capitulo" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_costo_directo_apitc}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<group name="capitulo">
+		<groupExpression><![CDATA[$F{capitulo}]]></groupExpression>
+		<groupHeader>
+			<band height="29">
+				<textField>
+					<reportElement uuid="75104f2e-bbdd-4147-a367-21eadd574068" x="8" y="7" width="514" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{capitulo}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="25">
+				<textField pattern="#,##0.00;(#,##0.00)">
+					<reportElement uuid="ad34fb9c-0972-4cfb-b4db-d0dcf18b0e61" x="345" y="3" width="100" height="20" printWhenGroupChanges="capitulo"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{total_capitulo}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="e4493668-5120-454f-97a3-26ff4b6312f5" x="287" y="3" width="56" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="11" isBold="true"/>
+					</textElement>
+					<text><![CDATA[VALOR:]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="53" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="e2bfcc95-de21-47d1-9497-560b305405ea" x="0" y="1" width="802" height="52"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_simple_horizontal.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="105">
+			<rectangle>
+				<reportElement uuid="eaa8c3d4-ac87-4a49-9dd9-56f9ae3dac05" x="2" y="71" width="800" height="32"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="3381935f-7d5e-4196-9f7c-7d9e068102c2" x="5" y="71" width="34" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nro]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="765cb76c-4088-46bb-a899-2a39a6336844" x="86" y="71" width="115" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descripción]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="af28bb43-b3e9-47b5-9445-6707e54e4ba9" x="201" y="71" width="46" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Unidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="15a7366d-f34b-4647-a5d4-c0411f6c82f9" x="39" y="71" width="48" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6b746dd8-e233-4d1e-965f-7e2154c1b327" x="249" y="71" width="48" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e2b4ad63-76c9-4bff-8c70-8deebe35f06a" x="302" y="71" width="74" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Precio Unitario]]></text>
+			</staticText>
+			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="false">
+				<reportElement uuid="56b13b41-a602-4b56-b3af-49906981d721" x="104" y="9" width="148" height="15"/>
+				<textElement textAlignment="Left">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_appry}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="efc453f5-17b7-4ebf-85fe-3fb5d52dda52" x="3" y="29" width="96" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="11" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[PROYECTO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="61d0ef9c-67a2-4dcf-bda1-5cf3c77a4a21" x="3" y="9" width="96" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="11" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
+			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="false">
+				<reportElement uuid="8cdb3cf3-65e7-40c8-9e46-40c7320b83d0" x="104" y="29" width="686" height="33"/>
+				<textElement textAlignment="Left">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion_appry}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="b75b940c-2966-41c4-92bd-3e43ebb537aa" x="378" y="71" width="74" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c3839e2d-2710-4ebf-929f-05ece667137f" x="456" y="71" width="60" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Materiales]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="021e6838-af14-4cd4-b5c0-af6bd6fe01b8" x="517" y="71" width="60" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mano de Obra]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cf887929-8328-41dc-b6a9-e43dbe0cd175" x="578" y="71" width="60" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Equipo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="43bfe9ce-6313-4e93-94ae-4c69b35faab3" x="639" y="71" width="60" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Transporte]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="09c9674e-6e40-4587-be28-9163c30dd219" x="708" y="71" width="38" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Costo Directo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="49c7e17c-52fb-44ea-89bb-fb8b845257a0" x="752" y="72" width="46" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Costo inDirecto]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="38" splitType="Stretch">
+			<textField pattern="">
+				<reportElement uuid="848f1aa3-7e82-4b29-92e2-6e540869754d" x="4" y="0" width="35" height="38"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ide_appry}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="d56a9e85-d6fb-43f9-b84b-5dbddac350a1" x="39" y="0" width="47" height="38"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cat_codigo_apcap}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="c26ff99f-0e72-429f-80f0-7bf61c36d644" x="87" y="0" width="114" height="38"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="html">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sub_capitulo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="9b031d9e-1ce2-4cf5-b9dd-388cad0ab6d4" x="202" y="0" width="45" height="38"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{abreviatura_bounm}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="37186dd5-0ca5-4d05-a38b-d380bfef9859" x="248" y="0" width="48" height="38"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cantidad_apprd}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="ba055f73-2846-4296-9847-edc5adbd66cd" x="299" y="0" width="60" height="38"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[msg("{0,number,#,##0.00;(#,##0.00)}", $F{precio_apprd})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="9794f622-911c-41bc-a66d-9f79820e40d3" x="369" y="0" width="77" height="38"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[msg("{0,number,#,##0.00;(#,##0.00)}", $F{costo_apprd})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="c8f67a73-0c8b-4a02-841f-be0c658ef0b9" x="453" y="0" width="61" height="38"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[msg("{0,number,#,##0.00;(#,##0.00)}", $F{costo_apprd})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="3316195f-d663-4dd9-9f9b-2fedfb94cf0d" x="520" y="0" width="55" height="38"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[msg("{0,number,#,##0.00;(#,##0.00)}", $F{mano_obra})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="22b1aeae-811e-4a54-8f3e-1fbab97ec075" x="576" y="0" width="60" height="38"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[msg("{0,number,#,##0.00;(#,##0.00)}", $F{equipos})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="7011522d-01d5-49d8-beea-8f61b18e8f0c" x="637" y="0" width="60" height="38"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[msg("{0,number,#,##0.00;(#,##0.00)}", $F{transporte})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="37fa918e-5de5-4390-b72a-d512ca2d3d36" x="700" y="0" width="44" height="38"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[msg("{0,number,#,##0.00;(#,##0.00)}", $F{total_costo_directo_apitc})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="037541c6-f250-4c1e-8dbc-fd5db221c7cb" x="750" y="0" width="46" height="38"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[msg("{0,number,#,##0.00;(#,##0.00)}", $F{total_costo_directo_apitc}.doubleValue()*$F{costo_indirecto_apitc}.doubleValue())]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="141" splitType="Stretch">
+			<line>
+				<reportElement uuid="48bb5e00-f6fc-4d75-87a1-4d19d299198a" x="20" y="86" width="149" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="ee48e11e-fd24-4733-ab6c-ac0b113bcf23" x="-1" y="91" width="176" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{funcionario}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="11045617-0a19-4f53-b790-d139b49e43b9" x="8" y="106" width="159" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ELABORADO POR:]]></text>
+			</staticText>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="c7ad7dcb-0b11-4978-9651-3f313b0e68e0" x="295" y="6" width="150" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[msg("{0,number,#,##0.00;(#,##0.00)}", $F{total_costo_appry})]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="9d3598b6-49e0-4d67-a89c-0b0a11de4018" x="4" y="3" width="547" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="ff7f7d91-9a42-423a-bf41-8e56c7679be5" x="156" y="6" width="130" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL PROYECTO:]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

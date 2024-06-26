@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_recibo_caja_ticket" language="groovy" pageWidth="210" pageHeight="550" columnWidth="190" leftMargin="10" rightMargin="10" topMargin="20" bottomMargin="10" uuid="4f88d28a-8afc-4abc-95b3-23e811e4bb26">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="229"/>
+	<parameter name="ide_afdoc" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="titulo" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:/eclipse-jee-kepler-SR2-win32/Proyectos/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pjefe_activos" class="java.lang.String"/>
+	<parameter name="entregadoPor" class="java.lang.String"/>
+	<parameter name="recibiConforme" class="java.lang.String"/>
+	<parameter name="DIRECTORIO_FOTO_FIRMA" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:/jboss-as-7.1.1.Final/welcome-content/files_erp"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+	doc.ide_geani,
+	emp.ide_gtemp,
+	doc.fecha_afdoc,
+	doc.detalle_afdoc,
+	doc.ide_aftidoc,
+	doc.nro_secuencial_afdoc,
+          doc.foto_firma,
+          emp.foto_firma_empleado,
+	emp.apellido_paterno_gtemp,
+	(case when emp.apellido_materno_gtemp is null then '' else emp.apellido_materno_gtemp end) as apellido_materno_gtemp,
+	emp.primer_nombre_gtemp,
+	(case when emp.segundo_nombre_gtemp is null then '' else emp.segundo_nombre_gtemp end) as segundo_nombre_gtemp,
+	emp.documento_identidad_gtemp,
+
+	her.ide_afher,
+	her.descripcion_afher,
+	her.marca_afher,
+	her.color_afher,
+	her.serie_afher,
+	est.detalle_afest,
+	ubi.detalle_afubi
+
+FROM
+afi_docu doc LEFT JOIN  afi_doc_detalle_activo afidoc ON doc.ide_afdoc = afidoc.ide_afdoc
+	     LEFT JOIN afi_herramienta her ON her.ide_afher =  afidoc.ide_afher
+	     LEFT JOIN gth_empleado emp ON emp.ide_gtemp = doc.ide_gtemp
+	     LEFT JOIN afi_estado AS est ON her.ide_afest = est.ide_afest
+	     LEFT JOIN afi_ubicacion AS ubi ON her.ide_afubi = ubi.ide_afubi
+WHERE
+doc.ide_afdoc = $P{ide_afdoc}
+
+ORDER BY ide_afher DESC;]]>
+	</queryString>
+	<field name="ide_geani" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_anio, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_gtemp" class="java.lang.Integer"/>
+	<field name="fecha_afdoc" class="java.sql.Date">
+		<fieldDescription><![CDATA[Fecha en la cual se realiza el documento para las firmas]]></fieldDescription>
+	</field>
+	<field name="detalle_afdoc" class="java.lang.String">
+		<fieldDescription><![CDATA[Para colocar alguna observacion del documento]]></fieldDescription>
+	</field>
+	<field name="ide_aftidoc" class="java.lang.Long">
+		<fieldDescription><![CDATA[Foranea de afi_tipo_docu]]></fieldDescription>
+	</field>
+	<field name="nro_secuencial_afdoc" class="java.lang.Long">
+		<fieldDescription><![CDATA[Numero secuencial del documento pertinente]]></fieldDescription>
+	</field>
+	<field name="foto_firma" class="java.lang.String"/>
+	<field name="foto_firma_empleado" class="java.lang.String"/>
+	<field name="apellido_paterno_gtemp" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el apellido paterno del empleado.]]></fieldDescription>
+	</field>
+	<field name="apellido_materno_gtemp" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el apellido materno del empleado.]]></fieldDescription>
+	</field>
+	<field name="primer_nombre_gtemp" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el prmer nombre del empleado.]]></fieldDescription>
+	</field>
+	<field name="segundo_nombre_gtemp" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el segundo nombre del empleado.]]></fieldDescription>
+	</field>
+	<field name="documento_identidad_gtemp" class="java.lang.String">
+		<fieldDescription><![CDATA[--DOCUMENTO IDENTIDAD ASIGNACION DE HORARIO]]></fieldDescription>
+	</field>
+	<field name="ide_afher" class="java.lang.Long"/>
+	<field name="descripcion_afher" class="java.lang.String">
+		<fieldDescription><![CDATA[Define la descripción de la herramienta]]></fieldDescription>
+	</field>
+	<field name="marca_afher" class="java.lang.String">
+		<fieldDescription><![CDATA[Define la marca de la herramienta]]></fieldDescription>
+	</field>
+	<field name="color_afher" class="java.lang.String">
+		<fieldDescription><![CDATA[Define el color de la herramienta]]></fieldDescription>
+	</field>
+	<field name="serie_afher" class="java.lang.String">
+		<fieldDescription><![CDATA[Define la serie de la herramienta]]></fieldDescription>
+	</field>
+	<field name="detalle_afest" class="java.lang.String"/>
+	<field name="detalle_afubi" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_afubi]]></fieldDescription>
+	</field>
+	<variable name="recaudado" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<title>
+		<band height="53" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="1b88f064-3746-4017-83a9-b592b4b03a6d" x="0" y="0" width="190" height="11"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Empresa Pública Metropolitana de Gestión]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="87f58355-fd78-44a0-a60b-a67004433119" x="0" y="11" width="190" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Integral de Residuos Sólidos EMGIRS-EP]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="da32dd36-4a76-4466-a692-9bf0f5fce973" x="0" y="26" width="190" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Matriz: MATRIZ-Pasaje OE3G ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9599f203-f405-455e-87ea-af800f904d98" x="40" y="38" width="101" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[  N51 84 y  Río Amazonas]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="117" splitType="Stretch">
+			<textField>
+				<reportElement uuid="52a4ef2b-9cf8-4452-bd90-034b6cd50fbc" x="1" y="0" width="189" height="27"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ACTA ENTREGA / RECEPCIÓN DE HERRAMIENTAS"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="cc889cc8-6619-4fb5-a5e0-c5a2dcdb84c3" x="1" y="53" width="58" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TIPO:]]></text>
+			</staticText>
+			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="true">
+				<reportElement uuid="e5467566-3e0a-44aa-905f-51150d5ca451" x="59" y="27" width="129" height="13"/>
+				<textElement textAlignment="Justified">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_afdoc}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="72aec032-d194-4f99-b587-2c3bca894862" x="1" y="27" width="58" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="946201c3-2dcd-4001-828e-1f02c8644a98" x="1" y="40" width="58" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HORA:]]></text>
+			</staticText>
+			<textField pattern="h:mm a" isBlankWhenNull="true">
+				<reportElement uuid="8c980ecc-8578-4cb3-97b7-bcd62f4f77ee" x="59" y="40" width="129" height="13"/>
+				<textElement textAlignment="Justified">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="af4309cf-600d-4e73-b237-33f69bafb4c7" x="59" y="53" width="129" height="13"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ide_aftidoc}.intValue() == 4?"PRÉSTAMO":"DEVOLUCIÓN"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3b9c9b86-1e1d-4663-9635-8f4fe0c7ff8e" x="1" y="65" width="58" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ACTA #:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="de76eb23-b32b-44bb-a196-dcc98587a754" x="1" y="77" width="58" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COD ERP:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="d12c9d57-348c-442f-8875-ce45b92a66c4" x="59" y="66" width="129" height="13"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nro_secuencial_afdoc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e947164b-f441-49bf-986f-e586a78f8793" x="59" y="77" width="129" height="13"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ide_afdoc}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="4021c462-30d2-45c9-b1dc-4da2fbe288c3" x="1" y="90" width="58" height="12"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OBSERVACIÓN:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="6598d162-bcdf-4e90-a8b3-481c281c9113" x="59" y="90" width="127" height="27"/>
+				<textElement textAlignment="Justified">
+					<font size="7" isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_afdoc}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="19" splitType="Stretch">
+			<line>
+				<reportElement uuid="1914a5c9-0b8e-4afe-8c8e-24d9811dc482" x="0" y="0" width="190" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="f58a5e36-9190-4e8e-81ff-7382f3b27908" x="0" y="2" width="28" height="13"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[COD.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2970295b-ff82-4f6b-b9af-f18114bcf916" x="29" y="2" width="159" height="13"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[DESCRIPCIÓN / CARACTERÍSTICAS]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="b61caf0a-e62b-4e93-9806-a136dffa525c" x="0" y="16" width="190" height="1"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField pattern="###0" isBlankWhenNull="true">
+				<reportElement uuid="017d3342-1ab3-487a-9f6a-6e508d05d80f" x="0" y="0" width="29" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ide_afher}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="50ee0785-bbd7-4ac5-9e51-bf5c8e225e9f" x="28" y="0" width="160" height="15"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion_afher}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="251" splitType="Stretch">
+			<line>
+				<reportElement uuid="88fb8fee-6a67-4970-b398-e438a43638ac" x="2" y="161" width="188" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="26fb127f-fe95-4fce-8cf4-d9bb305cedd0" x="1" y="164" width="189" height="13"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{apellido_paterno_gtemp}+" "+$F{apellido_materno_gtemp}+" "+$F{primer_nombre_gtemp}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement uuid="68be16bf-3392-443b-8e5e-c6dbbd71b036" x="1" y="193" width="189" height="58"/>
+				<subreportParameter name="empleado_generacion">
+					<subreportParameterExpression><![CDATA[$F{apellido_paterno_gtemp}+" "+$F{apellido_materno_gtemp}+" "+$F{primer_nombre_gtemp}+" "+$F{segundo_nombre_gtemp}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="estado">
+					<subreportParameterExpression><![CDATA[$P{entregadoPor}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="foto_firma">
+					<subreportParameterExpression><![CDATA[$F{foto_firma}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="recibiConforme">
+					<subreportParameterExpression><![CDATA[$P{recibiConforme}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="pjefe_activos">
+					<subreportParameterExpression><![CDATA[$P{pjefe_activos}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_afdoc">
+					<subreportParameterExpression><![CDATA[$P{ide_afdoc}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_activos/rep_recibo_caja_ticket_firmas.jasper"]]></subreportExpression>
+			</subreport>
+			<textField isStretchWithOverflow="true" pattern="###0" isBlankWhenNull="true">
+				<reportElement uuid="40651495-63cb-4d80-be2f-95a8a96c1c84" x="122" y="1" width="64" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{COLUMN_COUNT}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="abb0884f-7f00-4dc0-a9c9-c4e73b132dbf" x="0" y="1" width="122" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[TOTAL HERRAMIENTAS]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="3e521a2e-521e-4475-917c-a72a320272cb" x="0" y="0" width="189" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="ba6a4bfc-d89b-4588-bbe1-e25fd4bd008c" key="staticText-11" mode="Transparent" x="1" y="14" width="187" height="117" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Justified" verticalAlignment="Top" rotation="None">
+					<font fontName="SansSerif" size="5" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[Esta Acta se encuentra sujeta a las siguientes cláusulas:
+
+Primera. - Los bienes/herramientas descritos en la presente acta, a partir de la firma estarán bajo la responsabilidad, buen uso y cuidado de quien recibe y garantiza que se emplearán única y exclusivamente para cumplir con los fines propios inherentes a las funciones que se cumpla en la EMGIRS-EP.
+Segunda. - En caso de cambio o retiro, el custodio de los bienes deberá legalizar la respectiva acta de descarga a nombre de la persona quien se responsabilizará, para su control.
+Tercera. - Cuando alguno de los bienes, hubiere desaparecido por hurto, robo o por cualquier causa semejante, comunicará inmediatamente por escrito este hecho al Responsable de Bienes, al jefe inmediato y a la máxima autoridad de la EMGIRS-EP con todos los pormenores que fuera del caso, dentro de las 48 horas hábiles,conforme  manifiesta EL REGLAMENTO GENERAL SUSTITUTIVO PARA LA ADMINISTRACIÓN, UTILIZACIÓN, MANEJO Y CONTROL DE LOS BIENES E INVENTARIOS DEL SECTOR PÚBLICO:
+Artículo 20.- Usuario Final
+Artículo 144.- Reposición, restitución del valor o reemplazo del bien.
+
+Para constancia de lo actuado y en fe de conformidad y aceptación, suscriben la presente acta en dos ejemplares de igual tenor y efecto.]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="45fb5e37-8395-41c6-9a49-4c485f8be07c" x="59" y="177" width="94" height="11"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{entregadoPor}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement uuid="fae0f604-769c-4aa1-ae72-40bbe3e6744c" x="78" y="131" width="63" height="30"/>
+				<imageExpression><![CDATA[$P{DIRECTORIO_FOTO_FIRMA}+$F{foto_firma_empleado}]]></imageExpression>
+			</image>
+		</band>
+	</summary>
+</jasperReport>

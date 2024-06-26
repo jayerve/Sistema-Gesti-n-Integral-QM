@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_movimiento_contable" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4f88d28a-8afc-4abc-95b3-23e811e4bb26">
+	<property name="ireport.zoom" value="2.9282000000000017"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="137"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:\\eclipse_ERP\\eclipse-workspace\\sampu\\WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="p_contador_general" class="java.lang.String"/>
+	<parameter name="coordinador_finaciero" class="java.lang.String"/>
+	<parameter name="pie_coordinador_finaciero" class="java.lang.String"/>
+	<parameter name="p_ide_comov" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select ide_comov,ide_codem,mov_fecha_comov,nro_comprobante_comov,detalle_cotia, nombre_tepro, ruc_tepro,responsable,cargo,aprobado,cargo_aprobado,
+                detalle_comov,
+                cue_codigo_cocac,cue_descripcion_cocac, debe_codem, haber_codem, sum(devengado_prmen) as devengado_prmen, ide_gelua,codigo_clasificador_prcla
+                from(
+                    select b.ide_comov,c.ide_codem,mov_fecha_comov,nro_comprobante_comov,detalle_cotia,substring(coalesce(d.nombre_tepro,' ') from 1 for 70) as nombre_tepro,
+                    coalesce(d.ruc_tepro,'') as ruc_tepro,detalle_comov,coalesce(responsable,'') as responsable,coalesce(cargo,'N/A') as cargo, coalesce(aprobado,'N/A') as aprobado,coalesce(cargo_aprobado,'N/A') as cargo_aprobado,
+                    cue_codigo_cocac,cue_descripcion_cocac,debe_codem,haber_codem,coalesce(devengado_prmen,0.00) as devengado_prmen,ide_gelua, coalesce(h.codigo_clasificador_prcla,pta.codigo_clasificador_prcla) as codigo_clasificador_prcla
+                    from cont_movimiento b
+                    left join cont_detalle_movimiento c on b.ide_comov = c.ide_comov
+                    left join tes_proveedor d on c.ide_tepro = d.ide_tepro
+                    left join cont_tipo_asiento ta on b.ide_cotia=ta.ide_cotia
+                    left join tes_tipo_concepto f on c.ide_tetic = f.ide_tetic
+                    left join (select ide_comov,sum(haber_codem) as valor from cont_detalle_movimiento where transferencia_codem = true group by ide_comov) g on b.ide_comov = g.ide_comov
+                    left join (select a.ide_pranu,b.ide_codem,codigo_clasificador_prcla,descripcion_clasificador_prcla, sum(devengado_prmen) as devengado_prmen
+                        from pre_anual a
+                        left join pre_mensual b on b.ide_pranu = a.ide_pranu
+                        left join pre_clasificador c on c.ide_prcla = a.ide_prcla
+                        group by a.ide_pranu,b.ide_codem,codigo_clasificador_prcla,descripcion_clasificador_prcla) h on c.ide_codem = h.ide_codem
+                    left join (select a.ide_pranu, codigo_clasificador_prcla,descripcion_clasificador_prcla from pre_anual a
+                           left join pre_programa prg on prg.ide_prpro=a.ide_prpro
+                           left join pre_clasificador pcl on pcl.ide_prcla=prg.ide_prcla) pta on pta.ide_pranu=h.ide_pranu
+                    left join cont_catalogo_cuenta i on c.ide_cocac = i.ide_cocac
+                    left join (Select distinct sis.ide_gtemp, coalesce(nom_usua,'') as responsable, DEPA.DETALLE_GEDEP as cargo from sis_usuario sis
+                        LEFT JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR EPAR on EPAR.ide_gtemp=sis.ide_gtemp
+                        LEFT JOIN GEN_DEPARTAMENTO DEPA ON DEPA.IDE_GEDEP=EPAR.IDE_GEDEP
+                        where EPAR.ACTIVO_GEEDP=true and sis.ide_gtemp is not null) us on us.ide_gtemp=b.ide_gtemp
+                    left join (SELECT distinct ide_geedp, coalesce(nom_usua,'') as aprobado, DEPA.DETALLE_GEDEP as cargo_aprobado FROM GEN_EMPLEADOS_DEPARTAMENTO_PAR EPAR
+                        LEFT JOIN GEN_DEPARTAMENTO DEPA ON DEPA.IDE_GEDEP=EPAR.IDE_GEDEP
+                        JOIN sis_usuario us ON us.IDE_GTEMP=EPAR.IDE_GTEMP) ap on ap.ide_geedp=b.ide_geedp
+
+                    where b.ide_comov = $P{p_ide_comov} order by ide_gelua
+
+                    ) x
+                group by ide_comov,ide_codem,mov_fecha_comov,nro_comprobante_comov,detalle_cotia, nombre_tepro, ruc_tepro,responsable,cargo,aprobado,cargo_aprobado, detalle_comov,
+                cue_codigo_cocac,cue_descripcion_cocac,ide_gelua,debe_codem,haber_codem,codigo_clasificador_prcla]]>
+	</queryString>
+	<field name="ide_comov" class="java.lang.Long"/>
+	<field name="ide_codem" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla cont_detalle_movimiento]]></fieldDescription>
+	</field>
+	<field name="mov_fecha_comov" class="java.sql.Date">
+		<fieldDescription><![CDATA[mov_fecha_comov]]></fieldDescription>
+	</field>
+	<field name="nro_comprobante_comov" class="java.lang.String">
+		<fieldDescription><![CDATA[este campo contiene el numero de comprobante de ingreso, comprobante de egreso]]></fieldDescription>
+	</field>
+	<field name="detalle_cotia" class="java.lang.String"/>
+	<field name="nombre_tepro" class="java.lang.String"/>
+	<field name="ruc_tepro" class="java.lang.String"/>
+	<field name="responsable" class="java.lang.String"/>
+	<field name="cargo" class="java.lang.String"/>
+	<field name="aprobado" class="java.lang.String"/>
+	<field name="cargo_aprobado" class="java.lang.String"/>
+	<field name="detalle_comov" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_comov]]></fieldDescription>
+	</field>
+	<field name="cue_codigo_cocac" class="java.lang.String">
+		<fieldDescription><![CDATA[cue_codigo_cocac]]></fieldDescription>
+	</field>
+	<field name="cue_descripcion_cocac" class="java.lang.String">
+		<fieldDescription><![CDATA[cue_descripcion_cocac]]></fieldDescription>
+	</field>
+	<field name="debe_codem" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[debe_codem]]></fieldDescription>
+	</field>
+	<field name="haber_codem" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[haber_codem]]></fieldDescription>
+	</field>
+	<field name="devengado_prmen" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[este campo lleva el devengado tanto para ingresos como para gastos]]></fieldDescription>
+	</field>
+	<field name="ide_gelua" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_lugar_aplica valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="codigo_clasificador_prcla" class="java.lang.String">
+		<fieldDescription><![CDATA[codigo_clasificador_prcla]]></fieldDescription>
+	</field>
+	<variable name="v_debe_total" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{debe_codem}]]></variableExpression>
+	</variable>
+	<variable name="v_haber_total" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{haber_codem}]]></variableExpression>
+	</variable>
+	<variable name="v_dev_total" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{devengado_prmen}]]></variableExpression>
+	</variable>
+	<title>
+		<band height="79" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="f482c810-b464-4181-a969-7b5006ceb234" x="0" y="0" width="555" height="79"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="115" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="d8da22e2-2268-4a23-98b8-8a5c9cddbfe4" mode="Transparent" x="0" y="0" width="555" height="115"/>
+			</rectangle>
+			<textField>
+				<reportElement uuid="52a4ef2b-9cf8-4452-bd90-034b6cd50fbc" x="5" y="5" width="262" height="20"/>
+				<textElement>
+					<font size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA["COMPROBANTE DE " + $F{detalle_cotia}+" NRO: "+$F{nro_comprobante_comov}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3bb131dd-2410-4b71-89c2-9fc30bc44c53" x="363" y="5" width="46" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
+			<textField pattern="dd MMMMM yyyy">
+				<reportElement uuid="34bccf04-0ed2-4a30-b8fd-b32fb7d83259" x="420" y="5" width="124" height="20"/>
+				<textElement>
+					<font size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mov_fecha_comov}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="cc889cc8-6619-4fb5-a5e0-c5a2dcdb84c3" x="267" y="5" width="33" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<text><![CDATA[TCP:]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="45dc9ee3-d7dd-4784-b1ce-d1efec733711" x="302" y="5" width="59" height="20"/>
+				<textElement>
+					<font size="12" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ide_comov}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="59ceda67-048b-4457-998e-08df0dafcd24" x="15" y="34" width="74" height="29"/>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<text><![CDATA[CONCEPTO:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="789f4c14-b4d5-4e4e-9b90-3625adc2b48a" x="96" y="34" width="456" height="71"/>
+				<textElement markup="html">
+					<font size="9" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_comov}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="1914a5c9-0b8e-4afe-8c8e-24d9811dc482" x="0" y="27" width="555" height="1"/>
+			</line>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="22" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="d8497233-a936-491c-b92e-67093e05c3a2" mode="Transparent" x="0" y="0" width="555" height="22"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="f58a5e36-9190-4e8e-81ff-7382f3b27908" x="5" y="5" width="84" height="17"/>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<text><![CDATA[CÓDIGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2970295b-ff82-4f6b-b9af-f18114bcf916" x="96" y="5" width="73" height="17"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<text><![CDATA[CONCEPTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8e2d597a-c0a6-48b3-bd23-1c52aafc0deb" x="275" y="5" width="82" height="17"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<text><![CDATA[DEBE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="90e27cae-c040-4fb1-b995-6b4422a68987" x="369" y="5" width="49" height="17"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<text><![CDATA[HABER]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5ca15dbd-f53d-495b-b4c8-c7a7bc84b8f7" x="426" y="5" width="53" height="17"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<text><![CDATA[PARTIDA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b463d04f-bd86-484a-990b-1fba80b19b3e" x="489" y="5" width="59" height="17"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<text><![CDATA[DEVEG.]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="">
+				<reportElement uuid="6aa22f12-b3b1-405c-b03f-d91a77012cf3" x="5" y="0" width="91" height="15"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cue_codigo_cocac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="b9b46cb3-edf6-4757-9cce-110b803f3210" x="96" y="0" width="207" height="15"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cue_descripcion_cocac}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="6a2d7c5d-1117-43ca-91dd-fe9d647e5534" x="303" y="0" width="59" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{debe_codem}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="b126c161-8b42-41d1-90df-0de6857da5ad" x="363" y="0" width="59" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{haber_codem}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="19e3418f-e969-4b6b-b258-9cedf523ef24" x="424" y="0" width="65" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo_clasificador_prcla}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="60335da1-6ec1-442f-a8e4-0c87b96acc34" x="489" y="0" width="59" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{devengado_prmen}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="20309793-b910-4a9e-b9e7-7290f2a80787" x="554" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="9f6ea661-30e7-4c58-b86d-b2e905d3819a" x="0" y="0" width="1" height="15"/>
+			</line>
+		</band>
+	</detail>
+	<summary>
+		<band height="260" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="b556ae9d-e6e2-42a2-8126-2ed7da70444a" x="303" y="3" width="59" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{v_debe_total}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="40651495-63cb-4d80-be2f-95a8a96c1c84" x="363" y="3" width="59" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{v_haber_total}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="abb0884f-7f00-4dc0-a9c9-c4e73b132dbf" x="119" y="3" width="49" height="17"/>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<text><![CDATA[TOTAL:]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement uuid="82561625-f4a1-4f3a-8165-5ae432a31830" mode="Transparent" x="0" y="0" width="555" height="20"/>
+			</rectangle>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="3e1e224a-e060-401e-9e26-66a37c3f3a88" x="489" y="2" width="59" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{v_dev_total}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5acbb869-139b-489d-88fd-e209e8ad0730" x="304" y="125" width="197" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="10" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cargo_aprobado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="765cef10-1b01-4254-bf66-100e1a2c5586" x="172" y="219" width="197" height="20"/>
+				<textElement textAlignment="Center">
+					<font pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{coordinador_finaciero}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6259c57f-87c4-42eb-bed4-af7a9a405ad7" x="36" y="125" width="200" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="10" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cargo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="b0257205-5615-4a64-982a-f83258178fd3" x="172" y="199" width="197" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<text><![CDATA[APROBADO POR:]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="bc3767a8-6304-4eff-a2fd-aec20efbc6a0" x="170" y="195" width="200" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="7f40b5ca-d451-4725-860b-622f416187fe" x="304" y="105" width="197" height="20"/>
+				<textElement textAlignment="Center">
+					<font pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{aprobado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="51ac7364-f012-45af-bdc9-30b06bd4e0b9" x="172" y="239" width="197" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="10" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pie_coordinador_finaciero}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="1ae1ab3d-0afb-48b7-8469-13fa90d5229d" x="36" y="81" width="200" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="60a7e9bb-8a47-4509-b54e-8468ab160c6b" x="36" y="85" width="200" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<text><![CDATA[ELABORADO POR:]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="6acb9177-1a10-4894-bb04-8fe02ada13e5" x="303" y="81" width="200" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="85b70d7c-8f18-4969-993e-c0e70087e81b" x="36" y="105" width="200" height="20"/>
+				<textElement textAlignment="Center">
+					<font pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{responsable}.length()>0? $F{responsable} : $P{p_contador_general}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3ebab633-8e89-427c-9cb5-bfbd638565c9" x="304" y="85" width="197" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true" pdfFontName="Times-Bold"/>
+				</textElement>
+				<text><![CDATA[REVISADO POR:]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

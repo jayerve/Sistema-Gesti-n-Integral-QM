@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_kardex_individual_anual" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f2039012-673d-43a4-8ac7-378ca9838a39">
+	<property name="ireport.zoom" value="1.5000000000000009"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_geani" class="java.lang.Long"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:/codigo_fuente/sampu-existencias/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_usua" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[10]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[1]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_empr" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<parameter name="titulo" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Resumen General Anual"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[WITH param AS (
+    SELECT
+    $P{ide_geani} as ide_geani,
+    1 as ide_inttr_ingreso,
+    2 as ide_inttr_egreso,
+    3 as ide_inttr_t_ingreso,
+    4 as ide_inttr_t_egreso
+),
+
+inicial AS (
+SELECT
+ ide_geani,
+ ide_bocam,
+ ide_boubi,
+ SUM(cantidad_inicial_boinv) AS inicial_cantidad,
+ COALESCE( SUM(cantidad_inicial_boinv*valor_existencia_inicial_boinv) / NULLIF(SUM(cantidad_inicial_boinv),0),0) AS inicial_pmp,
+ COALESCE( SUM(cantidad_inicial_boinv*valor_existencia_inicial_boinv),0) as inicial_total
+FROM bodt_bodega_inventario
+WHERE
+    ide_geani = (SELECT ide_geani FROM param)
+GROUP BY 1, 2,3
+ORDER BY ide_bocam
+),
+ingresos AS (
+
+SELECT
+transaccion.ide_geani, detalle.ide_bocam, transaccion.ide_boubi,
+detalle.ide_inttr,
+SUM(detalle.cantidad_inegd) AS ingresos_cantidad,
+
+SUM(detalle.total_inegd) as ingresos_total
+FROM
+bodt_ingreso_egreso_det as detalle
+JOIN bodt_ingreso_egreso as transaccion ON detalle.ide_ingeg = transaccion.ide_ingeg
+WHERE
+transaccion.ide_geani = (SELECT ide_geani FROM param)
+AND detalle.ide_bocam = (SELECT ide_bocam FROM param)
+AND detalle.ide_inttr = (SELECT ide_inttr_ingreso FROM param)
+AND transaccion.activo_ingeg = true
+GROUP BY 1, 2, 3,4
+),
+ingresos_t AS (
+
+SELECT
+transaccion.ide_geani, detalle.ide_bocam, transaccion.ide_boubi,
+detalle.ide_inttr,
+SUM(detalle.cantidad_inegd) AS ingresos_t_cantidad,
+
+SUM(detalle.total_inegd) as ingresos_t_total
+FROM
+bodt_ingreso_egreso_det as detalle
+JOIN bodt_ingreso_egreso as transaccion ON detalle.ide_ingeg = transaccion.ide_ingeg
+WHERE
+transaccion.ide_geani = (SELECT ide_geani FROM param)
+AND detalle.ide_bocam = (SELECT ide_bocam FROM param)
+AND detalle.ide_inttr = (SELECT ide_inttr_t_ingreso FROM param)
+AND transaccion.activo_ingeg = true
+GROUP BY 1, 2, 3,4
+),
+egresos AS (
+
+SELECT
+transaccion.ide_geani, detalle.ide_bocam, transaccion.ide_boubi,
+detalle.ide_inttr,
+SUM(detalle.cantidad_inegd) AS egresos_cantidad,
+
+SUM(detalle.total_inegd) as egresos_total
+--*
+FROM
+bodt_ingreso_egreso_det as detalle
+JOIN bodt_ingreso_egreso as transaccion ON detalle.ide_ingeg = transaccion.ide_ingeg
+WHERE
+transaccion.ide_geani = (SELECT ide_geani FROM param)
+AND detalle.ide_bocam = (SELECT ide_bocam FROM param)
+AND detalle.ide_inttr = (SELECT ide_inttr_egreso FROM param)
+AND transaccion.activo_ingeg = true
+GROUP BY 1, 2, 3,4
+),
+egresos_t AS (
+
+SELECT
+transaccion.ide_geani, detalle.ide_bocam, transaccion.ide_boubi,
+detalle.ide_inttr,
+SUM(detalle.cantidad_inegd) AS egresos_t_cantidad,
+SUM(detalle.total_inegd) as egresos_t_total
+--*
+FROM
+bodt_ingreso_egreso_det as detalle
+JOIN bodt_ingreso_egreso as transaccion ON detalle.ide_ingeg = transaccion.ide_ingeg
+WHERE
+transaccion.ide_geani = (SELECT ide_geani FROM param)
+AND detalle.ide_bocam = (SELECT ide_bocam FROM param)
+AND detalle.ide_inttr = (SELECT ide_inttr_t_egreso FROM param)
+AND transaccion.activo_ingeg = true
+GROUP BY 1, 2, 3, 4
+),
+saldo AS (
+SELECT
+inventario.ide_geani, inventario.ide_bocam, inventario.ide_boubi,  resumen.pmp_existencia_inres as pmp, SUM(cantidad_saldo_boinv) as saldo_cantidad,
+ SUM(cantidad_saldo_boinv) * resumen.pmp_existencia_inres AS saldo_total
+FROM bodt_bodega_inventario AS inventario
+LEFT JOIN bodt_inventario_resumen AS resumen ON resumen.ide_geani = inventario.ide_geani AND resumen.ide_bocam=inventario.ide_bocam
+WHERE
+inventario.ide_geani = (SELECT ide_geani FROM param)
+GROUP BY 1,2,3,4
+ORDER BY inventario.ide_bocam
+),
+resumen AS(
+SELECT
+COALESCE(inicial.ide_geani, COALESCE(ingresos.ide_geani, COALESCE(egresos.ide_geani, COALESCE(ingresos_t.ide_geani, COALESCE(egresos_t.ide_geani, COALESCE(saldo.ide_geani, -1)))))) as ide_geani,
+COALESCE(inicial.ide_bocam, COALESCE(ingresos.ide_bocam, COALESCE(egresos.ide_bocam, COALESCE(ingresos_t.ide_bocam, COALESCE(egresos_t.ide_bocam, COALESCE(saldo.ide_bocam, -1)))))) as ide_bocam,
+COALESCE(inicial.ide_boubi, COALESCE(ingresos.ide_boubi, COALESCE(egresos.ide_boubi, COALESCE(ingresos_t.ide_boubi, COALESCE(egresos_t.ide_boubi, COALESCE(saldo.ide_boubi, -1)))))) as ide_boubi,
+inicial.inicial_cantidad, inicial.inicial_total,
+ingresos.ingresos_cantidad,  ingresos.ingresos_total,
+egresos.egresos_cantidad, egresos.egresos_total,
+ingresos_t.ingresos_t_cantidad,  ingresos_t.ingresos_t_total,
+egresos_t.egresos_t_cantidad,  egresos_t.egresos_t_total,
+saldo.saldo_cantidad, saldo.saldo_total, saldo.pmp
+FROM inicial
+FULL OUTER JOIN ingresos ON inicial.ide_geani=ingresos.ide_geani AND inicial.ide_bocam=ingresos.ide_bocam AND inicial.ide_boubi=ingresos.ide_boubi
+FULL OUTER JOIN egresos ON inicial.ide_geani=egresos.ide_geani AND inicial.ide_bocam=egresos.ide_bocam AND inicial.ide_boubi=egresos.ide_boubi
+FULL OUTER JOIN ingresos_t ON inicial.ide_geani=ingresos_t.ide_geani AND inicial.ide_bocam=ingresos_t.ide_bocam AND inicial.ide_boubi=ingresos_t.ide_boubi
+FULL OUTER JOIN egresos_t ON inicial.ide_geani=egresos_t.ide_geani AND inicial.ide_bocam=egresos_t.ide_bocam AND inicial.ide_boubi=egresos_t.ide_boubi
+FULL OUTER JOIN saldo ON inicial.ide_geani=saldo.ide_geani AND inicial.ide_bocam=saldo.ide_bocam AND inicial.ide_boubi=saldo.ide_boubi
+)
+--SELECT * FROM resumen
+SELECT
+resumen.ide_geani,
+resumen.ide_boubi,
+ubicacion.detalle_boubi,
+resumen.ide_bocam,
+padre.ide_bocam,
+COALESCE(resumen.inicial_cantidad, 0) AS inicial_cantidad,
+COALESCE(resumen.inicial_total, 0) AS inicial_total,
+COALESCE(resumen.ingresos_cantidad, 0) AS ingresos_cantidad,
+COALESCE(resumen.ingresos_total, 0) AS ingresos_total,
+COALESCE(resumen.egresos_cantidad, 0) AS egresos_cantidad,
+COALESCE(resumen.egresos_total, 0) AS egresos_total,
+COALESCE(resumen.saldo_cantidad,  0) AS saldo_cantidad,
+COALESCE(resumen.saldo_total, 0) AS saldo_total,
+COALESCE(resumen.ingresos_t_cantidad, 0) AS ingresos_t_cantidad,
+COALESCE(resumen.ingresos_t_total, 0) AS ingresos_t_total,
+COALESCE(resumen.egresos_t_cantidad, 0) AS egresos_t_cantidad,
+COALESCE(resumen.egresos_t_total, 0) AS egresos_t_total,
+COALESCE(resumen.pmp, 0) AS pmp,
+bodt_catalogo_material.descripcion_bocam,
+padre.ide_bocam as padre_ide_bocam,
+padre.descripcion_bocam as padre_descripcion_bocam,
+padre.cat_codigo_bocam
+FROM resumen
+LEFT JOIN bodt_catalogo_material ON bodt_catalogo_material.ide_bocam = resumen.ide_bocam
+LEFT JOIN bodt_catalogo_material AS padre ON padre.ide_bocam = bodt_catalogo_material.con_ide_bocam
+LEFT JOIN bodt_bodega_ubicacion AS ubicacion ON ubicacion.ide_boubi = resumen.ide_boubi
+ORDER BY resumen.ide_boubi, padre_ide_bocam, resumen.ide_bocam]]>
+	</queryString>
+	<field name="ide_geani" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_anio, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_boubi" class="java.lang.Long">
+		<fieldDescription><![CDATA[foranea para saber cual es la bodega a la que se debe devolver en caso de ser herramienta]]></fieldDescription>
+	</field>
+	<field name="detalle_boubi" class="java.lang.String"/>
+	<field name="ide_bocam" class="java.lang.Long">
+		<fieldDescription><![CDATA[Primary de bodt_catalogo_material con el cual se va a unir a todos los otros modulos]]></fieldDescription>
+	</field>
+	<field name="inicial_cantidad" class="java.math.BigDecimal"/>
+	<field name="inicial_total" class="java.math.BigDecimal"/>
+	<field name="ingresos_cantidad" class="java.math.BigDecimal"/>
+	<field name="ingresos_total" class="java.math.BigDecimal"/>
+	<field name="egresos_cantidad" class="java.math.BigDecimal"/>
+	<field name="egresos_total" class="java.math.BigDecimal"/>
+	<field name="saldo_cantidad" class="java.math.BigDecimal"/>
+	<field name="saldo_total" class="java.math.BigDecimal"/>
+	<field name="ingresos_t_cantidad" class="java.math.BigDecimal"/>
+	<field name="ingresos_t_total" class="java.math.BigDecimal"/>
+	<field name="egresos_t_cantidad" class="java.math.BigDecimal"/>
+	<field name="egresos_t_total" class="java.math.BigDecimal"/>
+	<field name="pmp" class="java.math.BigDecimal"/>
+	<field name="descripcion_bocam" class="java.lang.String"/>
+	<field name="padre_ide_bocam" class="java.lang.Long"/>
+	<field name="padre_descripcion_bocam" class="java.lang.String"/>
+	<field name="cat_codigo_bocam" class="java.lang.String"/>
+	<variable name="inicial_cantidad_1" class="java.math.BigDecimal" resetType="Group" resetGroup="Grupo" calculation="Sum">
+		<variableExpression><![CDATA[$F{inicial_cantidad}]]></variableExpression>
+	</variable>
+	<variable name="inicial_total_1" class="java.math.BigDecimal" resetType="Group" resetGroup="Grupo" calculation="Sum">
+		<variableExpression><![CDATA[$F{inicial_total}]]></variableExpression>
+	</variable>
+	<variable name="ingresos_cantidad_1" class="java.math.BigDecimal" resetType="Group" resetGroup="Grupo" calculation="Sum">
+		<variableExpression><![CDATA[$F{ingresos_cantidad}]]></variableExpression>
+	</variable>
+	<variable name="ingresos_total_1" class="java.math.BigDecimal" resetType="Group" resetGroup="Grupo" calculation="Sum">
+		<variableExpression><![CDATA[$F{ingresos_total}]]></variableExpression>
+	</variable>
+	<variable name="egresos_cantidad_1" class="java.math.BigDecimal" resetType="Group" resetGroup="Grupo" calculation="Sum">
+		<variableExpression><![CDATA[$F{egresos_cantidad}]]></variableExpression>
+	</variable>
+	<variable name="egresos_total_1" class="java.math.BigDecimal" resetType="Group" resetGroup="Grupo" calculation="Sum">
+		<variableExpression><![CDATA[$F{egresos_total}]]></variableExpression>
+	</variable>
+	<variable name="saldo_cantidad_1" class="java.math.BigDecimal" resetType="Group" resetGroup="Grupo" calculation="Sum">
+		<variableExpression><![CDATA[$F{saldo_cantidad}]]></variableExpression>
+	</variable>
+	<variable name="saldo_total_1" class="java.math.BigDecimal" resetType="Group" resetGroup="Grupo" calculation="Sum">
+		<variableExpression><![CDATA[$F{saldo_total}]]></variableExpression>
+	</variable>
+	<variable name="ingresos_t_cantidad_1" class="java.math.BigDecimal" resetType="Group" resetGroup="Grupo" calculation="Sum">
+		<variableExpression><![CDATA[$F{ingresos_t_cantidad}]]></variableExpression>
+	</variable>
+	<variable name="ingresos_t_total_1" class="java.math.BigDecimal" resetType="Group" resetGroup="Grupo" calculation="Sum">
+		<variableExpression><![CDATA[$F{ingresos_t_total}]]></variableExpression>
+	</variable>
+	<variable name="egresos_t_cantidad_1" class="java.math.BigDecimal" resetType="Group" resetGroup="Grupo" calculation="Sum">
+		<variableExpression><![CDATA[$F{egresos_t_cantidad}]]></variableExpression>
+	</variable>
+	<variable name="egresos_t_total_1" class="java.math.BigDecimal" resetType="Group" resetGroup="Grupo" calculation="Sum">
+		<variableExpression><![CDATA[$F{egresos_t_total}]]></variableExpression>
+	</variable>
+	<group name="Bodega">
+		<groupExpression><![CDATA[$F{ide_boubi}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band height="11"/>
+		</groupFooter>
+	</group>
+	<group name="Grupo">
+		<groupExpression><![CDATA[$F{padre_ide_bocam}]]></groupExpression>
+		<groupHeader>
+			<band height="40">
+				<textField>
+					<reportElement uuid="b0e00e83-3d64-4f36-b94f-2a2deefdde22" x="1" y="20" width="239" height="20"/>
+					<textElement>
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{cat_codigo_bocam} + " " + $F{padre_descripcion_bocam}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Grupo" pattern="#,##0.00">
+					<reportElement uuid="33b5f174-d3c2-4804-98a0-008e320a96f1" x="240" y="20" width="47" height="20"/>
+					<textElement textAlignment="Center">
+						<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{inicial_cantidad_1}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Grupo" pattern="#,##0.00">
+					<reportElement uuid="221087dc-f774-4891-91c0-3709565ffb59" x="287" y="20" width="47" height="20"/>
+					<textElement textAlignment="Center">
+						<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{inicial_total_1}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Grupo" pattern="#,##0.00">
+					<reportElement uuid="0d7a8ba1-6da3-49fc-97b4-c40e0fa0b37a" x="334" y="20" width="47" height="20"/>
+					<textElement textAlignment="Center">
+						<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{ingresos_cantidad_1}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Grupo" pattern="#,##0.00">
+					<reportElement uuid="fc6c13ff-0db3-4afd-8396-1d4e4636dd2c" x="381" y="20" width="47" height="20"/>
+					<textElement textAlignment="Center">
+						<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{ingresos_total_1}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Grupo" pattern="#,##0.00">
+					<reportElement uuid="e7579412-a594-43fe-8d1d-ec95578b3a63" x="428" y="20" width="47" height="20"/>
+					<textElement textAlignment="Center">
+						<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{egresos_cantidad_1}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Grupo" pattern="#,##0.00">
+					<reportElement uuid="071673cc-eb11-409f-ab15-470a8eec18af" x="475" y="20" width="47" height="20"/>
+					<textElement textAlignment="Center">
+						<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{egresos_total_1}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Grupo" pattern="#,##0.00">
+					<reportElement uuid="6e4f8c87-4b0a-45e6-9199-0064bda3bacd" x="708" y="20" width="47" height="20"/>
+					<textElement textAlignment="Center">
+						<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{saldo_cantidad_1}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Grupo" pattern="#,##0.00">
+					<reportElement uuid="235ea972-fff9-4208-81c7-a53634371ec3" x="755" y="20" width="47" height="20"/>
+					<textElement textAlignment="Center">
+						<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{saldo_total_1}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Grupo" pattern="#,##0.00">
+					<reportElement uuid="be349f67-8e66-4ab3-9b76-a2f01a0f2189" x="522" y="20" width="47" height="20"/>
+					<textElement textAlignment="Center">
+						<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{ingresos_t_cantidad_1}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Grupo" pattern="#,##0.00">
+					<reportElement uuid="427df61d-d5c6-4613-807c-27bafd6e4f5a" x="569" y="20" width="47" height="20"/>
+					<textElement textAlignment="Center">
+						<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{ingresos_t_total_1}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Grupo" pattern="#,##0.00">
+					<reportElement uuid="29b16220-1a8f-43aa-bdda-fce983b76eaa" x="616" y="20" width="47" height="20"/>
+					<textElement textAlignment="Center">
+						<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{egresos_t_cantidad_1}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Grupo" pattern="#,##0.00">
+					<reportElement uuid="553342a3-e923-4654-b6e2-a53ba7668ed6" x="663" y="20" width="47" height="20"/>
+					<textElement textAlignment="Center">
+						<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{egresos_t_total_1}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="2cb0f740-f1ac-43fd-b2b3-69505ccdb055" x="1" y="0" width="100" height="20"/>
+					<textElement>
+						<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{detalle_boubi}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="5"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="63" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="3ad301b0-8107-4db1-b07e-46f8b23bab09" x="-1" y="0" width="802" height="63"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_geani">
+					<subreportParameterExpression><![CDATA[$P{ide_geani}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{ide_usua}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_horizontal.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="28" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="d92da50a-6cfb-423b-94cd-412e4dd8d8f6" x="334" y="14" width="47" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c4f89c0a-eac5-4752-bfed-0aa45e0d6c13" x="240" y="14" width="47" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bd2147bd-496c-4dd9-8fc9-e8006d638008" x="381" y="14" width="47" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total*]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="859f216c-ec39-4524-a85a-7ff50e70f64f" x="287" y="14" width="47" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total*]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3a6cb621-8e8b-4a7e-b13a-db9f159b7857" x="428" y="14" width="47" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62465d07-af3c-4146-ba40-e06c1d80d3d9" x="475" y="14" width="47" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total*]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3968f31f-3e5c-46c1-b55c-3bc1bc6146c9" x="522" y="14" width="47" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="42a408bf-e13a-41b5-abbe-b40e450b91fc" x="569" y="14" width="47" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total*]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bc9af1b6-6aeb-45e7-a1c3-964f371e7906" x="240" y="0" width="94" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[INICIAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bfbc7f42-efdb-491d-b3f3-76dc1b182abb" x="339" y="0" width="89" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[INGRESOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f8b2a211-a338-40b5-b401-bf7b5d12b9db" x="428" y="0" width="94" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[EGRESOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e33988fc-7594-458e-9901-61494e9c53b5" x="522" y="0" width="92" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[T. INGRESOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5ee0367b-54f0-4984-8f14-7e7a712ff386" x="661" y="14" width="47" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total*]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9190c422-a3b6-47c6-9c84-b7537a1ce380" x="614" y="14" width="47" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="73a5980b-b7d9-42c3-84bd-1d0d973e7bfe" x="616" y="0" width="92" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[T. EGRESOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f3f5930f-e658-457a-8c6c-ab054ac2a458" x="708" y="14" width="47" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="04ffaf12-1f38-46c7-9253-09b9704f7d8a" x="708" y="0" width="94" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[SALDO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d056e843-5182-4d37-9318-fea390110fa0" x="755" y="14" width="47" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total*]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="7a70e317-f74b-4afe-923a-edef9ac30083" x="1" y="0" width="27" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ide_bocam}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="84dd0ef7-7ec3-4468-acf1-e782e4c95e81" x="28" y="0" width="212" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion_bocam}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="bd2e0512-7ecf-49c3-ac91-d447515da85f" x="334" y="0" width="47" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ingresos_cantidad}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="d491545c-2125-48d8-b27d-b1eb270ceb4e" x="240" y="0" width="47" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{inicial_cantidad}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="012cb5cd-8201-4d01-9e1b-f5265892649a" x="381" y="0" width="47" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ingresos_total}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="44c3a80f-9e46-4ba1-a1e6-aa3ea4adf742" x="287" y="0" width="47" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{inicial_total}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="22e4c92f-9cc0-4df4-9ca5-fe7b8601ceb8" x="428" y="0" width="47" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{egresos_cantidad}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="c4dcec5b-e8d0-4ab3-bebe-522a57a623e6" x="475" y="0" width="47" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{egresos_total}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="77e88dc7-a117-463f-bea5-6d27e700ccfc" x="708" y="0" width="47" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{saldo_cantidad}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="ebcff603-a8d6-4deb-be81-82d318847ccf" x="755" y="0" width="47" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{saldo_total}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="1a78fd53-020d-4012-877d-9d60dddb42f3" x="569" y="0" width="47" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ingresos_t_total}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="c5fa363d-4cb9-4596-a67b-c14ca19676be" x="522" y="0" width="47" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ingresos_t_cantidad}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="1f49a0f1-340f-4ecd-a112-1445c88945f6" x="661" y="0" width="47" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{egresos_t_total}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="1447d796-ecbb-4916-b614-4cf5c180f4b4" x="614" y="0" width="47" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{egresos_t_cantidad}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="8" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="23" splitType="Stretch">
+			<textField>
+				<reportElement uuid="fd5e51f1-7cef-4146-a2f9-a6fd5bdb8c87" x="681" y="1" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="96383702-1391-4c8c-bf74-033f0323d835" x="761" y="1" width="40" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="5" splitType="Stretch"/>
+	</summary>
+</jasperReport>

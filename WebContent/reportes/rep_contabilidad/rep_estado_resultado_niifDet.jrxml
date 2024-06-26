@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_estado_resultado_niifDet" pageWidth="595" pageHeight="842" whenNoDataType="BlankPage" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e417e812-fc9d-4d5d-81e0-d26a47801e5c">
+	<property name="ireport.zoom" value="1.6105100000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_cocan" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="descripcion" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:/eclipse-jee-kepler-SR2-win32/Proyectos/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT coalesce(cn.cat_codigo_cocan,'') as codigo, coalesce(cn.descripcion_cocan,'') as descripcion, sum(valor) as valor
+            FROM cont_estado_resultado cer
+            join cont_catalogo_niif cn on cn.ide_cocan=cer.ide_cocan
+            where cn.con_ide_cocan=$P{ide_cocan} and valor != 0
+            group by cn.cat_codigo_cocan, descripcion]]>
+	</queryString>
+	<field name="codigo" class="java.lang.String"/>
+	<field name="descripcion" class="java.lang.String"/>
+	<field name="valor" class="java.math.BigDecimal"/>
+	<variable name="valor_total" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor}.doubleValue()]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="24">
+			<textField pattern="#,##0.00">
+				<reportElement uuid="75079d8a-80f4-4694-85b6-a3b7efba8b6f" x="35" y="2" width="393" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{descripcion}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="17" splitType="Stretch">
+			<textField>
+				<reportElement uuid="fa445641-4a59-4e30-8816-c47a0b6945a4" x="4" y="1" width="76" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="c0df7ab0-97dd-4fb3-a3cb-0d942c1685ca" x="103" y="1" width="301" height="15"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="d48f9756-0e6c-43f9-9431-cd3045f74a31" x="428" y="1" width="122" height="15"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="23" splitType="Stretch">
+			<textField pattern="#,##0.00">
+				<reportElement uuid="bcc5bd79-44a6-4ca0-b190-f537d4bb82b7" x="428" y="3" width="124" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[msg("{0,number,#,##0.00;(#,##0.00)}",$V{valor_total})]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="437989d7-a4bb-495e-8174-501c08dc13e2" x="428" y="2" width="124" height="1"/>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

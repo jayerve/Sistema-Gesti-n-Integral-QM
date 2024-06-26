@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_solicitud_noduplicidad_consultoria_resp" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="86204aec-e63f-4eb1-9f97-aa5b0292b336">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_prpac" class="java.lang.Integer"/>
+	<parameter name="para" class="java.lang.String"/>
+	<parameter name="pie_para" class="java.lang.String"/>
+	<parameter name="nro_documento" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT pac.ide_prpac, descripcion_prpac, justificacion_prpac, NOMBRES_APELLIDOS,detalle_geare, DETALLE_GEDEP,rpac.ide_actual_geedp
+                FROM pre_pac pac
+                left join precon_precontractual rpac on rpac.ide_prpac=pac.ide_prpac
+                left join (SELECT distinct EPAR.IDE_GEEDP,EMP.IDE_GTEMP, EMP.DOCUMENTO_IDENTIDAD_GTEMP,
+                 coalesce(EMP.PRIMER_NOMBRE_GTEMP,'') || ' ' || coalesce(EMP.SEGUNDO_NOMBRE_GTEMP,'') || ' ' || coalesce(EMP.APELLIDO_PATERNO_GTEMP,'') || ' ' || coalesce(EMP.APELLIDO_MATERNO_GTEMP,'')
+                 AS NOMBRES_APELLIDOS, DEPA.DETALLE_GEDEP, EPAR.activo_geedp, detalle_geare FROM GEN_EMPLEADOS_DEPARTAMENTO_PAR EPAR
+                 LEFT JOIN GTH_EMPLEADO EMP ON EMP.IDE_GTEMP=EPAR.IDE_GTEMP LEFT JOIN SIS_SUCURSAL SUCU ON SUCU.IDE_SUCU=EPAR.IDE_SUCU
+                 LEFT JOIN GEN_DEPARTAMENTO DEPA ON DEPA.IDE_GEDEP=EPAR.IDE_GEDEP LEFT JOIN GEN_AREA AREA ON AREA.IDE_GEARE=EPAR.IDE_GEARE
+                 where EPAR.activo_geedp=true) resp on resp.IDE_GTEMP=rpac.ide_actual_geedp
+                where pac.ide_prpac=$P{ide_prpac}]]>
+	</queryString>
+	<field name="ide_prpac" class="java.lang.Long"/>
+	<field name="descripcion_prpac" class="java.lang.String">
+		<fieldDescription><![CDATA[descripcion_prpac]]></fieldDescription>
+	</field>
+	<field name="justificacion_prpac" class="java.lang.String"/>
+	<field name="nombres_apellidos" class="java.lang.String"/>
+	<field name="detalle_geare" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del area ejemplo: Directorio, Auditoria Interna, etc.]]></fieldDescription>
+	</field>
+	<field name="detalle_gedep" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del departamento, ejemplo: DIRECTORIO, TECNOLOGIA, INFRAESTRUCTURA, etc.]]></fieldDescription>
+	</field>
+	<field name="ide_actual_geedp" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Serial ide de empleado actual en el proceso]]></fieldDescription>
+	</field>
+	<background>
+		<band height="842">
+			<image scaleImage="RetainShape" vAlign="Bottom">
+				<reportElement uuid="4116195a-8d8b-4225-bba8-2875a4205d48" x="0" y="0" width="595" height="842"/>
+				<imageExpression><![CDATA["C:\\proyecto\\sampu\\web\\upload\\logos\\HojaMembretada.png"]]></imageExpression>
+			</image>
+		</band>
+	</background>
+	<title>
+		<band height="155" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="bc02f684-495a-4b3d-a42e-50e4dfcc319e" x="50" y="90" width="490" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CERTIFICACIÓN DE NO DUPLICIDAD DE CONSULTORÍA]]></text>
+			</staticText>
+			<textField pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="01771d30-3301-443a-b2b8-eaf972a41128" x="453" y="137" width="87" height="15"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4a1f6711-c2e8-4195-8b2c-2ea724129ba9" x="190" y="122" width="350" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nro_documento}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="aa2238e2-1029-4959-abfc-166621ed6342" x="414" y="137" width="39" height="15"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="101" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="473df7cb-bb9d-49cb-a08a-47c8ef1e2bfa" x="50" y="16" width="51" height="15"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PARA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="60766b69-fb8b-41cf-9dfd-cfd513fd397c" x="50" y="49" width="51" height="15"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ASUNTO:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="0602cd3f-2131-4696-b10b-ac9a6e779597" x="138" y="49" width="402" height="45"/>
+				<textElement textAlignment="Justified">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Certificación de no duplicidad de \"" + $F{descripcion_prpac}.toUpperCase()+"\""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8b1f8e57-cc9e-4d76-929c-e67c62d8bf5a" x="138" y="16" width="402" height="15"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{para}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3094ff1d-cf0f-45cc-be15-4217f3bf17a4" x="138" y="31" width="402" height="15"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pie_para}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="99">
+			<textField>
+				<reportElement uuid="f750d95e-4e44-4aaa-9690-9ad92e55ee0d" x="50" y="26" width="490" height="73"/>
+				<textElement textAlignment="Justified" markup="html">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<p>Mediante solicitud efectuada en el GESPROC, su Coordinación solicitó la Certificación de No Duplicidad, para el proceso de \""+$F{descripcion_prpac}.toUpperCase()+"\"; al respecto, adjunto al presente la Certificación solicitada, con la cual podrá continuar con el trámite correspondiente.</p>"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="be5494e8-d28f-45d3-9ffd-614546a10f47" x="50" y="3" width="107" height="14"/>
+				<textElement markup="none">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[De mi consideración:]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<summary>
+		<band height="173">
+			<staticText>
+				<reportElement uuid="daa8bad5-f36c-4e18-a48d-f9329cdf8dc1" x="50" y="150" width="330" height="14"/>
+				<textElement markup="none">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Documento generado automaticamente por el Sistema SAMPU-ERP]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="80831315-e36b-41bd-8fa9-43fea50fa541" x="59" y="101" width="149" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="6daf5626-833b-4920-aaab-ed147538940b" x="50" y="120" width="174" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_geare}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6ee216db-14c0-45ee-8dd0-3c116a3de491" x="50" y="105" width="174" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombres_apellidos}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="31a59723-4e33-44ac-8617-a41f23c67151" x="50" y="2" width="303" height="45"/>
+				<textElement markup="none">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Con sentimientos de distinguida consideración.
+
+Atentamente,]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

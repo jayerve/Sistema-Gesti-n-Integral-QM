@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_calendario_capacitacion" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a62916ef-d5dd-4d4f-bf2a-060806492da4">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="64"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["D:\\workspace\\biess\\WebContent\\reportes\\rep_gestion\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IDE_CRGRC" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IDE_CREVE" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FECHA_INICIO" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FECHA_FIN" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT f.ide_crgrc,f.detalle_crgrc,a.ide_creve,a.detalle_creve,
+b.ide_crdee,b.detalle_crdee,b.fecha_inicio_crdee,b.fecha_fin_crdee,
+TO_CHAR(b.hora_inicio_crdee,'hh24:mi:ss') AS hora_inicio_crdee,
+TO_CHAR(b.hora_fin_crdee,'hh24:mi:ss') AS hora_fin_crdee,
+c.detalle_crese,d.detalle_crtic,e.detalle_crpri FROM crc_evento a
+LEFT JOIN(
+SELECT ide_crdee,ide_creve,ide_crtic,ide_crese,ide_crpri,detalle_crdee,fecha_inicio_crdee,fecha_fin_crdee,hora_inicio_crdee,hora_fin_crdee FROM crc_detalle_evento
+)b ON b.ide_creve=a.ide_creve
+LEFT JOIN (
+SELECT ide_crese,detalle_crese FROM crc_estado_evento
+)c ON c.ide_crese=b.ide_crese
+LEFT JOIN(
+SELECT ide_crtic,detalle_crtic FROM crc_tipo_calendario
+)d ON d.ide_crtic=b.ide_crtic
+LEFT JOIN (
+SELECT ide_crpri,detalle_crpri FROM crc_prioridad
+)e ON e.ide_crpri=b.ide_crpri
+LEFT JOIN (
+SELECT ide_crgrc,detalle_crgrc FROM CRC_GRUPO_CALENDARIO
+)f ON f.ide_crgrc=a.ide_crgrc
+WHERE a.ide_crgrc in ($P!{IDE_CRGRC})
+AND a.ide_creve in ($P!{IDE_CREVE})
+AND b.fecha_inicio_crdee BETWEEN TO_DATE($P{FECHA_INICIO},'yyyy-mm-dd') AND TO_DATE($P{FECHA_FIN},'yyyy-mm-dd')
+ORDER BY f.detalle_crgrc,a.detalle_creve,b.detalle_crdee]]>
+	</queryString>
+	<field name="IDE_CRGRC" class="java.math.BigDecimal"/>
+	<field name="DETALLE_CRGRC" class="java.lang.String"/>
+	<field name="IDE_CREVE" class="java.math.BigDecimal"/>
+	<field name="DETALLE_CREVE" class="java.lang.String"/>
+	<field name="IDE_CRDEE" class="java.lang.Long"/>
+	<field name="DETALLE_CRDEE" class="java.lang.String"/>
+	<field name="FECHA_INICIO_CRDEE" class="java.sql.Timestamp"/>
+	<field name="FECHA_FIN_CRDEE" class="java.sql.Timestamp"/>
+	<field name="HORA_INICIO_CRDEE" class="java.lang.String"/>
+	<field name="HORA_FIN_CRDEE" class="java.lang.String"/>
+	<field name="DETALLE_CRESE" class="java.lang.String"/>
+	<field name="DETALLE_CRTIC" class="java.lang.String"/>
+	<field name="DETALLE_CRPRI" class="java.lang.String"/>
+	<group name="GRUPO_CALENDARIO" isResetPageNumber="true">
+		<groupExpression><![CDATA[$F{IDE_CRGRC}]]></groupExpression>
+		<groupHeader>
+			<band height="15">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="72501d0d-55ed-497e-a4a9-b5961ade744c" x="0" y="0" width="802" height="15"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DETALLE_CRGRC}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="EVENTOS">
+		<groupExpression><![CDATA[$F{IDE_CREVE}]]></groupExpression>
+		<groupHeader>
+			<band height="40">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="44681371-f2b4-428a-a75f-fdd451a18d4f" x="0" y="0" width="802" height="15"/>
+					<box leftPadding="50">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DETALLE_CREVE}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="36" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="aeca2f63-a165-4094-9482-91f3aef84574" x="0" y="0" width="802" height="36"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema_biess/rep_cabecera_horizontal.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="14" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="bc3b7a17-33bb-4227-93ee-55bf7124a96b" x="0" y="0" width="138" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DETALLE_CRDEE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="492936d0-363e-413c-a246-c22dd0e3bd37" x="138" y="0" width="40" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[F. INICIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b696c138-3440-4ac0-8c0d-11cd0e5cff3d" x="178" y="0" width="50" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[F. FIN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cb5c430c-1f9d-4a83-97a0-c8894c896cdd" x="228" y="0" width="50" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[H. INICIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="34422fdc-f25d-46d3-8604-bcbbe396e337" x="278" y="0" width="60" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[H. FIN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5990402e-49eb-4a7b-9033-f06bd57bab07" x="682" y="0" width="120" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PRIORIDAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4c0170d5-2b4f-46ac-8fad-445f47ac089c" x="511" y="0" width="171" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TIPO CALENDARIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0665872b-ebe2-483c-b095-4e511c2e7055" x="338" y="0" width="173" height="14"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTADO DEL EVENTO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="63758037-bf9b-4aa7-a385-1227098a6307" stretchType="RelativeToBandHeight" x="0" y="0" width="138" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DETALLE_CRDEE}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="c61892a9-a581-4464-ac6b-cffce8cacc43" stretchType="RelativeToBandHeight" x="138" y="0" width="50" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FECHA_INICIO_CRDEE}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="d6ab5a33-5be4-4d24-a878-a58afe53455a" stretchType="RelativeToBandHeight" x="188" y="0" width="50" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FECHA_FIN_CRDEE}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="h:mm a" isBlankWhenNull="true">
+				<reportElement uuid="e34c27e2-cb97-44a4-8708-954da04781f4" stretchType="RelativeToBandHeight" x="238" y="0" width="50" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{HORA_INICIO_CRDEE}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="h:mm a" isBlankWhenNull="true">
+				<reportElement uuid="6aee0485-2bd2-4ae2-b4f2-65e3e89abb38" stretchType="RelativeToBandHeight" x="288" y="0" width="50" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{HORA_FIN_CRDEE}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="5c3d3d2f-0db3-4254-9ef9-127f1778f855" stretchType="RelativeToBandHeight" x="685" y="0" width="117" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DETALLE_CRPRI}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="ad7031c9-2ba4-4d2f-9e0a-200ad28f517c" stretchType="RelativeToBandHeight" x="511" y="0" width="174" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DETALLE_CRTIC}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="4f23d373-6c7a-420f-96d1-f8e83b516f92" stretchType="RelativeToBandHeight" x="338" y="0" width="173" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DETALLE_CRESE}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="15">
+			<subreport>
+				<reportElement uuid="3f4efd2a-295e-4bd9-9d55-4080aa90cbb1" x="0" y="0" width="802" height="15"/>
+				<subreportParameter name="IDE_CRDEE">
+					<subreportParameterExpression><![CDATA[$F{IDE_CRDEE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_calendario/sub_rep_asistentes_capacitacion.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="9" splitType="Stretch">
+			<textField>
+				<reportElement uuid="bad769ec-ce8f-4872-a6b8-460d7be60b57" x="682" y="0" width="80" height="9"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="7647495f-bdee-4e1f-8d68-3889f045b102" x="762" y="0" width="40" height="9"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

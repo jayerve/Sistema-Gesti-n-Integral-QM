@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_detReciboCaja" pageWidth="194" pageHeight="20" whenNoDataType="BlankPage" columnWidth="194" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e417e812-fc9d-4d5d-81e0-d26a47801e5c">
+	<property name="ireport.zoom" value="1.6105100000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="p_nro_comprobante" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_ide_tecaj" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_ide_gtemp" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select ide_facob,tipoDoc,fecha_cobro, fecha_emision, nro_documento, estado, valor, valor_cobro, abono, (valor-abono) as saldo, recaudador  from (
+                    SELECT fc.ide_facob,'FACTURA' as tipoDoc,fc.fecha_cobro_facob as fecha_cobro, fac.fecha_transaccion_fafac as fecha_emision, fac.secuencial_fafac as nro_documento, est.detalle_coest as estado,
+                    fac.total_fafac as valor, (fc.valor_cobro_facob + fc.valor_cobro_iva_facob) as valor_cobro, ab.abono, coalesce(rec.primer_nombre_gtemp,rec.segundo_nombre_gtemp) || ' ' || rec.apellido_paterno_gtemp as recaudador
+                    FROM fac_cobro fc
+                    join fac_factura fac on fac.ide_fafac=fc.ide_fafac
+                    left join cont_estado est on est.ide_coest=fac.ide_coest
+                    left join gth_empleado rec on rec.ide_gtemp=fc.ide_gtemp
+                    left join (select ide_fafac, sum(coalesce(valor_cobro_facob,0)+coalesce(valor_cobro_iva_facob,0)) as abono from fac_cobro group by ide_fafac) ab on ab.ide_fafac=fac.ide_fafac
+                    WHERE fc.nro_documento_facob=$P{p_nro_comprobante} and fc.ide_tecaj=$P{p_ide_tecaj} and fc.ide_gtemp=$P{p_ide_gtemp}
+                    union all
+                    SELECT fc.ide_facob,'NOTA D.' as tipoDoc,fc.fecha_cobro_facob as fecha_cobro, nd.fecha_emision_fanod as fecha_emision, nd.nro_nota_debito_elect_fanod as nro_documento, est.detalle_coest as estado,
+                    nd.interes_generado_fanod as valor, fc.valor_cobro_interes_facob as valor_cobro, ab.abono, coalesce(rec.primer_nombre_gtemp,rec.segundo_nombre_gtemp) || ' ' || rec.apellido_paterno_gtemp  as recaudador
+                    FROM fac_cobro fc
+                    join fac_nota_debito nd on nd.ide_fanod=fc.ide_fanod
+                    left join cont_estado est on est.ide_coest=nd.ide_coest
+                    left join gth_empleado rec on rec.ide_gtemp=fc.ide_gtemp
+                    left join (select ide_fanod, sum(valor_cobro_interes_facob) as abono from fac_cobro group by ide_fanod) ab on ab.ide_fanod=nd.ide_fanod
+                    WHERE fc.nro_documento_facob=$P{p_nro_comprobante} and fc.ide_tecaj=$P{p_ide_tecaj} and fc.ide_gtemp=$P{p_ide_gtemp}
+                    union all
+                    SELECT fc.ide_facob,'CONTRATO' as tipoDoc,fc.fecha_cobro_facob as fecha_cobro, pc.fecha_firma_prcon as fecha_emision, lpad(pc.numero_contrato_prcon,4,'0') as nro_documento, est.detalle_coest as estado,
+                    pc.monto_prcon as valor, fc.valor_cobro_facob as valor_cobro, ab.abono, coalesce(rec.primer_nombre_gtemp,rec.segundo_nombre_gtemp) || ' ' || rec.apellido_paterno_gtemp  as recaudador
+                    FROM fac_cobro fc
+                    join pre_contrato pc on pc.ide_prcon=fc.ide_prcon
+                    left join cont_estado est on est.ide_coest=pc.ide_coest
+                    left join gth_empleado rec on rec.ide_gtemp=fc.ide_gtemp
+                    left join (select ide_prcon, sum(valor_cobro_facob) as abono from fac_cobro group by ide_prcon) ab on ab.ide_prcon=fc.ide_prcon
+                    WHERE fc.nro_documento_facob=$P{p_nro_comprobante} and fc.ide_tecaj=$P{p_ide_tecaj} and fc.ide_gtemp=$P{p_ide_gtemp}
+                ) doc order by 1,4]]>
+	</queryString>
+	<field name="ide_facob" class="java.lang.Integer"/>
+	<field name="tipodoc" class="java.lang.String"/>
+	<field name="fecha_cobro" class="java.sql.Date"/>
+	<field name="fecha_emision" class="java.sql.Date"/>
+	<field name="nro_documento" class="java.lang.String"/>
+	<field name="estado" class="java.lang.String"/>
+	<field name="valor" class="java.lang.Double"/>
+	<field name="valor_cobro" class="java.math.BigDecimal"/>
+	<field name="abono" class="java.math.BigDecimal"/>
+	<field name="saldo" class="java.lang.Double"/>
+	<field name="recaudador" class="java.lang.String"/>
+	<variable name="recaudado" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_cobro}]]></variableExpression>
+	</variable>
+	<variable name="recaudador" class="java.lang.String">
+		<variableExpression><![CDATA[$F{recaudador}]]></variableExpression>
+	</variable>
+	<variable name="fecha_cobro" class="java.util.Date">
+		<variableExpression><![CDATA[$F{fecha_cobro}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement uuid="fa445641-4a59-4e30-8816-c47a0b6945a4" x="0" y="0" width="48" height="13"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipodoc}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="ff121ee3-da6c-4b5e-9bd9-6c5c1596f7be" x="132" y="0" width="60" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_cobro}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="c520fa24-547f-426a-9bc7-a0f9c72f9efc" x="48" y="0" width="85" height="13"/>
+				<textElement textAlignment="Left">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nro_documento}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_niif_cambio_patrimonio" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="BlankPage" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e417e812-fc9d-4d5d-81e0-d26a47801e5c">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:/eclipse-jee-kepler-SR2-win32/Proyectos/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="contador_general" class="java.lang.String"/>
+	<parameter name="coordinador_finaciero" class="java.lang.String"/>
+	<parameter name="pie_coordinador_finaciero" class="java.lang.String"/>
+	<parameter name="cargo_gerente" class="java.lang.String"/>
+	<parameter name="gerente" class="java.lang.String"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="anio" class="java.lang.Integer"/>
+	<parameter name="mesI" class="java.lang.Integer"/>
+	<parameter name="mesF" class="java.lang.Integer"/>
+	<parameter name="cabecera" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select rubro, sum(saldo_inicial) as saldo_inicial, sum(incremento) as incremento, sum(decremento) as decremento, sum(saldo_inicial+incremento-decremento) as saldo_final,fecha_inicial,fecha_final from
+                (select 'Capital' as rubro, haber_codem as saldo_inicial, 0.00 as incremento, 0.00 as decremento, mov_fecha_comov as fecha_inicial, mov_fecha_comov as fecha_final
+                from cont_movimiento mov
+                left join cont_detalle_movimiento dmov on dmov.ide_comov=mov.ide_comov
+                left join cont_catalogo_cuenta cat on cat.ide_cocac=dmov.ide_cocac
+                where ide_cotia=4 and
+                extract(year from mov_fecha_comov)=$P{anio} and extract(month from mov_fecha_comov) between $P{mesI} and $P{mesF} and cue_codigo_cocac in ('611.07')
+                union all
+                select 'Capital Empresa Publica' as rubro, haber_codem as saldo_inicial, 0.00 as incremento, debe_codem as decremento, mov_fecha_comov as fecha_inicial, mov_fecha_comov as fecha_final
+                from cont_movimiento mov
+                left join cont_detalle_movimiento dmov on dmov.ide_comov=mov.ide_comov
+                left join cont_catalogo_cuenta cat on cat.ide_cocac=dmov.ide_cocac
+                where ide_cotia in (1,5) and
+                extract(year from mov_fecha_comov)=$P{anio} and extract(month from mov_fecha_comov) between $P{mesI} and $P{mesF} and cue_codigo_cocac like '611.07'
+                union all
+                SELECT 'Ajuste a resultados anteriores' as rubro, 0.00 as saldo_inicial, (haber_acumulado_cobac + haber_periodo_cobac - haber_inicial_cobac) as incremento, (debe_acumulado_cobac + debe_periodo_cobac - debe_inicial_cobac) as decremento, fecha_inicial_cobac as fecha_inicial, fecha_final_cobac as fecha_final
+                FROM cont_balance_comprobacion bal
+                  left join cont_catalogo_cuenta cat on cat.ide_cocac=bal.ide_cocac
+                where cue_codigo_cocac like '618.01' and extract(year from fecha_inicial_cobac)=$P{anio} and extract(year from fecha_final_cobac)=$P{anio}
+                union all
+
+                SELECT 'Resultados Ejercicios Anteriores' as rubro, 0.00 as saldo_inicial, (haber_inicial_cobac) as incremento, (debe_inicial_cobac) as decremento, fecha_inicial_cobac as fecha_inicial, fecha_final_cobac as fecha_final
+                FROM cont_balance_comprobacion bal
+                left join cont_catalogo_cuenta cat on cat.ide_cocac=bal.ide_cocac
+                where cue_codigo_cocac like '618.01' and extract(year from fecha_inicial_cobac)=$P{anio} and extract(year from fecha_final_cobac)=$P{anio}
+
+                union all
+                SELECT 'Resultado del Ejercicio' as rubro,
+                    0.00 as saldo_inicial, (case when valor>0 then valor else 0.00 end) as incremento,
+                    (case when valor<0 then abs(valor) else 0.00 end) as decremento, fecha_inicial as fecha_inicial, fecha_final as fecha_final
+                FROM cont_balance_general where cue_codigob like '618.03'
+                and extract(year from fecha_inicial)=$P{anio} and extract(year from fecha_final)=$P{anio}
+              union all
+              SELECT 'Donaciones recibidas en Bienes' as rubro,
+                  0.00 as saldo_inicial, (case when valor>0 then valor else 0.00 end) as incremento,
+                  (case when valor<0 then abs(valor) else 0.00 end) as decremento, fecha_inicial as fecha_inicial, fecha_final as fecha_final
+              FROM cont_balance_general where cue_codigob like '611.99'
+              and extract(year from fecha_inicial)=$P{anio} and extract(year from fecha_final)=$P{anio}
+              union all
+              SELECT 'Actualización de Activos' as rubro,
+                  0.00 as saldo_inicial, (case when valor>0 then valor else 0.00 end) as incremento,
+                  (case when valor<0 then abs(valor) else 0.00 end) as decremento, fecha_inicial as fecha_inicial, fecha_final as fecha_final
+              FROM cont_balance_general where cue_codigob like '629.51'
+              and extract(year from fecha_inicial)=$P{anio} and extract(year from fecha_final)=$P{anio}
+            ) a where (abs(saldo_inicial) + abs(incremento) + abs(decremento))>0
+            group by rubro, fecha_inicial,fecha_final
+            order by rubro]]>
+	</queryString>
+	<field name="rubro" class="java.lang.String"/>
+	<field name="saldo_inicial" class="java.math.BigDecimal"/>
+	<field name="incremento" class="java.math.BigDecimal"/>
+	<field name="decremento" class="java.math.BigDecimal"/>
+	<field name="saldo_final" class="java.math.BigDecimal"/>
+	<variable name="v_saldoI" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{saldo_inicial}]]></variableExpression>
+	</variable>
+	<variable name="v_incremento" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{incremento}]]></variableExpression>
+	</variable>
+	<variable name="v_decremento" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{decremento}]]></variableExpression>
+	</variable>
+	<variable name="v_saldo_final" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{saldo_final}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="58" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="e2bfcc95-de21-47d1-9497-560b305405ea" x="1" y="0" width="555" height="58"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="usuario">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_estados.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="24" splitType="Stretch">
+			<textField>
+				<reportElement uuid="3f0578a1-c02a-4386-b67f-59cc6b4c1750" x="138" y="0" width="325" height="13"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cabecera}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b2464b1a-2903-4e35-9f42-aaa1685dc025" x="9" y="14" width="201" height="10"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["EXPRESADO EN: MILES DE DOLARES Y DOS DECIMALES"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="33" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="b2601dcb-c4b4-402b-adec-c2f239b5627b" x="0" y="10" width="555" height="20"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="172a1421-5849-4d10-936b-df5ead7936c8" x="2" y="10" width="110" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RUBROS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9e88eca2-8883-42ea-8d43-a6cc6ea695b3" x="112" y="10" width="110" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALDO INICIAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="07f498ff-571b-4fce-b0b7-ef8efd0ce647" x="442" y="10" width="110" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALDO FINAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bcbf9d4d-5476-4c3e-be6c-b1fdbe24d3d7" x="222" y="10" width="110" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INCREMENTOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4ea065aa-377f-4dd4-9f85-ca0738643262" x="332" y="10" width="110" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DECREMENTOS]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement uuid="fa445641-4a59-4e30-8816-c47a0b6945a4" x="1" y="0" width="125" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rubro}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="c0df7ab0-97dd-4fb3-a3cb-0d942c1685ca" x="126" y="0" width="96" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{saldo_inicial}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="d48f9756-0e6c-43f9-9431-cd3045f74a31" x="442" y="0" width="110" height="15"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{saldo_final}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="d222645a-70c0-412f-a059-961a329038e3" x="222" y="0" width="110" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{incremento}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="141b2664-eff8-424e-a578-4ad8fc007336" x="332" y="0" width="110" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{decremento}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="146" splitType="Stretch">
+			<textField>
+				<reportElement uuid="c03439b7-8723-470c-bd78-ad60e3ced96c" x="178" y="110" width="192" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{gerente}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="621e6fe6-0fcb-4ba4-9932-581cd130485a" x="2" y="125" width="174" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONTABILIDAD]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="c694f31a-ac26-4ecb-af8d-791ea85dd7e7" x="197" y="106" width="149" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="18a4d1af-40e6-46e3-9ca4-b6635bd113a1" x="382" y="106" width="162" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="85494f75-db4f-422d-a39e-b6672ca073af" x="178" y="125" width="192" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cargo_gerente}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="ebac539d-ac14-4354-84b8-6e02f0754a5c" x="11" y="106" width="149" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="0afcb4cc-782a-4e50-aa1f-1aa943e1aab7" x="373" y="125" width="179" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pie_coordinador_finaciero}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0fe15f41-2339-443d-b2d7-062a740a8113" x="373" y="110" width="179" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{coordinador_finaciero}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a53e6238-58ca-4fc7-bf5d-6ef669efbe61" x="2" y="110" width="174" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{contador_general}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="35429f57-f191-42ae-aa7d-8f952e01fadc" x="112" y="3" width="110" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{v_saldoI}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="7d6ac837-fdb6-4ea5-9501-601faafe0da1" x="2" y="3" width="110" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL: ]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="28dff7f7-b84e-4e33-a159-de1c400db712" x="0" y="2" width="555" height="1"/>
+			</line>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="52e52887-9168-4220-a871-8d04f7066251" x="222" y="3" width="110" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{v_incremento}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="77eb4c7f-6e08-48b0-983a-11598fd5d2f0" x="332" y="3" width="110" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{v_decremento}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="8750c5fb-3d8c-4836-91a1-4e9cc051e254" x="442" y="3" width="110" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{v_saldo_final}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

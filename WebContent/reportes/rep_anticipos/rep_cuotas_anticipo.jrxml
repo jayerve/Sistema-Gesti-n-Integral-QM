@@ -1,0 +1,656 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_coutas_anticipo" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e7dd9952-a409-447d-8e31-0b821fcad13a">
+	<property name="ireport.zoom" value="1.6500000000000001"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="IDE_GTEMP" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["D:\\workspace\\biess\\WebContent\\reportes\\rep_gestion\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="ACTIVO_NRANT" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+AMO.IDE_NRAMO,
+EMP.IDE_GTEMP,
+EMP.ACTIVO_GTEMP,
+EMP.APELLIDO_PATERNO_GTEMP || '  ' ||
+EMP.APELLIDO_MATERNO_GTEMP || '  ' ||
+EMP.PRIMER_NOMBRE_GTEMP || '  ' ||
+EMP.SEGUNDO_NOMBRE_GTEMP AS NOMBRES,
+ANI.IDE_NRANI,
+ANT.MONTO_APROBADO_NRANT,
+AMO.CAPITAL_NRAMO,
+ANI.PLAZO_NRANI,
+AMO.ACTIVO_NRAMO,
+ANT.FECHA_VENCIMIENTO_NRANT ,
+ANT.FECHA_APROBACION_NRANT,
+ANT.APROBADO_NRANT,
+AMO.FECHA_CANCELADO_NRAMO ,
+AMO.CUOTA_NRAMO,
+AMO.FECHA_VENCIMIENTO_NRAMO,
+AMO.NRO_CUOTA_NRAMO,
+AMO.PRE_CANCELADO_NRAMO,
+ANT.NRO_MEMO_NRANT AS NUM_MEMO,
+ANT.NRO_ANTICIPO_NRANT ,
+RUB.DETALLE_NRRUB ,
+SUCU.NOM_SUCU AS SUCURSAL,
+ANT.IDE_NRANT,
+MANT.DETALLE_NRMOA
+FROM NRH_AMORTIZACION AMO
+INNER JOIN NRH_ANTICIPO_INTERES ANI ON ANI.IDE_NRANI=AMO.IDE_NRANI
+INNER JOIN NRH_ANTICIPO ANT ON ANT.IDE_NRANT=ANI.IDE_NRANT AND ANT.ANTICIPO_NRANT=true
+INNER JOIN NRH_MOTIVO_ANTICIPO MANT ON MANT.IDE_NRMOA=ANT.IDE_NRMOA
+INNER JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR EDP ON EDP.IDE_GEEDP=ANT.IDE_GEEDP
+INNER JOIN GTH_EMPLEADO EMP ON EMP.IDE_GTEMP=ANT.IDE_GTEMP
+INNER JOIN SIS_SUCURSAL SUCU ON SUCU.IDE_SUCU=EDP.IDE_SUCU
+INNER JOIN NRH_RUBRO RUB ON RUB.IDE_NRRUB=AMO.IDE_NRRUB
+WHERE ANT.IDE_GTEMP IN ($P!{IDE_GTEMP})
+AND ANT.ACTIVO_NRANT IN($P!{ACTIVO_NRANT})
+ORDER BY NOMBRES ASC,ANT.IDE_NRANT DESC,AMO.ACTIVO_NRAMO DESC,AMO.NRO_CUOTA_NRAMO ASC]]>
+	</queryString>
+	<field name="ide_nramo" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla nrh_amortizacion, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_gtemp" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gth_empleado, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="activo_gtemp" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[Este campo define si el registro se encuentra activo o no para su transaccionalidad, 1 SI / 0 No]]></fieldDescription>
+	</field>
+	<field name="nombres" class="java.lang.String"/>
+	<field name="ide_nrani" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave foranea que proviene de la tabla nrh_anticipo_interes.]]></fieldDescription>
+	</field>
+	<field name="monto_aprobado_nrant" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el monto aprobado para el anticipo de acuerdo a la capacidad de pago.]]></fieldDescription>
+	</field>
+	<field name="capital_nramo" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el valor del capital para cada mes, decuerdo al plazo solicitado del anticipo.]]></fieldDescription>
+	</field>
+	<field name="plazo_nrani" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define el numero de meses plazo solicitado para cancelar el anticipo.]]></fieldDescription>
+	</field>
+	<field name="activo_nramo" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[Este campo define si el registro se encuentra activo o no para su transaccionalidad, 1 SI / 0 No]]></fieldDescription>
+	</field>
+	<field name="fecha_vencimiento_nrant" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha de vencimiento del anticipo.]]></fieldDescription>
+	</field>
+	<field name="fecha_aprobacion_nrant" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha de aprobacion del anticipo.]]></fieldDescription>
+	</field>
+	<field name="aprobado_nrant" class="java.lang.Boolean"/>
+	<field name="fecha_cancelado_nramo" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define  la fecha en la que fue cancelado cada cuota por parte del empleador, ya sea por descuentos en nomina, o por una pre cancelación.]]></fieldDescription>
+	</field>
+	<field name="cuota_nramo" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el valor de la cuota que tiene que pagar el empleado por concepto de anticipo.]]></fieldDescription>
+	</field>
+	<field name="fecha_vencimiento_nramo" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha de pago de la cuota, de acuerdo a est afecha se le realizara el respectivo descuento al empleado.]]></fieldDescription>
+	</field>
+	<field name="nro_cuota_nramo" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define el nro de la cuota de acuerdo al plazo.]]></fieldDescription>
+	</field>
+	<field name="pre_cancelado_nramo" class="java.lang.Boolean"/>
+	<field name="num_memo" class="java.lang.String"/>
+	<field name="nro_anticipo_nrant" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define el numero de anticipo que solicita el empleado.]]></fieldDescription>
+	</field>
+	<field name="detalle_nrrub" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del rubro para la generacion del respectivo rol, ejemplo DECIMO TERCER SUELDO, DECIMO CUARTO SUELDO, RETENCION A LA FUENTE, etc.]]></fieldDescription>
+	</field>
+	<field name="sucursal" class="java.lang.String"/>
+	<field name="ide_nrant" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla nrh_anticipo, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="detalle_nrmoa" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_nrmoa]]></fieldDescription>
+	</field>
+	<variable name="contador" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[]]></variableExpression>
+		<initialValueExpression><![CDATA[1]]></initialValueExpression>
+	</variable>
+	<variable name="CUOTA_NRAMO_1" class="java.math.BigDecimal" resetType="Group" resetGroup="PAGADOS" calculation="Sum">
+		<variableExpression><![CDATA[$F{cuota_nramo}]]></variableExpression>
+	</variable>
+	<variable name="CUOTA_NRAMO_2" class="java.math.BigDecimal" resetType="Group" resetGroup="EMPLEADO" calculation="Sum">
+		<variableExpression><![CDATA[$F{cuota_nramo}]]></variableExpression>
+	</variable>
+	<group name="EMPLEADO">
+		<groupExpression><![CDATA[$F{ide_gtemp}]]></groupExpression>
+		<groupHeader>
+			<band height="17">
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="cd2cfc80-b844-404e-9738-ef3c6acef380" positionType="Float" stretchType="RelativeToBandHeight" x="1" y="2" width="555" height="15" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Courier-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nombres}==null?"EMPLEADO NO CONTIENE DATOS":$F{nombres}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="ANTICIPOS">
+		<groupExpression><![CDATA[$F{ide_nrani}]]></groupExpression>
+		<groupHeader>
+			<band height="68">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="6dd08b27-64cd-4d06-9c87-b748d9c05d61" positionType="Float" stretchType="RelativeToBandHeight" x="413" y="22" width="34" height="12" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Justified" verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{plazo_nrani}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="2dfba0da-5931-4a2a-a52f-fafdd78151b5" positionType="Float" stretchType="RelativeToBandHeight" x="500" y="22" width="22" height="12" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{aprobado_nrant}==1?"SI":"NO"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="7cf8394e-428b-4ad9-997b-4d14d9db2808" positionType="Float" stretchType="RelativeToBandHeight" x="58" y="10" width="51" height="12" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{sucursal}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement uuid="55dfc77e-4e37-40f6-9692-fa7907cf8db1" positionType="Float" stretchType="RelativeToBandHeight" x="58" y="22" width="51" height="12" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{monto_aprobado_nrant}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+					<reportElement uuid="bfd49939-d829-4156-b80f-7abc1260b3b4" positionType="Float" stretchType="RelativeToBandHeight" x="182" y="22" width="61" height="12" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{fecha_aprobacion_nrant}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+					<reportElement uuid="d8fd3671-5f00-4eb7-b643-3b85840c20a0" positionType="Float" stretchType="RelativeToBandHeight" x="322" y="22" width="56" height="12" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{fecha_vencimiento_nrant}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="961b95c4-482f-4c33-b0a1-5d99370f9955" x="1" y="10" width="46" height="12"/>
+					<box leftPadding="0">
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[SUSCURSAL:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="dcf49999-9861-4082-ba5f-0add33287260" x="1" y="22" width="46" height="12"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold"/>
+					</textElement>
+					<text><![CDATA[MONTO:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="b4ccb929-5dc1-469f-9c36-288ded5aaf8f" positionType="Float" stretchType="RelativeToBandHeight" x="380" y="22" width="33" height="12" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[PLAZO :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="89f19106-b142-46a9-8535-d142648c2b39" x="109" y="22" width="70" height="12"/>
+					<box leftPadding="5">
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[F.APROBACION :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="62aecc2a-19bc-4ca5-b012-3aa412683340" x="252" y="22" width="70" height="12"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[F.VENCIMIENTO :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="12ebef1b-c012-4600-aedf-e90d489e8fe0" x="455" y="22" width="45" height="12"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[APROBADO:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="c8504001-4c17-4cfb-b418-fff050e0dc3b" x="234" y="56" width="73" height="12"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[CUOTA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="13a960e5-b119-4a7d-9936-753da0f64828" x="58" y="56" width="77" height="12"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[FEC.VENCIMIENTO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="6a7fb11e-a9d5-4b26-8267-adabd49753af" x="135" y="56" width="99" height="12"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[FEC.CANCELADO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="b3d032ea-c839-4f84-aa90-b1a62afaf947" x="307" y="56" width="72" height="12"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[MONTO ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="ba795f8c-0279-45b5-a7b4-8c77ee072f5f" x="0" y="56" width="58" height="12"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[NUM.CUOTA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="70114104-2812-443d-9c1e-826cc2975f91" x="379" y="56" width="137" height="12"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[RUBRO]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="d21541ca-4191-4b28-814f-80c65d115054" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="44" width="556" height="12" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nro_anticipo_nrant}==null?" ":"No. ANTICIPO :"+" "+$F{nro_anticipo_nrant}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="708c9fe9-08b2-451a-a69c-55bde1592820" positionType="Float" stretchType="RelativeToBandHeight" x="182" y="10" width="350" height="12" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="0"/>
+					<textElement verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{detalle_nrmoa}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="2d42a57e-a265-49f6-b730-e8f7143df3fd" x="109" y="10" width="73" height="12"/>
+					<box leftPadding="5">
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[MOTIVO:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="1fd3787c-432c-4073-bd2b-d059a9b1d54c" x="516" y="56" width="39" height="12"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[PRE.CAN]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="25">
+				<subreport>
+					<reportElement uuid="172a783c-bb57-4fb7-b419-07c0a7e5ced7" x="0" y="0" width="554" height="25"/>
+					<subreportParameter name="IDE_NRANT">
+						<subreportParameterExpression><![CDATA[$F{ide_nrant}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_anticipos/sub_rep_abono.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="PAGADOS">
+		<groupExpression><![CDATA[$F{activo_nramo}]]></groupExpression>
+		<groupHeader>
+			<band height="12">
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="017c5f11-c724-4951-9806-7746b4c4599e" x="0" y="0" width="555" height="12"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{activo_nramo}==true?"CUOTAS PAGADAS":"CUOTAS NO PAGADAS"]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="12">
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement uuid="ad736ff1-e204-4831-b7a6-c0c9e35f2446" x="376" y="0" width="179" height="12"/>
+					<box leftPadding="5" rightPadding="2">
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Bottom">
+						<font size="7" isBold="true" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{activo_nramo}==true?"TOTAL PAGADO: "+" "+$V{CUOTA_NRAMO_1}
+:$F{activo_nramo}==null?"DATOS NO ENCONTRADOS":"TOTAL POR PAGAR: "+"          "+$V{CUOTA_NRAMO_1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<title>
+		<band height="25" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="dd680dc2-9b8d-4cb1-90f9-d565bff2616e" x="0" y="0" width="555" height="25"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="###0" isBlankWhenNull="true">
+				<reportElement uuid="fcbc2462-f33e-46d2-b5b5-3029abcd88b4" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="55" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nro_cuota_nramo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="f3a41e5f-0155-4b91-933a-22027b5800ba" positionType="Float" stretchType="RelativeToBandHeight" x="233" y="0" width="73" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cuota_nramo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="faa170ed-afc2-4d20-b3a7-9c478436b018" positionType="Float" stretchType="RelativeToBandHeight" x="306" y="0" width="70" height="12" isPrintWhenDetailOverflows="true"/>
+				<box rightPadding="5">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{capital_nramo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="4315bac6-0969-4add-9b23-eaa3aa8d12d3" positionType="Float" stretchType="RelativeToBandHeight" x="376" y="0" width="139" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_nrrub}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="a8e8ed60-6f5e-44c6-8ae1-4ae2152623c0" positionType="Float" stretchType="RelativeToBandHeight" x="55" y="0" width="77" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_vencimiento_nramo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="7b55e5e7-9ab8-4cec-9304-ebc4fc5e6496" positionType="Float" stretchType="RelativeToBandHeight" x="132" y="0" width="101" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_cancelado_nramo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a22d1a37-46b1-4385-9f3c-4c1a18adbf0c" x="515" y="0" width="40" height="12"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pre_cancelado_nramo}==1?"SI":"NO"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="12">
+			<textField>
+				<reportElement uuid="7fdd9110-2adf-4f74-8257-34281fcef306" x="435" y="0" width="80" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="053feda9-dd55-4bca-8e08-5d86fcec0c19" x="515" y="0" width="40" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

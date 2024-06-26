@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_horas_extra" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c2e3af61-ba6e-435c-b637-ac6bedea4608">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT ide_cobmr, ide_gtemp, fecha_evento_cobmr, horainiciohorario_cobmr,
+       horainiciobiometrico_cobmr, horainicioband_cobmr, horainicioalm_cobmr,
+       horafinalm_cobmr, horainicioalmbio_cobmr, horafinalmbio_cobmr,
+       tiempoalm_cobmr, tiempohoralm_cobmr, horafinhorario_cobmr, horafinbiometrico_cobmr,
+       horafinband_cobmr, novedad_cobmr, usuario_ingre, fecha_ingre,
+       hora_ingre, usuario_actua, fecha_actua, hora_actua, aprueba_hora_extra_cobmr,
+       dia_cobmr, p_entrada_cobmr, p_salida_cobmr, p_alm_cobmr, inconsistencia_biometrico_cobmr,
+       ide_aspvh, horafinextra_cobmr, recargonocturno25_cobmr, recargonocturno100_cobmr
+  FROM con_biometrico_marcaciones_resumen where fecha_evento_cobmr between '2018-06-01' and '2018-06-31']]>
+	</queryString>
+	<field name="ide_cobmr" class="java.lang.Integer"/>
+	<field name="ide_gtemp" class="java.lang.Integer"/>
+	<field name="fecha_evento_cobmr" class="java.lang.String"/>
+	<field name="horainiciohorario_cobmr" class="java.lang.String"/>
+	<field name="horainiciobiometrico_cobmr" class="java.lang.String"/>
+	<field name="horainicioband_cobmr" class="java.lang.String"/>
+	<field name="horainicioalm_cobmr" class="java.lang.String"/>
+	<field name="horafinalm_cobmr" class="java.lang.String"/>
+	<field name="horainicioalmbio_cobmr" class="java.lang.String"/>
+	<field name="horafinalmbio_cobmr" class="java.lang.String"/>
+	<field name="tiempoalm_cobmr" class="java.math.BigDecimal"/>
+	<field name="tiempohoralm_cobmr" class="java.lang.String"/>
+	<field name="horafinhorario_cobmr" class="java.lang.String"/>
+	<field name="horafinbiometrico_cobmr" class="java.lang.String"/>
+	<field name="horafinband_cobmr" class="java.lang.String"/>
+	<field name="novedad_cobmr" class="java.lang.Boolean"/>
+	<field name="usuario_ingre" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el ultimo usuario que realiza la actualizacion del registro.]]></fieldDescription>
+	</field>
+	<field name="fecha_ingre" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha que se realizo el ingreso por primera ves el registro.]]></fieldDescription>
+	</field>
+	<field name="hora_ingre" class="java.sql.Time">
+		<fieldDescription><![CDATA[Este campo define la ultima hora que el usuario realiza la actualizacion del registro.]]></fieldDescription>
+	</field>
+	<field name="usuario_actua" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el ultimo usuario que realiza la actualizacion del registro.]]></fieldDescription>
+	</field>
+	<field name="fecha_actua" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la ultima fecha que realiza la actualizacion del registro.]]></fieldDescription>
+	</field>
+	<field name="hora_actua" class="java.sql.Time">
+		<fieldDescription><![CDATA[Este campo define la hora que se realizo el ingreso por primera ves el registro.]]></fieldDescription>
+	</field>
+	<field name="aprueba_hora_extra_cobmr" class="java.lang.Boolean"/>
+	<field name="dia_cobmr" class="java.lang.String">
+		<fieldDescription><![CDATA[--El nombre del dia]]></fieldDescription>
+	</field>
+	<field name="p_entrada_cobmr" class="java.lang.String"/>
+	<field name="p_salida_cobmr" class="java.lang.String"/>
+	<field name="p_alm_cobmr" class="java.lang.String"/>
+	<field name="inconsistencia_biometrico_cobmr" class="java.lang.Integer"/>
+	<field name="ide_aspvh" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla asi_permisos_vacacion_hext, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="horafinextra_cobmr" class="java.lang.String"/>
+	<field name="recargonocturno25_cobmr" class="java.lang.String"/>
+	<field name="recargonocturno100_cobmr" class="java.lang.String"/>
+	<variable name="suma" class="java.sql.Timestamp" incrementType="Report" calculation="Sum"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="1481c7ea-bf2c-438b-bcc6-5604fd68d1a0" x="320" y="0" width="73" height="20"/>
+				<textElement/>
+				<text><![CDATA[horafinextra_cobmr]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a23156f5-b9be-4432-ac77-ae5f48f41e0e" x="393" y="0" width="92" height="20"/>
+				<textElement/>
+				<text><![CDATA[recargonocturno25_cobmr]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="70773d0e-6453-4063-93cb-69ab9662e290" x="485" y="0" width="70" height="20"/>
+				<textElement/>
+				<text><![CDATA[recargonocturno100_cobmr]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7de72b08-0405-448f-b534-14340e8e846c" x="243" y="0" width="77" height="20"/>
+				<textElement/>
+				<text><![CDATA[fecha_evento_cobmr]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="32299986-995f-41a8-adc0-37156e1c7747" x="172" y="0" width="71" height="20"/>
+				<textElement/>
+				<text><![CDATA[--El nombre del dia]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="48" splitType="Stretch">
+			<textField>
+				<reportElement uuid="43c69381-4a34-4fe0-bc35-006a943d3390" x="320" y="0" width="73" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{horafinextra_cobmr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="02a19332-aae6-4c25-a08e-1402b7e5806e" x="393" y="0" width="92" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{recargonocturno25_cobmr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d18cb0c6-c340-4c25-89e7-10dc0eedd9c8" x="485" y="0" width="70" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{recargonocturno100_cobmr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bd76e4a3-06c0-4082-8959-cf7ce79ee182" x="243" y="0" width="77" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{fecha_evento_cobmr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="96f1d83f-0cc4-465f-9afc-8c8d760ae2e5" x="172" y="0" width="71" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{dia_cobmr}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch">
+			<textField>
+				<reportElement uuid="54437c02-af0b-42b5-b6b9-b12cc8e31f7e" x="485" y="0" width="70" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{suma}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

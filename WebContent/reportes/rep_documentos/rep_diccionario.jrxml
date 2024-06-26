@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_diccionario" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6eca320c-60a9-4a96-9c9d-6f3c8bb41b0f">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="esquema_usuario" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select a.owner,a.table_name,a.column_name,a.tipo,a.campo_null,a.comentario_columna,a.comentario_tabla,
+(case when b.constraint_type='P' then 'PK'
+when b.constraint_type='R' then 'FK'
+when b.constraint_type='U' then 'UNK' else null end) as tipo_constraint,b.constraint_name,column_id from (
+SELECT a.owner,a.table_name,a.column_name,a.tipo,a.campo_null,a.comentario_columna,b.comentario_tabla,column_id FROM(
+SELECT a.owner,a.table_name,a.column_name,a.data_type || ' ('|| a.data_length  as tipo,
+(case when a.nullable = 'N' then 'NOT NULL' else 'NULL' end) as campo_null,b.comments as comentario_columna,column_id
+ FROM all_tab_columns a, all_col_comments b
+where a.table_name=b.table_name and a.column_name=b.column_name and a.owner=b.owner and
+a.owner=$P{esquema_usuario}
+ORDER BY a.table_name) a
+inner join(
+SELECT owner,table_name,comments as comentario_tabla FROM all_tab_comments where owner=$P{esquema_usuario}
+)b on a.owner=b.owner and a.table_name=b.table_name
+ORDER BY a.table_name
+)a
+left join(
+select a.table_name, column_name,a.constraint_type,b.constraint_name from user_cons_columns b
+join user_constraints a
+on b.constraint_name=a.constraint_name
+where  a.constraint_type IN ('P','R','U')
+)b on b.table_name=a.table_name and b.column_name=a.column_name
+order by a.table_name,column_id]]>
+	</queryString>
+	<field name="OWNER" class="java.lang.String"/>
+	<field name="TABLE_NAME" class="java.lang.String"/>
+	<field name="COLUMN_NAME" class="java.lang.String"/>
+	<field name="TIPO" class="java.lang.String"/>
+	<field name="CAMPO_NULL" class="java.lang.String"/>
+	<field name="COMENTARIO_COLUMNA" class="java.lang.String"/>
+	<field name="COMENTARIO_TABLA" class="java.lang.String"/>
+	<field name="TIPO_CONSTRAINT" class="java.lang.String"/>
+	<field name="CONSTRAINT_NAME" class="java.lang.String"/>
+	<field name="COLUMN_ID" class="java.math.BigDecimal"/>
+	<variable name="contador" class="java.lang.Integer" resetType="Group" resetGroup="TABLE_NAME" calculation="Count">
+		<variableExpression><![CDATA[$F{COLUMN_NAME}]]></variableExpression>
+		<initialValueExpression><![CDATA[1]]></initialValueExpression>
+	</variable>
+	<group name="TABLE_NAME">
+		<groupExpression><![CDATA[$F{TABLE_NAME}]]></groupExpression>
+		<groupHeader>
+			<band height="56">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="5fa8c604-64c4-4041-9f7a-c61b13fb9663" x="49" y="0" width="505" height="24"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{TABLE_NAME}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="1449fa35-c924-4bdd-b2b0-8f2c232a62b5" positionType="Float" x="34" y="44" width="106" height="12"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Columna]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="14acbe91-0813-4cf6-99f6-d23b49d4b33b" positionType="Float" x="171" y="44" width="86" height="12"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Tipo Dato]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="8513ff65-39ea-4c51-9a8c-98dd27ef6a5c" positionType="Float" x="257" y="44" width="45" height="12"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Null]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="54625946-6d11-4c3e-814f-9340ce8deec9" positionType="Float" x="302" y="44" width="253" height="12"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Descripción]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="ac0d69f7-28cc-4bcb-8d53-6845845040b9" positionType="Float" x="0" y="44" width="34" height="12"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[N.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="85048572-d493-413c-8876-a933e8c0912e" x="0" y="0" width="50" height="24"/>
+					<box>
+						<pen lineWidth="0.0"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Tabla:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="318ea5e1-b476-4071-bd9b-5ed88d615aa4" x="0" y="24" width="554" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{COMENTARIO_TABLA}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="8129a9b7-6b60-4b68-9fa5-af22b695c676" positionType="Float" x="140" y="44" width="31" height="12"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Tipo]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b145516a-c9cc-4408-8a64-d44de3062f80" stretchType="RelativeToBandHeight" x="34" y="0" width="106" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COLUMN_NAME}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b1dbd202-703d-4042-afb4-e05d28d3aa7a" stretchType="RelativeToBandHeight" x="171" y="0" width="86" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TIPO}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="8716b4a5-41db-4ab0-b737-1455129cd78b" stretchType="RelativeToBandHeight" x="257" y="0" width="45" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CAMPO_NULL}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="625c5f0d-7522-4b78-8d19-74fd314f936c" stretchType="RelativeToBandHeight" x="302" y="0" width="253" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COMENTARIO_COLUMNA}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="ec6e9632-6bd8-4fe0-8d47-c366aa7f1b1b" stretchType="RelativeToBandHeight" x="0" y="0" width="34" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{contador}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="bae96334-25aa-4078-a6ce-9901bdf556dd" stretchType="RelativeToBandHeight" x="140" y="0" width="31" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TIPO_CONSTRAINT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

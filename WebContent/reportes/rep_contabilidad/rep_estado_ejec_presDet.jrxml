@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_estado_ejec_presDet" pageWidth="595" pageHeight="842" whenNoDataType="BlankPage" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e417e812-fc9d-4d5d-81e0-d26a47801e5c">
+	<property name="ireport.zoom" value="1.6105100000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_prcla" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ingresoGasto" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+    <parameter name="ide_geani" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_inicial" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_final" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="descripcion" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:/eclipse-jee-kepler-SR2-win32/Proyectos/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select codigo,grupo,concepto,codificado,devengado_contable,devengado_pres,codificado-devengado_pres as diferencia,coalesce(cuenta_contable,'') as cuenta_contable from (
+                  select ide_prasp as codigo, codigo_clasificador_prcla as grupo, descripcion_clasificador_prcla as concepto,
+                  (case when clp.tipo_prcla=1 then coalesce(panui.codificado_anual,0) else coalesce(panug.codificado_poa,0) end) as codificado,
+                  (case when asp.ide_gelua=1 then coalesce(dmov.debe,0) else coalesce(dmov.haber,0) end) as devengado_contable,
+                  (case when clp.tipo_prcla=1 then coalesce(pmesi.devengado,0) else coalesce(pmesg.devengado,0) end) as devengado_pres, 0 as diferencia, cue_codigo_cocac as cuenta_contable
+                  from pre_asociacion_presupuestaria asp
+                  left join pre_clasificador clp on clp.ide_prcla=asp.ide_prcla
+                  left join cont_catalogo_cuenta catc on catc.ide_cocac=asp.ide_cocac
+                  left join (select ide_cocac, sum(debe_codem) as debe, sum(haber_codem) as haber from cont_detalle_movimiento det
+                              left join cont_movimiento mov on mov.ide_comov=det.ide_comov
+                              where mov_fecha_comov between $P{fecha_inicial} and $P{fecha_final} and mov.ide_cotia not in (2,4)
+                              group by ide_cocac) dmov on dmov.ide_cocac=catc.ide_cocac
+                  left join (select pcl3.pre_ide_prcla, sum(devengado_prmen) as devengado from pre_mensual pmes
+                              left join pre_anual panio on panio.ide_pranu=pmes.ide_pranu and panio.ide_prcla is null
+                              left join pre_programa pprog on pprog.ide_prpro=panio.ide_prpro
+                              left join pre_clasificador pcl4 on pcl4.ide_prcla=pprog.ide_prcla
+                              left join pre_clasificador pcl3 on pcl3.ide_prcla=pcl4.pre_ide_prcla
+                              where fecha_ejecucion_prmen between $P{fecha_inicial} and $P{fecha_final} and panio.ide_geani = $P{ide_geani}
+                              group by pcl3.pre_ide_prcla) pmesg on pmesg.pre_ide_prcla=clp.ide_prcla
+                  left join (select pcl3.pre_ide_prcla, sum(devengado_prmen) as devengado from pre_mensual pmes
+                              left join pre_anual panio on panio.ide_pranu=pmes.ide_pranu
+                              left join pre_clasificador pcl4 on pcl4.ide_prcla=panio.ide_prcla
+                              left join pre_clasificador pcl3 on pcl3.ide_prcla=pcl4.pre_ide_prcla
+                              where fecha_ejecucion_prmen between $P{fecha_inicial} and $P{fecha_final} and panio.ide_geani = $P{ide_geani}
+                              group by pcl3.pre_ide_prcla) pmesi on pmesi.pre_ide_prcla=clp.ide_prcla
+                  
+                  left join (select pcl3.pre_ide_prcla, sum(coalesce(valor_inicial_pranu,0)+coalesce(reforma,0)) as codificado_anual
+                              from pre_anual panio
+                              left join pre_clasificador pcl4 on pcl4.ide_prcla=panio.ide_prcla
+                              left join pre_clasificador pcl3 on pcl3.ide_prcla=pcl4.pre_ide_prcla
+                              left join (select ide_pranu, sum(coalesce(val_reforma_d_prrem,0) - coalesce(val_reforma_h_prrem,0)) as reforma from pre_reforma_mes
+                                        where fecha_reforma_prrem between $P{fecha_inicial} and $P{fecha_final}
+                                        group by ide_pranu
+                                        ) ref on ref.ide_pranu=panio.ide_pranu
+                              where panio.ide_geani = $P{ide_geani}
+                              group by pcl3.pre_ide_prcla) panui on panui.pre_ide_prcla=clp.ide_prcla
+
+                  left join (select pcl3.pre_ide_prcla, sum(coalesce(presupuesto_inicial_prpoa,0) + coalesce(valor_reforma,0)) as codificado_poa
+                            from pre_poa poa
+                            left join (select ide_prpoa, sum(coalesce(valor_reformado_prprf,0)) as valor_reforma
+                                        from pre_poa_reforma_fuente
+                                        where fecha_prprf between $P{fecha_inicial} and $P{fecha_final}
+                                        group by ide_prpoa) pr on pr.ide_prpoa=poa.ide_prpoa
+
+                            left join pre_clasificador pcl4 on pcl4.ide_prcla=poa.ide_prcla
+                            left join pre_clasificador pcl3 on pcl3.ide_prcla=pcl4.pre_ide_prcla
+                            where poa.ide_geani = $P{ide_geani}
+                            group by pcl3.pre_ide_prcla) panug on panug.pre_ide_prcla=clp.ide_prcla
+
+                  where clp.tipo_prcla= $P{ingresoGasto}
+                  and asp.ide_gelua = (case when clp.tipo_prcla=0 then 2 else 1 end)
+                  and clp.pre_ide_prcla= $P{ide_prcla}
+                  and asp.ide_prmop=5
+                  and clp.nivel_prcla=2 and coalesce(asp.activo_prasp,false)=true) a
+                where (abs(codificado)+abs(devengado_contable)+abs(devengado_pres))>0
+                order by grupo]]>
+	</queryString>
+	<field name="grupo" class="java.lang.String">
+		<fieldDescription><![CDATA[grupo]]></fieldDescription>
+	</field>
+	<field name="concepto" class="java.lang.String">
+		<fieldDescription><![CDATA[concepto]]></fieldDescription>
+	</field>
+	<field name="cuenta_contable" class="java.lang.String">
+		<fieldDescription><![CDATA[cuenta_contable]]></fieldDescription>
+	</field>
+	<field name="codificado" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[codificado]]></fieldDescription>
+	</field>
+	<field name="devengado_pres" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[devengado_pres]]></fieldDescription>
+	</field>
+	<field name="diferencia" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[diferencia]]></fieldDescription>
+	</field>
+	<variable name="valor_codificado" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[( $P{ingresoGasto}==1 ? 1 : -1 )*$F{codificado}.doubleValue()]]></variableExpression>
+	</variable>
+	<variable name="valor_devengado_pres" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[( $P{ingresoGasto}==1 ? 1 : -1 )*$F{devengado_pres}.doubleValue()]]></variableExpression>
+	</variable>
+	<variable name="valor_diferencia" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[( $P{ingresoGasto}==1 ? 1 : -1 )*$F{diferencia}.doubleValue()]]></variableExpression>
+	</variable>
+	<variable name="codificado_ingreso" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[( $P{ingresoGasto}==1 ? $F{codificado} : 0 )]]></variableExpression>
+	</variable>
+	<variable name="devengado_ingreso" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[( $P{ingresoGasto}==1 ? $F{devengado_pres} : 0 )]]></variableExpression>
+	</variable>
+	<variable name="codificado_gasto" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[( $P{ingresoGasto}==0 ? $F{codificado} : 0 )]]></variableExpression>
+	</variable>
+	<variable name="devengado_gastos" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[( $P{ingresoGasto}==0 ? $F{devengado_pres} : 0 )]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="24">
+			<textField pattern="#,##0.00">
+				<reportElement uuid="75079d8a-80f4-4694-85b6-a3b7efba8b6f" x="2" y="2" width="393" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{descripcion}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="17" splitType="Stretch">
+			<textField>
+				<reportElement uuid="fa445641-4a59-4e30-8816-c47a0b6945a4" x="3" y="1" width="64" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{grupo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="c0df7ab0-97dd-4fb3-a3cb-0d942c1685ca" x="141" y="1" width="177" height="15"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{concepto}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="d48f9756-0e6c-43f9-9431-cd3045f74a31" x="480" y="1" width="70" height="15"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{diferencia}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="72e6b6dc-2ab2-4071-bb91-2fa26d64c4d8" x="405" y="1" width="70" height="15"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{devengado_pres}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="c520fa24-547f-426a-9bc7-a0f9c72f9efc" x="329" y="1" width="70" height="15"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{codificado}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="4ca24b05-7d47-4761-a08d-0180f88900bd" x="80" y="1" width="47" height="15"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cuenta_contable}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="ca875762-aae6-4656-8897-2e38da864d45" x="68" y="0" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement uuid="f7c02bd0-6976-4977-80a9-e1b508ae6adf" x="137" y="0" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement uuid="7f3b58da-9f4f-43e3-910b-90bc689dd97d" x="326" y="1" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement uuid="263885e6-d7f6-424a-bfa5-63bce4fc84e8" x="400" y="1" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement uuid="80ce0607-a8cc-4c18-8c40-e47afa7d85b8" x="476" y="0" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement uuid="b03c3c59-a8d6-49a2-a8d6-6bb803205440" x="3" y="0" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement uuid="b38ad14c-c23c-4059-8d96-ed259bca50f7" x="551" y="1" width="1" height="16"/>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="23" splitType="Stretch">
+			<textField pattern="#,##0.00">
+				<reportElement uuid="bcc5bd79-44a6-4ca0-b190-f537d4bb82b7" x="474" y="3" width="78" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[msg("{0,number,#,##0.00;(#,##0.00)}",$V{valor_diferencia})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="a8defd0b-d0ed-4cb2-8e0a-7d736450e496" x="395" y="3" width="80" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[msg("{0,number,#,##0.00;(#,##0.00)}",$V{valor_devengado_pres})]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="437989d7-a4bb-495e-8174-501c08dc13e2" x="325" y="2" width="227" height="1"/>
+			</line>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="c7ad7dcb-0b11-4978-9651-3f313b0e68e0" x="318" y="3" width="81" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[msg("{0,number,#,##0.00;(#,##0.00)}",$V{valor_codificado})]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

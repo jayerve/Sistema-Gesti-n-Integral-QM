@@ -1,0 +1,696 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_horas_extras" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="30fe2a4c-21ce-479e-a87d-572dfc2c3d32">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["D:\\workspace\\biess\\WebContent\\reportes\\rep_gestion\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ACTIVO_ASDHE" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IDE_GEEDP" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+PYV.IDE_ASMOT,
+EMP.IDE_GTEMP,
+PYV.IDE_ASPVH,
+HEX.IDE_ASDHE,
+EMP.DOCUMENTO_IDENTIDAD_GTEMP,
+EMP.APELLIDO_PATERNO_GTEMP || '  ' ||
+EMP.APELLIDO_MATERNO_GTEMP || '  ' ||
+EMP.PRIMER_NOMBRE_GTEMP || '  ' ||
+EMP.SEGUNDO_NOMBRE_GTEMP AS NOMBRES,
+EMP1.APELLIDO_PATERNO_GTEMP || '  ' ||
+EMP1.APELLIDO_MATERNO_GTEMP || '  ' ||
+EMP1.PRIMER_NOMBRE_GTEMP || '  ' ||
+EMP1.SEGUNDO_NOMBRE_GTEMP AS NOMBRES_JEFE,
+EMP2.APELLIDO_PATERNO_GTEMP || '  ' ||
+EMP2.APELLIDO_MATERNO_GTEMP || '  ' ||
+EMP2.PRIMER_NOMBRE_GTEMP || '  ' ||
+EMP2.SEGUNDO_NOMBRE_GTEMP AS TALENTO_HUMANO,
+EMP3.APELLIDO_PATERNO_GTEMP || '  ' ||
+EMP3.APELLIDO_MATERNO_GTEMP || '  ' ||
+EMP3.PRIMER_NOMBRE_GTEMP || '  ' ||
+EMP3.SEGUNDO_NOMBRE_GTEMP AS JEFE_INMEDIATO,
+DEP.DETALLE_GEDEP AS DEPARTAMENTO,
+PYV.FECHA_SOLICITUD_ASPVH AS FECHA_SOLICITUD,
+PYV.FECHA_DESDE_ASPVH AS DESDE,
+PYV.FECHA_HASTA_ASPVH AS HASTA,
+PYV.DETALLE_ASPVH AS DETALLE,
+PYV.NRO_DIAS_ASPVH AS DIAS,
+SUCU.NOM_SUCU AS LUGAR_TRABAJO,
+MOT.IDE_ASMOT AS CODIGO_MOTIVO,
+MOT.DETALLE_ASMOT AS MOTIVOS,
+MOT.ACTIVO_ASMOT AS ACTIVO_MOTIVO,
+ARE.DETALLE_GEARE AS GERENCIA,
+CAF.DETALLE_GECAF AS UNIDAD,
+PYV.ACTIVO_ASPVH,
+EMP.ACTIVO_GTEMP,
+ANI.DETALLE_GEANI,
+PYV.GEN_IDE_GEEDP,
+PYV.GEN_IDE_GEEDP2,
+HEX.NRO_HORAS_ASDHE,
+HEX.FECHA_ASDHE,
+HEX.HORA_INICIAL_ASDHE,
+HEX.HORA_FINAL_ASDHE,
+HEX.ACTIVIDADES_ASDHE,
+HEX.ACTIVO_ASDHE
+
+from ASI_PERMISOS_VACACION_HEXT PYV
+
+left join ASI_MOTIVO  MOT ON MOT.IDE_ASMOT=PYV.IDE_ASMOT
+LEFT JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR EDP ON EDP.IDE_GEEDP=PYV.IDE_GEEDP
+LEFT JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR EDP1 ON EDP1.IDE_GEEDP=PYV.GEN_IDE_GEEDP
+LEFT JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR EDP2 ON EDP2.IDE_GEEDP=PYV.GEN_IDE_GEEDP2
+LEFT JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR EDP3 ON EDP3.IDE_GEEDP=PYV.GEN_IDE_GEEDP3
+LEFT JOIN GTH_EMPLEADO EMP ON EMP.IDE_GTEMP=EDP.IDE_GTEMP
+LEFT JOIN GTH_EMPLEADO EMP1 ON EMP1.IDE_GTEMP=EDP1.IDE_GTEMP
+LEFT JOIN GTH_EMPLEADO EMP2 ON EMP2.IDE_GTEMP=EDP2.IDE_GTEMP
+LEFT JOIN GTH_EMPLEADO EMP3 ON EMP3.IDE_GTEMP=EDP3.IDE_GTEMP
+
+LEFT JOIN GEN_DEPARTAMENTO DEP ON DEP.IDE_GEDEP=EDP.IDE_GEDEP
+LEFT JOIN GEN_CARGO_FUNCIONAL CAF ON CAF.IDE_GECAF=EDP.IDE_GECAF
+LEFT JOIN GEN_AREA ARE ON ARE.IDE_GEARE=DEP.IDE_GEARE
+LEFT JOIN SIS_SUCURSAL SUCU ON SUCU.IDE_SUCU=EDP.IDE_SUCU
+LEFT JOIN GEN_ANIO ANI ON ANI.IDE_GEANI=PYV.IDE_GEANI
+left join ASI_DETALLE_HORAS_EXTRAS   HEX on HEX.IDE_ASPVH=PYV.IDE_ASPVH
+
+WHERE  PYV.IDE_GEEDP =$P{IDE_GEEDP} and PYV.TIPO_ASPVH=3 AND PYV.ACTIVO_ASPVH IN(FALSE,TRUE)
+ORDER BY ACTIVO_GTEMP ASC,
+NOMBRES ASC,
+MOT.ACTIVO_ASMOT ASC]]>
+	</queryString>
+	<field name="ide_asmot" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla asi_motivo, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_gtemp" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gth_empleado, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_aspvh" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla asi_permisos_vacacion_hext, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_asdhe" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla asi_detalle_horas_extras, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="documento_identidad_gtemp" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el numero de documento de identidad que posee el empleado.]]></fieldDescription>
+	</field>
+	<field name="nombres" class="java.lang.String"/>
+	<field name="nombres_jefe" class="java.lang.String"/>
+	<field name="talento_humano" class="java.lang.String"/>
+	<field name="jefe_inmediato" class="java.lang.String"/>
+	<field name="departamento" class="java.lang.String"/>
+	<field name="fecha_solicitud" class="java.sql.Date"/>
+	<field name="desde" class="java.sql.Date"/>
+	<field name="hasta" class="java.sql.Date"/>
+	<field name="detalle" class="java.lang.String"/>
+	<field name="dias" class="java.lang.Integer"/>
+	<field name="lugar_trabajo" class="java.lang.String"/>
+	<field name="codigo_motivo" class="java.lang.Integer"/>
+	<field name="motivos" class="java.lang.String"/>
+	<field name="activo_motivo" class="java.lang.Boolean"/>
+	<field name="gerencia" class="java.lang.String"/>
+	<field name="unidad" class="java.lang.String"/>
+	<field name="activo_aspvh" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[Este campo define si el registro se encuentra activo o no para su transaccionalidad, 1 SI / 0 No, me indica si esta negado, default 1 true y para saber q la solitud no fue nagdo debe el usuario poner false=0]]></fieldDescription>
+	</field>
+	<field name="activo_gtemp" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[Este campo define si el registro se encuentra activo o no para su transaccionalidad, 1 SI / 0 No]]></fieldDescription>
+	</field>
+	<field name="detalle_geani" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del ano ejemplo: 2013, 2014, etc]]></fieldDescription>
+	</field>
+	<field name="gen_ide_geedp" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_empleados_departamento_par, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="gen_ide_geedp2" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_empleados_departamento_par, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="nro_horas_asdhe" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el numeo d ehoras extras entre la hora inciial y la hora final, esta definido.]]></fieldDescription>
+	</field>
+	<field name="fecha_asdhe" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha correspondiente a la hora extra que hace solicitud.]]></fieldDescription>
+	</field>
+	<field name="hora_inicial_asdhe" class="java.sql.Time"/>
+	<field name="hora_final_asdhe" class="java.sql.Time"/>
+	<field name="actividades_asdhe" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define las actividades realizadas durante las horas marcadas como labores extras.]]></fieldDescription>
+	</field>
+	<field name="activo_asdhe" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[Este campo define si el registro se encuentra activo o no para su transaccionalidad, 1 SI / 0 No]]></fieldDescription>
+	</field>
+	<variable name="cont" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{ide_asdhe}]]></variableExpression>
+		<initialValueExpression><![CDATA[1]]></initialValueExpression>
+	</variable>
+	<group name="EMPLEADOS">
+		<groupExpression><![CDATA[$F{ide_gtemp}]]></groupExpression>
+	</group>
+	<group name="HORAS_EXTRAS">
+		<groupExpression><![CDATA[$F{ide_asdhe}]]></groupExpression>
+	</group>
+	<group name="activo">
+		<groupExpression><![CDATA[$F{activo_asdhe}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+	</group>
+	<title>
+		<band height="25" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="d8d13a4f-2f39-412d-9e99-06b09be615a4" x="0" y="0" width="555" height="25"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="84">
+			<staticText>
+				<reportElement uuid="d7cd07ce-2dc7-49bc-a5ee-fc9a43b39ebc" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="24" width="98" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6" isBold="true" isItalic="false" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[DEPARTAMENTO]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="1b2bc190-69be-49a1-bae4-e75b2efdd02f" positionType="Float" stretchType="RelativeToBandHeight" x="98" y="24" width="457" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{departamento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f5819e27-7285-446a-b82c-53073f1d5c42" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="48" width="98" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6" isBold="true" isItalic="false" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[FECHA SOLICITUD]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="1d3f8dac-e3ec-446a-9d31-913f0c32c5bb" positionType="Float" stretchType="RelativeToBandHeight" x="98" y="48" width="116" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_solicitud}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="82352993-bdb0-469b-8a6f-67747d1931db" positionType="Float" stretchType="RelativeToBandHeight" x="214" y="48" width="104" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[LUGAR TRABAJO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8a27d327-c8ce-430c-8ff4-bf9d5ca49256" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="12" width="98" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[GERENCIA]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="8f6af43d-6a2c-407d-aa6b-48e01e3218b0" positionType="Float" stretchType="RelativeToBandHeight" x="98" y="12" width="457" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{gerencia}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="45880923-3237-4e82-b785-ae8159326226" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="36" width="98" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[UNIDAD]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="53038697-0303-48b8-a6d0-683b8d6460de" positionType="Float" stretchType="RelativeToBandHeight" x="98" y="36" width="457" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{unidad}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="0735f196-1aaa-4b83-be38-e9ccd092db35" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="98" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6" isBold="true" isItalic="false" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[COLABORADOR (A)]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="d13cc1d4-1200-4a94-a6b5-fed18e3d2797" positionType="Float" stretchType="RelativeToBandHeight" x="98" y="0" width="292" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombres}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="07b82ab0-7832-45f2-8d6e-83e2941c2295" positionType="Float" stretchType="RelativeToBandHeight" x="318" y="48" width="237" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{lugar_trabajo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c3ef68de-167e-4596-b7ce-f051a89a9a91" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="60" width="214" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" isItalic="false" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[MOTIVO]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="11f540d2-22cb-4ac6-8ada-a8901bcc2904" positionType="Float" x="214" y="60" width="341" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{motivos}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="eb9a0f60-3a90-43a5-879f-a502cbe13bc7" x="390" y="0" width="81" height="12"/>
+				<box leftPadding="5" rightPadding="0">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[DOC. IDENTIDAD]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="9f7faf3a-708a-422b-bbb2-93f35540dea6" x="471" y="0" width="84" height="12"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{documento_identidad_gtemp}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c3910c2f-3b8b-4604-9774-07310ece212c" positionType="Float" x="153" y="72" width="61" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[NRO.HORAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ea541100-f675-475e-a887-602d6c8e7a6a" positionType="Float" x="20" y="72" width="46" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[FECHA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ac2d7220-9657-4d11-94bd-9387a30c6fb8" positionType="Float" x="66" y="72" width="42" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[HORA. INI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="06d14216-edf4-4581-845a-98adc8e3dbc2" positionType="Float" x="108" y="72" width="45" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[HORA FIN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b945b930-102f-4661-b2cc-00275f139894" positionType="Float" x="214" y="72" width="341" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[DESCRIPCION]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2a3f5329-8c1c-4c9b-9a99-21e24e06ae8b" positionType="Float" x="0" y="72" width="20" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[NRO.]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="37ca5932-d71f-4f07-b078-4efff1a7329c" positionType="Float" x="20" y="0" width="46" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_asdhe}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="h.mm a" isBlankWhenNull="true">
+				<reportElement uuid="dfc92edf-33d3-45de-b2a3-6c0419bbff72" positionType="Float" x="66" y="0" width="42" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{hora_inicial_asdhe}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="adb32a7b-4d5c-4659-bb02-015bc204649b" positionType="Float" x="214" y="0" width="341" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{actividades_asdhe}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="6f993a5b-5c3c-4cd5-b7f5-b76020d0fb55" positionType="Float" x="0" y="0" width="20" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{cont}]]></textFieldExpression>
+			</textField>
+			<textField pattern="h.mm a">
+				<reportElement uuid="69d90a0c-6cdc-464a-b8f1-b3212f4aa6ac" x="108" y="0" width="45" height="12"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{hora_final_asdhe}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="41d32267-f178-4a7c-9610-10f6e3fbad27" x="153" y="0" width="61" height="12"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nro_horas_asdhe}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="123">
+			<line>
+				<reportElement uuid="7a056f6b-ede9-435b-8ede-6e2845b93d32" positionType="Float" x="60" y="31" width="160" height="1" isPrintWhenDetailOverflows="true"/>
+			</line>
+			<line>
+				<reportElement uuid="40efaa36-02b2-4d1d-ae66-60233d676ae2" positionType="Float" x="350" y="31" width="160" height="1" isPrintWhenDetailOverflows="true"/>
+			</line>
+			<staticText>
+				<reportElement uuid="3da1beb9-09dc-49f7-aac3-a78417c1a94a" positionType="Float" x="60" y="32" width="160" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true" isItalic="false" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[JEFE INMEDIATO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="32d1b3dd-9a3e-4879-ae9c-a3baa1229661" positionType="Float" x="350" y="32" width="160" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true" isItalic="false" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[COLABORADOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c3a00afb-2785-453c-a8e6-a6a23b84be64" positionType="Float" x="350" y="89" width="160" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true" isItalic="false" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[TALENTO HUMANO]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="aadb3c5a-d185-4207-8b72-0e726e0bef33" positionType="Float" x="350" y="88" width="160" height="1" isPrintWhenDetailOverflows="true"/>
+			</line>
+			<textField>
+				<reportElement uuid="59898602-8bf3-4ba8-8a43-e854a28b2f13" positionType="Float" x="60" y="41" width="160" height="10"/>
+				<box leftPadding="5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombres_jefe}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9cd0e445-6cfa-47e3-8489-d8fa00953e29" positionType="Float" x="350" y="41" width="160" height="10"/>
+				<box leftPadding="5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombres}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4fd75715-5fbc-4737-b622-1b4070ebee3c" positionType="Float" x="350" y="98" width="160" height="10"/>
+				<box leftPadding="5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{talento_humano}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="5e07825f-8bf5-4d98-b944-edb616d25ad8" positionType="Float" x="60" y="88" width="160" height="1" isPrintWhenDetailOverflows="true"/>
+			</line>
+			<staticText>
+				<reportElement uuid="a7b19ac9-ba51-4217-acd3-3a158e8ace5d" positionType="Float" x="60" y="89" width="160" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true" isItalic="false" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[GERENTE DE AREA]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="f47dbefd-7ceb-4531-829c-1ff884fef6b4" x="60" y="98" width="160" height="10"/>
+				<box leftPadding="5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{jefe_inmediato}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

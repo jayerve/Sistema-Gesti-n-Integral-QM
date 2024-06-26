@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_bodega_egreso" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1014d66b-f0d5-47d7-8879-8025721a8cc2">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_geani" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="numero_egreso_bocoe" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:\\Proyecto\\sampu\\WebContent\\reportes\\rep_sistema\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select a.fecha_egreso_boegr,a.cantidad_egreso_boegr,a.costo_egreso_boegr,a.total_egreso_boegr,b.numero_egreso_bocoe,b.uso_bocoe,d.ide_bomat,d.detalle_bomat from bodt_egreso a
+left join bodt_concepto_egreso b on b.ide_bocoe=a.ide_bocoe
+left join bodt_inventario c on c.ide_boinv=b.ide_bocoe
+left join bodt_material d on d.ide_bomat=c.ide_bomat
+where b.ide_geani=$P{ide_geani} and b.numero_egreso_bocoe=$P{numero_egreso_bocoe}]]>
+	</queryString>
+	<field name="fecha_egreso_boegr" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_egreso_boegr]]></fieldDescription>
+	</field>
+	<field name="cantidad_egreso_boegr" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[cantidad_egreso_boegr]]></fieldDescription>
+	</field>
+	<field name="costo_egreso_boegr" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[costo_egreso_boegr]]></fieldDescription>
+	</field>
+	<field name="total_egreso_boegr" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[total_egreso_boegr]]></fieldDescription>
+	</field>
+	<field name="numero_egreso_bocoe" class="java.lang.Long">
+		<fieldDescription><![CDATA[numero_egreso_bocoe]]></fieldDescription>
+	</field>
+	<field name="uso_bocoe" class="java.lang.String">
+		<fieldDescription><![CDATA[uso_bocoe]]></fieldDescription>
+	</field>
+	<field name="ide_bomat" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla bodt_material.]]></fieldDescription>
+	</field>
+	<field name="detalle_bomat" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del material de acuerdo al grupo de material al cual pertenece.]]></fieldDescription>
+	</field>
+	<variable name="valor_total_bobod_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<variable name="valor_total_bobod_2" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<variable name="total_egreso_boegr_1" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_egreso_boegr}]]></variableExpression>
+	</variable>
+	<variable name="total_egreso_boegr_2" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_egreso_boegr}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="58" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="d25feb87-ec5a-42d8-85e7-4daa3310ad6c" x="0" y="0" width="555" height="58"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="usuario">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="101" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="af0ee15d-8bbd-477a-b4f8-886de47b6123" x="0" y="0" width="62" height="20"/>
+				<textElement/>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="true">
+				<reportElement uuid="cac60718-6180-41d1-b4a7-72ace6f3eb86" x="62" y="0" width="148" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{fecha_egreso_boegr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0574a96a-bea3-4518-8c10-8b8a8d66ea77" x="425" y="0" width="130" height="20"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["   EGRESO #:   "+$F{numero_egreso_bocoe}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="2c3f5836-61a7-41e5-b9fa-adbcfd97a32b" x="0" y="20" width="62" height="20"/>
+				<textElement/>
+				<text><![CDATA[Descripcion: ]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="fc4ef872-2ef9-4ade-a9ff-e9f6bebf5966" x="62" y="20" width="217" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{uso_bocoe}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="d81ca84e-9501-4dc0-abc9-af6132444621" x="321" y="81" width="87" height="20"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[CANT.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="06af760c-a401-430c-833e-19a08a082f61" x="405" y="81" width="87" height="20"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[VAL.UNITAR.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1ed2b68a-82d0-4fab-aa0b-be701c8c4efd" x="492" y="81" width="63" height="20"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c030119f-0e25-461c-9027-1c635de55a24" x="0" y="81" width="100" height="20"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[CODIGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="48e1c19c-5206-4341-b193-d2793791600c" x="100" y="81" width="221" height="20"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[DESCRIPCION]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="01044074-c5c4-4d07-9dbb-bc23a7f98f18" x="0" y="0" width="100" height="20" isRemoveLineWhenBlank="true"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ide_bomat}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="d20e0cb9-33bb-4f14-88e3-19c0f29e9976" x="100" y="0" width="221" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{detalle_bomat}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="1ec5cdf2-5e84-4a98-88e9-429be353daec" x="321" y="0" width="87" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cantidad_egreso_boegr}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="4163f027-0bab-4e84-a509-cf4ddb3d78f2" x="405" y="0" width="87" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{costo_egreso_boegr}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="191f4906-1714-4f9b-bbdc-beecc0f7fc8f" x="492" y="0" width="63" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{total_egreso_boegr}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="21" splitType="Stretch">
+			<textField evaluationTime="Report">
+				<reportElement uuid="7f0bf654-5173-4a6c-afa4-2e0c5de6dd5a" x="515" y="0" width="40" height="21"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="cee9293c-49c9-4928-b90d-d4efa0e01f7a" x="435" y="0" width="80" height="21"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="83" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="b31fbfad-b530-4154-a32e-525d78b56f8f" x="492" y="0" width="63" height="20" isRemoveLineWhenBlank="true"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[+$V{total_egreso_boegr_2}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="a021ad16-28d9-4745-8b79-38d5d4e51517" x="429" y="0" width="126" height="20"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="d55abc10-484b-4374-a78a-71de9e05f6bc" x="279" y="59" width="114" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="95ff507c-bda6-48e2-a86c-ecbd93975161" x="62" y="59" width="115" height="20"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[AUTORIZACION]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="47885adb-dbcc-4cf3-ac2e-e78c18dcfa6c" x="62" y="58" width="115" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="3f197e4b-8ada-4378-b367-f57a79fbf8b1" x="279" y="61" width="114" height="20"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[RECIBI CONFORME]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_bodega" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1014d66b-f0d5-47d7-8879-8025721a8cc2">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_geani" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="numero_ingreso_bobod" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:\\Proyecto\\sampu\\WebContent\\reportes\\rep_sistema\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select  a.ide_bobod,a.ide_geani,a.fecha_ingreso_bobod,a.num_factura_bobod,a.numero_ingreso_bobod,a.cantidad_ingreso_bobod,a.valor_unitario_bobod,
+a.valor_total_bobod,c.nombre_tepro,b.ide_bomat,b.codigo_bomat,b.detalle_bomat,
+d.detalle_geani from   bodt_bodega a
+left join  bodt_material b on b.ide_bomat = a.ide_bomat
+left join tes_proveedor c on c.ide_tepro=a.ide_tepro
+left join gen_anio d on d.ide_geani=a.ide_geani
+where ide_bobod = $P{ide_geani}
+order by a.ide_bobod,a.numero_ingreso_bobod]]>
+	</queryString>
+	<field name="ide_bobod" class="java.lang.Long">
+		<fieldDescription><![CDATA[Esta campo define la clave primaria de la tabla  bodt_bodega]]></fieldDescription>
+	</field>
+	<field name="ide_geani" class="java.lang.Long">
+		<fieldDescription><![CDATA[ide_geani]]></fieldDescription>
+	</field>
+	<field name="fecha_ingreso_bobod" class="java.sql.Date">
+		<fieldDescription><![CDATA[este campo registra la fecha de ingreso del material a bodega]]></fieldDescription>
+	</field>
+	<field name="num_factura_bobod" class="java.lang.String">
+		<fieldDescription><![CDATA[num_factura_bobod]]></fieldDescription>
+	</field>
+	<field name="numero_ingreso_bobod" class="java.lang.Long">
+		<fieldDescription><![CDATA[numero_ingreso_bobod]]></fieldDescription>
+	</field>
+	<field name="cantidad_ingreso_bobod" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[cantidad_ingreso_bobod]]></fieldDescription>
+	</field>
+	<field name="valor_unitario_bobod" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[valor_unitario_bobod]]></fieldDescription>
+	</field>
+	<field name="valor_total_bobod" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[valor_total_bobod]]></fieldDescription>
+	</field>
+	<field name="nombre_tepro" class="java.lang.String"/>
+	<field name="ide_bomat" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla bodt_material.]]></fieldDescription>
+	</field>
+	<field name="codigo_bomat" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el codigo del material.]]></fieldDescription>
+	</field>
+	<field name="detalle_bomat" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del material de acuerdo al grupo de material al cual pertenece.]]></fieldDescription>
+	</field>
+	<field name="detalle_geani" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del ano ejemplo: 2013, 2014, etc]]></fieldDescription>
+	</field>
+	<variable name="valor_total_bobod_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_total_bobod}]]></variableExpression>
+	</variable>
+	<variable name="valor_total_bobod_2" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_total_bobod}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="59" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="3779437a-16c0-40b0-9d8e-38734ff924aa" x="0" y="1" width="555" height="58"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="usuario">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="94" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="df05f088-255c-408b-ac94-69ef44a679a1" x="0" y="0" width="50" height="20"/>
+				<textElement/>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5fba0430-9460-485d-9607-b6a0102f992f" x="0" y="20" width="61" height="20"/>
+				<textElement/>
+				<text><![CDATA[Proveedor:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="31782006-aa54-47dc-8f7e-e99dd6a1a869" x="0" y="40" width="61" height="20"/>
+				<textElement/>
+				<text><![CDATA[Factura:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="ed9fdb16-3a45-44c6-b78e-a741b95afab7" x="61" y="19" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{nombre_tepro}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="06d42295-8863-4964-b4d5-830e910dba02" x="61" y="40" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{num_factura_bobod}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM dd, yyyy" isBlankWhenNull="true">
+				<reportElement uuid="d1351273-fcb4-4eef-9315-e7618b46b213" x="50" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{fecha_ingreso_bobod}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="83a4d3c4-8566-448d-86b1-38bde61abfb0" x="395" y="19" width="145" height="30"/>
+				<box leftPadding="0">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA["    INGRESO #:        "+$F{numero_ingreso_bobod}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="d5e33be1-25e0-4177-869f-f33bed608272" x="0" y="74" width="100" height="20"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<text><![CDATA[CODIGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="01e7e035-bfe2-4524-9537-726021c98832" x="100" y="74" width="250" height="20"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[DESCRIPCION]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="16393233-3280-43bc-9536-a767334cd109" x="350" y="74" width="75" height="20"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[CANT.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4b5620e0-2836-4dfb-abbc-ea341117b2cf" x="425" y="74" width="67" height="20"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[VAL.UNITAR.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2371798b-602d-417a-ac7c-ea0519cadd8e" x="491" y="74" width="63" height="20"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="577cce71-283e-4659-bfb2-849d77fe3f52" x="0" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{codigo_bomat}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="839f4eb3-8023-4c8c-8ea4-ef70d7932b48" x="100" y="0" width="250" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{detalle_bomat}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="e112c13c-023e-42c7-b188-626d4ffb9a41" x="491" y="0" width="63" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{valor_total_bobod}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="2520c323-16a9-4054-a020-b24d586ba61f" x="425" y="0" width="67" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{valor_unitario_bobod}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="33ef0ada-720c-4527-ada2-8b02b79687ea" x="350" y="0" width="75" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cantidad_ingreso_bobod}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="21" splitType="Stretch">
+			<textField evaluationTime="Report">
+				<reportElement uuid="7f0bf654-5173-4a6c-afa4-2e0c5de6dd5a" x="515" y="0" width="40" height="21"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="cee9293c-49c9-4928-b90d-d4efa0e01f7a" x="435" y="0" width="80" height="21"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="76" splitType="Stretch">
+			<line>
+				<reportElement uuid="a62e2d1a-dafa-4041-a709-d107797033ea" x="70" y="54" width="115" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="f5909d60-8028-416f-be07-40160f0a6a59" x="70" y="55" width="115" height="20"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[AUTORIZACION]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="1ba4c24a-e204-4801-a8c2-aefe0d339214" x="378" y="52" width="114" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="246ccefb-027f-4a0a-b83b-7d4f511cea2f" x="378" y="54" width="114" height="20"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[RECIBI CONFORME]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="5628e688-8447-4228-8530-75ee516e0232" x="491" y="0" width="64" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{valor_total_bobod}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="89080232-8844-44e7-95fd-390e2ee0de67" x="429" y="0" width="126" height="20"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[  TOTAL :]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

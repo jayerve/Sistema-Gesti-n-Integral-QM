@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_kardex_individual_anual" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="832" leftMargin="5" rightMargin="5" topMargin="0" bottomMargin="0" uuid="f2039012-673d-43a4-8ac7-378ca9838a39">
+	<property name="ireport.zoom" value="1.4641000000000013"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_geani" class="java.lang.Long"/>
+	<parameter name="ide_bocam" class="java.lang.Long"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:/codigo_fuente/sampu-existencias/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[WITH param AS (
+    SELECT
+    $P{ide_geani} as ide_geani,
+    $P{ide_bocam} as ide_bocam
+),
+
+inicial AS (
+SELECT
+ ide_geani,
+ 0 as ide_boubi,
+ ide_bocam,
+ 0 as ide_ingeg,0 as ide_inegd,
+ 'epoch'::timestamp as fecha_ingeg,
+ 0 as ide_inttr,
+ --COUNT(ide_boubi),
+ SUM(cantidad_inicial_boinv) AS cantidad,
+ COALESCE( SUM(cantidad_inicial_boinv*valor_existencia_inicial_boinv) / NULLIF(SUM(cantidad_inicial_boinv),0),0) AS pmp,
+ COALESCE( SUM(cantidad_inicial_boinv*valor_existencia_inicial_boinv),0) as totalºº
+FROM bodt_bodega_inventario
+WHERE
+    ide_geani = (SELECT ide_geani FROM param)
+    AND ide_bocam = (SELECT ide_bocam FROM param)
+GROUP BY 1, 2, 3,4, 5,6 --ide_geani, ide_bocam, fecha_ingre
+),
+transacciones AS (
+
+SELECT
+transaccion.ide_geani,transaccion.ide_boubi, detalle.ide_bocam, transaccion.ide_ingeg, detalle.ide_inegd, transaccion.fecha_ingeg,
+detalle.ide_inttr, detalle.cantidad_inegd, detalle.valor_existencia_inegd, detalle.total_inegd
+--*
+FROM
+bodt_ingreso_egreso_det as detalle
+JOIN bodt_ingreso_egreso as transaccion ON detalle.ide_ingeg = transaccion.ide_ingeg
+WHERE
+transaccion.ide_geani = (SELECT ide_geani FROM param)
+AND detalle.ide_bocam = (SELECT ide_bocam FROM param)
+AND transaccion.activo_ingeg = true
+ORDER BY fecha_ingeg
+),
+resumen AS (
+SELECT * FROM inicial
+UNION
+SELECT * FROM transacciones
+),
+kardex AS (
+SELECT --* from resumen
+ide_geani,
+ide_boubi,
+ide_bocam,
+ide_ingeg,
+ide_inegd,
+fecha_ingeg,
+ide_inttr,
+(SELECT cantidad FROM inicial) as inicial_cantidad,
+(SELECT pmp FROM inicial) as inicial_costo,
+CASE WHEN ide_inttr IN (1,3) THEN cantidad
+     ELSE 0 END as ingreso_cantidad,
+CASE WHEN ide_inttr IN (1,3) THEN pmp
+     ELSE 0 END as ingreso_costo,
+CASE WHEN ide_inttr IN (2,4) THEN cantidad
+     ELSE 0 END as egreso_cantidad,
+CASE WHEN ide_inttr IN (2,4) THEN pmp
+     ELSE 0 END as egreso_costo,
+SUM (cantidad * CASE WHEN ide_inttr IN (2,4) THEN -1 ELSE 1 END) OVER (ORDER BY ide_inegd) as saldo_cantidad,
+CASE WHEN ide_inttr=0 THEN pmp
+     ELSE 0 END as saldo_costo,
+SUM (CASE WHEN ide_inttr=0 THEN cantidad WHEN ide_inttr=1 THEN cantidad ELSE 0 END) OVER (ORDER BY ide_inegd) as ingresos_total
+--LAG (ide_geani,1) OVER (ORDER BY ide_inegd)
+FROM resumen
+),
+--SELECT * FROM kardex
+kardex_pmp AS (
+SELECT
+ide_geani,
+ide_boubi,
+ide_bocam,
+ide_ingeg,
+ide_inegd,
+fecha_ingeg,
+ide_inttr,
+ingreso_cantidad,
+
+ingreso_costo,
+ingresos_total,
+egreso_cantidad,
+egreso_costo,
+saldo_cantidad,
+--COALESCE (SUM(LAG(saldo_costo,1) * ())  OVER (ORDER BY ide_inegd), LAG(saldo_costo,0) OVER (ORDER BY ide_inegd)) as saldo_costo
+ROUND(COALESCE((COALESCE(inicial_cantidad*inicial_costo,0) + COALESCE(SUM (CASE WHEN ide_inttr IN (0,1) THEN ingreso_cantidad *  ingreso_costo END) OVER (ORDER BY ide_inegd),0) - COALESCE(SUM (CASE WHEN ide_inttr IN (2) THEN egreso_cantidad *  egreso_costo END) OVER (ORDER BY ide_inegd),0))/ NULLIF(saldo_cantidad,0),0), 2) as pmp
+FROM
+kardex )
+
+
+--SELECT * FROM kardex_pmp
+
+
+SELECT
+kardex_pmp.ide_geani,
+kardex_pmp.ide_boubi,
+ubicacion.detalle_boubi,
+kardex_pmp.ide_bocam,
+catalogo.cat_codigo_bocam,
+catalogo.descripcion_bocam,
+kardex_pmp.ide_ingeg,
+kardex_pmp.ide_inegd,
+kardex_pmp.fecha_ingeg,
+kardex_pmp.ide_inttr,
+tipo_transaccion.detalle_inttr,
+kardex_pmp.ingreso_cantidad,
+
+kardex_pmp.ingreso_costo,
+kardex_pmp.ingresos_total,
+kardex_pmp.egreso_cantidad,
+kardex_pmp.egreso_costo,
+kardex_pmp.saldo_cantidad,
+kardex_pmp.pmp
+FROM kardex_pmp
+LEFT JOIN bodt_catalogo_material AS catalogo ON catalogo.ide_bocam = kardex_pmp.ide_bocam
+LEFT JOIN bodt_inventario_tipo_transaccion AS tipo_transaccion ON tipo_transaccion.ide_inttr = kardex_pmp.ide_inttr
+LEFT JOIN bodt_bodega_ubicacion as ubicacion ON ubicacion.ide_boubi = kardex_pmp.ide_boubi
+ORDER BY kardex_pmp.ide_inegd]]>
+	</queryString>
+	<field name="ide_geani" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_anio, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_boubi" class="java.lang.Long">
+		<fieldDescription><![CDATA[foranea para saber cual es la bodega a la que se debe devolver en caso de ser herramienta]]></fieldDescription>
+	</field>
+	<field name="detalle_boubi" class="java.lang.String"/>
+	<field name="ide_bocam" class="java.lang.Long">
+		<fieldDescription><![CDATA[Primary de bodt_catalogo_material con el cual se va a unir a todos los otros modulos]]></fieldDescription>
+	</field>
+	<field name="cat_codigo_bocam" class="java.lang.String"/>
+	<field name="descripcion_bocam" class="java.lang.String"/>
+	<field name="ide_ingeg" class="java.lang.Integer"/>
+	<field name="ide_inegd" class="java.lang.Integer"/>
+	<field name="fecha_ingeg" class="java.sql.Timestamp"/>
+	<field name="ide_inttr" class="java.lang.Integer"/>
+	<field name="detalle_inttr" class="java.lang.String"/>
+	<field name="ingreso_cantidad" class="java.math.BigDecimal"/>
+	<field name="ingreso_costo" class="java.math.BigDecimal"/>
+	<field name="ingresos_total" class="java.math.BigDecimal"/>
+	<field name="egreso_cantidad" class="java.math.BigDecimal"/>
+	<field name="egreso_costo" class="java.math.BigDecimal"/>
+	<field name="saldo_cantidad" class="java.math.BigDecimal"/>
+	<field name="pmp" class="java.math.BigDecimal"/>
+	<variable name="egreso_total_cantidad" class="java.lang.Number" calculation="Sum">
+		<variableExpression><![CDATA[$F{egreso_cantidad}]]></variableExpression>
+	</variable>
+	<variable name="egreso_total_costo" class="java.lang.Number" calculation="Sum">
+		<variableExpression><![CDATA[$F{egreso_costo}]]></variableExpression>
+	</variable>
+	<variable name="ingreso_total_cantidad" class="java.lang.Number" calculation="Sum">
+		<variableExpression><![CDATA[$F{ingreso_cantidad}]]></variableExpression>
+	</variable>
+	<variable name="ingreso_total_costo" class="java.lang.String" calculation="Sum">
+		<variableExpression><![CDATA[$F{ingreso_costo}]]></variableExpression>
+	</variable>
+	<variable name="saldo_total_cantidad" class="java.lang.String" calculation="Sum">
+		<variableExpression><![CDATA[$F{saldo_cantidad}]]></variableExpression>
+	</variable>
+	<variable name="saldo_total_costo" class="java.lang.String" calculation="Sum">
+		<variableExpression><![CDATA[$F{pmp}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<textField>
+				<reportElement uuid="f9dd7e6a-f069-4d9e-abaf-ee3f5a532470" x="100" y="0" width="335" height="17"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{descripcion_bocam}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e38bf125-00be-4ffa-8322-6f313967c0ee" x="0" y="0" width="100" height="17"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cat_codigo_bocam}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="320a5d89-74c5-480c-a886-630fa5f0a51f" x="39" y="41" width="51" height="20"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fa577a11-a07a-49e0-915e-0ea9901f475f" x="90" y="41" width="131" height="20"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descripción]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5277628a-b80f-495b-bd71-c19040fca90a" x="493" y="21" width="141" height="20"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Egresos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ae46ccb3-0985-44a9-8eff-3f38b6722ee3" x="352" y="41" width="71" height="20"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="50aaf803-cc10-42a7-b2dd-739151e0a059" x="423" y="41" width="70" height="20"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Costo*]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0c3c3fb6-a3c2-4f89-b10a-1d08f190697d" x="493" y="41" width="71" height="20"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b7d7e076-4317-407c-94a7-19ef66e7a9b6" x="564" y="41" width="70" height="20"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Costo*]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b9bcb9f5-1fc9-4f16-b3cf-bc014e51e63f" x="634" y="41" width="71" height="20"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="68454778-1fb4-4cd3-b441-142f1fcab85b" x="705" y="41" width="70" height="20"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PMP*]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="145b4f95-ac49-4ff6-9023-0151bbd4c81d" x="352" y="21" width="141" height="20"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ingresos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6fdea1b5-e9d1-4b7f-bc11-3964e4cfa0b3" x="634" y="21" width="141" height="20"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Saldo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5f47ebe2-b791-4335-a389-2610848cc06d" x="221" y="41" width="131" height="20"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Bodega]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="59a1e426-ea4d-4865-8a3c-3a2391faba48" x="39" y="0" width="51" height="21"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{fecha_ingeg}).contains("1970") ? "" : new java.text.SimpleDateFormat("dd/MM/yyyy").format($F{fecha_ingeg}) )]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="eb2ad8a3-aa9d-4a8b-9db2-dd84826fc66a" stretchType="RelativeToBandHeight" x="90" y="0" width="131" height="21"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{detalle_inttr} == null ? "INICIAL" : $F{detalle_inttr} )]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="0032f6f8-ebda-4cc9-afcd-c087aa8f321a" x="352" y="0" width="71" height="21"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ingreso_cantidad}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="d2c4ebab-0426-46c7-985c-ce6a4c48d19f" x="423" y="0" width="70" height="21"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ingreso_costo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="0584b3b5-7f7b-4cc8-9a2e-7545584f6dcd" x="493" y="0" width="71" height="21"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{egreso_cantidad}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="9f1e436c-5b06-4536-a970-fa188459cc6e" x="564" y="0" width="70" height="21"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{egreso_costo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0.00;-###0.00">
+				<reportElement uuid="6d1c436a-df86-4181-8ebf-1eee31d15109" x="634" y="0" width="71" height="21"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{saldo_cantidad}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="bd6297bc-30d6-4854-87ba-ad494184c6b5" x="705" y="0" width="70" height="21"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pmp}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="910bdb1e-a6f7-415b-ba11-7778cb2c43a5" x="0" y="0" width="39" height="21"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="42c64ff3-c9e2-4bf7-be0e-7d75a1c93765" stretchType="RelativeToBandHeight" x="221" y="0" width="131" height="21"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{detalle_boubi} == null ? " - " : $F{detalle_boubi})]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="43" splitType="Stretch"/>
+	</summary>
+	<noData>
+		<band height="52">
+			<subreport>
+				<reportElement uuid="e9e9ba78-25e7-4127-93cc-d66eac6ac4cb" x="0" y="0" width="832" height="50"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_bocam">
+					<subreportParameterExpression><![CDATA[$P{ide_bocam}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_bodega/rep_kardex_individual_anual_no_data.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</noData>
+</jasperReport>

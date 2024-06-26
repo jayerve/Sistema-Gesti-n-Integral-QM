@@ -1,0 +1,534 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_viaje" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="636b3afe-55e5-44bc-9058-2458a3d0c15a">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<parameter name="ide_usua" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString language="SQL">
+		<![CDATA[SELECT tiket.ide_cotiv,tiket.ide_cotit,transporte.detalle_cotit,tiket.ide_coasv,asunto.detalle_coasv,
+tiket.ide_coest,estado.detalle_coest,origen.ciudad as origen,
+destino.ciudad as destino,tiket.detalle_viaje_cotiv,tiket.fecha_partida_cotiv,tiket.fecha_retorno_cotiv,tiket.num_memo_cotiv,tiket.num_memo_pagado_cotiv,
+tiket.fecha_vence_pago_cotiv,tiket.fecha_pagado_cotiv,tiket.razon_anulado_cotiv,tiket.fecha_anulado_cotiv,tiket.activo_cotiv,clase.detalle_coclv,
+empdep.nombres_apellidos,viajeros.num_memo_covia,viajeros.boleto_covia,viajeros.activo_covia
+FROM  cont_tiket_viaje as tiket
+LEFT JOIN cont_tipo_transporte transporte ON transporte.ide_cotit = tiket.ide_cotit
+LEFT JOIN cont_asunto_viaje asunto ON asunto.ide_coasv = tiket.ide_coasv
+LEFT JOIN cont_estado estado ON estado.ide_coest = tiket.ide_coest
+LEFT JOIN
+(
+SELECT ide_gedip, (pais||' '||provincia||' '||ciudad) as ciudad from
+(select a.ide_gedip AS ide_gedip,c.detalle_gedip ||' ' as pais,provincia||' ' as provincia,a.detalle_gedip as ciudad
+from
+(
+select * from gen_division_politica where ide_getdp=2
+) a
+left join
+(
+select a.ide_gedip,a.detalle_gedip as canton,
+b.ide_gedip as codigo_provincia,b.detalle_gedip as provincia,
+b.gen_ide_gedip as codigo_pais
+from (select * from gen_division_politica where ide_getdp=3) a
+left join (select * from gen_division_politica where ide_getdp=1) b on a.gen_ide_gedip = b.ide_gedip
+) b on a.gen_ide_gedip = b.ide_gedip
+left join gen_division_politica c on b.codigo_pais=c.ide_gedip
+where not c.detalle_gedip is null
+order by provincia,a.detalle_gedip) as ciudad
+) as origen ON origen.ide_gedip = tiket.ide_gedip
+
+LEFT JOIN
+(
+SELECT ide_gedip, (pais||' '||provincia||' '||ciudad) as ciudad from
+(select a.ide_gedip AS ide_gedip,c.detalle_gedip ||' ' as pais,provincia||' ' as provincia,a.detalle_gedip as ciudad
+from
+(
+select * from gen_division_politica where ide_getdp=2
+) a
+left join
+(
+select a.ide_gedip,a.detalle_gedip as canton,
+b.ide_gedip as codigo_provincia,b.detalle_gedip as provincia,
+b.gen_ide_gedip as codigo_pais
+from (select * from gen_division_politica where ide_getdp=3) a
+left join (select * from gen_division_politica where ide_getdp=1) b on a.gen_ide_gedip = b.ide_gedip
+) b on a.gen_ide_gedip = b.ide_gedip
+left join gen_division_politica c on b.codigo_pais=c.ide_gedip
+where not c.detalle_gedip is null
+order by provincia,a.detalle_gedip) as ciudad
+) as destino ON destino.ide_gedip = tiket.gen_ide_gedip
+LEFT JOIN cont_viajeros viajeros ON  viajeros.ide_cotiv = tiket.ide_cotiv
+LEFT JOIN cont_clase_viaje clase ON  clase.ide_coclv = viajeros.ide_coclv
+LEFT JOIN
+(
+SELECT EPAR.IDE_GEEDP, EMP.IDE_GTEMP, EMP.DOCUMENTO_IDENTIDAD_GTEMP,
+				EMP.APELLIDO_PATERNO_GTEMP || ' ' || EMP.APELLIDO_MATERNO_GTEMP || ' ' ||EMP.PRIMER_NOMBRE_GTEMP || ' ' || EMP.SEGUNDO_NOMBRE_GTEMP
+				 AS NOMBRES_APELLIDOS, SUCU.NOM_SUCU, AREA.DETALLE_GEARE, DEPA.DETALLE_GEDEP FROM GEN_EMPLEADOS_DEPARTAMENTO_PAR EPAR
+				 LEFT JOIN GTH_EMPLEADO EMP ON EMP.IDE_GTEMP=EPAR.IDE_GTEMP LEFT JOIN SIS_SUCURSAL SUCU ON SUCU.IDE_SUCU=EPAR.IDE_SUCU
+				 LEFT JOIN GEN_DEPARTAMENTO DEPA ON DEPA.IDE_GEDEP=EPAR.IDE_GEDEP LEFT JOIN GEN_AREA AREA ON AREA.IDE_GEARE=EPAR.IDE_GEARE
+) as empdep ON empdep.ide_gtemp = viajeros.ide_gtemp]]>
+	</queryString>
+	<field name="ide_cotiv" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla cont_tiket_viaje.]]></fieldDescription>
+	</field>
+	<field name="ide_cotit" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla cont_tipo_transporte.]]></fieldDescription>
+	</field>
+	<field name="detalle_cotit" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del tipo de transporte, ejemplo: Aereo, Terrestre, etc]]></fieldDescription>
+	</field>
+	<field name="ide_coasv" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla cont_asunto_viaje.]]></fieldDescription>
+	</field>
+	<field name="detalle_coasv" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define le nombre del asunto de viaje, ejemplo: Oficial, Extraoficial, etc.]]></fieldDescription>
+	</field>
+	<field name="ide_coest" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla cont_estado.]]></fieldDescription>
+	</field>
+	<field name="detalle_coest" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_coest]]></fieldDescription>
+	</field>
+	<field name="origen" class="java.lang.String"/>
+	<field name="destino" class="java.lang.String"/>
+	<field name="detalle_viaje_cotiv" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el detalle del asunto del viaje.]]></fieldDescription>
+	</field>
+	<field name="fecha_partida_cotiv" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha de partida del viaje.]]></fieldDescription>
+	</field>
+	<field name="fecha_retorno_cotiv" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha de retorno del viaje.]]></fieldDescription>
+	</field>
+	<field name="num_memo_cotiv" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el numero de memo de la autorizacion del viaje.]]></fieldDescription>
+	</field>
+	<field name="num_memo_pagado_cotiv" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el numero el memorando del pago realizado por el viaje.]]></fieldDescription>
+	</field>
+	<field name="fecha_vence_pago_cotiv" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha de vencimiento de pago del viaje.]]></fieldDescription>
+	</field>
+	<field name="fecha_pagado_cotiv" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha del pago del viaje.]]></fieldDescription>
+	</field>
+	<field name="razon_anulado_cotiv" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define la razon de anulacion del viaje, en caso de cancelar.]]></fieldDescription>
+	</field>
+	<field name="fecha_anulado_cotiv" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define al fecha de anulacion del viaje en caso de cancelarlo.]]></fieldDescription>
+	</field>
+	<field name="activo_cotiv" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[Define el estado del registro si se encuentra activo o inactivo.]]></fieldDescription>
+	</field>
+	<field name="detalle_coclv" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre de la clase del viaje, ejemplo: Clase Turista, Primera Clase.]]></fieldDescription>
+	</field>
+	<field name="nombres_apellidos" class="java.lang.String"/>
+	<field name="num_memo_covia" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el numero de memo de autorizacion del viajero, en caso de ser un solo memo general corresponde al mismo memo de autorizacion de la tabla cont_tiket_viajero.]]></fieldDescription>
+	</field>
+	<field name="boleto_covia" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define la ubicacion de la foto del boleto de viaje, como respaldo.]]></fieldDescription>
+	</field>
+	<field name="activo_covia" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[Define el estado del registro si se encuentra activo o inactivo.]]></fieldDescription>
+	</field>
+	<group name="tipo_transporte">
+		<groupExpression><![CDATA[$F{ide_cotit}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="estado">
+		<groupExpression><![CDATA[$F{ide_coest}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="asunto">
+		<groupExpression><![CDATA[$F{ide_coasv}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="tiket">
+		<groupExpression><![CDATA[$F{ide_cotiv}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="43" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="9cf9eb2d-df66-4a8e-9f8f-6161beb64cc8" x="0" y="0" width="802" height="43"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{ide_usua}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_horizontal.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="236" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="b0be8032-45bb-4e26-883d-aaa5ed90e196" x="118" y="176" width="187" height="38"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="eb049088-be03-44d5-91ae-9dc5f9fa2f6b" x="79" y="74" width="527" height="25"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="8cb287c3-83a7-4852-b11a-ed87b2af96a6" x="0" y="14" width="65" height="10"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código del ticket:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="b5337fb6-2baf-4f30-a5c1-9cdeeed48351" x="65" y="14" width="100" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ide_cotiv}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="dfab8385-df60-4169-be00-569f568bc9a5" x="0" y="35" width="103" height="10"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descripción del transporte:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="0a4f99c4-9659-408e-8f90-31b7a6340475" x="103" y="35" width="182" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_cotit}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="ece32789-06ba-4177-b942-cd011e257200" x="285" y="35" width="58" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Asunto de Viaje:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="9294fc33-45cb-4b67-b216-680706f0a171" x="343" y="35" width="263" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_coasv}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f038e6d6-02a4-451f-b8b9-33508bc34d5c" x="0" y="24" width="40" height="11"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Empleado:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="534778cc-381f-4ef4-9d7f-7b5fdcd91171" x="40" y="24" width="435" height="11"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombres_apellidos}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="2909f720-3abe-4e19-abf2-4892a4aaa279" x="0" y="45" width="60" height="10"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Etado del Viaje:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="d727f7ee-8e06-4c6b-a746-53df04aedb3b" x="60" y="45" width="202" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_coest}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="07bbe824-6ea2-48ec-b159-b8dfacf3023c" x="0" y="55" width="73" height="10"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lugar de Partida:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="54168c20-28b4-4dcb-a84a-5e6e7850c3f4" x="65" y="55" width="159" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{origen}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f8dae313-22b9-4286-b6dd-14a76a2d6daf" x="224" y="55" width="71" height="10"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lugar de Destino:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="e6541ff1-4354-410e-b94c-65ca2673026e" x="295" y="55" width="311" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{destino}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="6c5447b0-bf7f-49ef-ab89-b1eb0ed731cc" x="0" y="74" width="79" height="10"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Detalle de viaje:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="4b31a113-3eda-4c90-a495-497dc8e9c8fe" x="79" y="74" width="527" height="25"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_viaje_cotiv}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="bff8e2b6-d693-417d-9e69-f0e93eaa2de4" x="0" y="64" width="64" height="10"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha de Partida:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="d0097515-9fcc-40e5-b30e-64e45de124ed" x="64" y="64" width="100" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_partida_cotiv}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="8b8778ab-d8fc-4b80-9a50-6dfa5e1324da" x="164" y="64" width="67" height="10"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha de Retorno:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="d57636ec-3286-40e3-bd71-cbe36efef5c9" x="231" y="64" width="100" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_retorno_cotiv}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5fcc30be-443b-4cac-ba54-a3e865c5794b" x="0" y="99" width="178" height="11"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Número de memo de la autorización del viaje:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="067707c4-ff65-44e4-934c-8b2674b4e8b8" x="178" y="99" width="344" height="11"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{num_memo_cotiv}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="71b3a7d4-fbd5-4d11-9a84-2413312b22f6" x="0" y="110" width="178" height="10"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Memorando del pago realizado por el viaje:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="f346feb3-fd1f-45a2-a991-98edba47a62b" x="178" y="110" width="344" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{num_memo_pagado_cotiv}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="a5d8c059-1b3d-4e7b-aa33-2ca68d44f1c8" x="0" y="120" width="178" height="11"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha de vencimiento de pago del viaje:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="18c87eb2-98c3-4355-a630-5b7a31bb1907" x="178" y="120" width="100" height="11"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_vence_pago_cotiv}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="cfc97221-bb79-4724-9f72-b1f4731c4219" x="278" y="120" width="178" height="11"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha del pago del viaje:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a1bca73c-a0f2-4e5a-ab77-7e4bac8da4b3" x="456" y="120" width="100" height="11"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_pagado_cotiv}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="e9469ff1-978b-4c6b-aecc-f88543121f0a" x="0" y="131" width="188" height="11"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Razón de anulación del viaje, en caso de cancelar:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="245f74bc-c970-4cdf-9dae-14ce3a3315bf" x="188" y="131" width="434" height="11"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{razon_anulado_cotiv}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="04a28033-e0a1-4389-8145-caf48750f595" x="0" y="142" width="188" height="12"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha de anulación del viaje en caso de cancelarlo:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="affca899-6318-4dba-b45a-3316ef898847" x="188" y="142" width="100" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_anulado_cotiv}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="06250eb1-bef8-450e-a067-f166b2b228a1" x="165" y="14" width="212" height="10"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Define el estado del registro si se encuentra activo o inactivo.]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="86d89241-e0c2-4cc9-8094-494960a66b53" x="377" y="14" width="100" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{activo_cotiv}==null?"Inactivo":
+$F{activo_cotiv}==true?"Activo":"Inactivo"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="84057647-a9d1-450c-babf-3bd4d5c31ea0" x="0" y="154" width="285" height="11"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Define el nombre de la clase del viaje, ejemplo: Clase Turista, Primera Clase:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="b22b3e3c-263b-457f-80c6-6a8307e83790" x="285" y="154" width="168" height="11"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_coclv}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="dd7aeb5b-066f-42bd-aa5e-8366e96401aa" x="0" y="165" width="622" height="11"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Define el número de memo de autorización del viajero, en caso de ser un solo memo general corresponde al mismo memo de autorización de la tabla cont_tiket_viajero:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="1f78eafd-2071-4f8b-9ee5-77f3756e6676" x="622" y="165" width="100" height="11"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{num_memo_covia}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="8c6c0cdf-fc3e-4c3a-96f9-59284b9aa085" x="0" y="176" width="118" height="11"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Boleto de viaje, como respaldo:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="fd8a3893-ce9b-495b-aa3f-f3d1a12ba8c5" x="118" y="176" width="187" height="38"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{boleto_covia}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="2a525ffa-dc31-4205-9d9f-f7681968b409" x="3" y="214" width="192" height="11"/>
+				<textElement>
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estado del registro si se encuentra activo o inactivo:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="1a9933f7-180e-4298-9cd6-e28bff20d4be" x="195" y="214" width="100" height="11"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{activo_covia}==null?"Inactivo":
+$F{activo_covia}==true?"Activo":"Inactivo"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="99800c52-43f8-42a3-8706-0d7de390ebc8" x="0" y="5" width="802" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="77db359d-7733-40b5-baa5-18cd6133c16b" x="0" y="3" width="802" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="657408aa-e129-4deb-964a-9e7379da001b" x="0" y="235" width="802" height="1"/>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="20" splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_factura_escombrera" pageWidth="612" pageHeight="792" columnWidth="564" leftMargin="24" rightMargin="24" topMargin="20" bottomMargin="20" uuid="05adc357-c07f-424b-8139-93b58edb3a2d">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="21"/>
+	<parameter name="pide_fafac" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select a.ide_fafac,a.ide_recli,nombre_comercial_recli,ruc_comercial_recli,telefono_factura_recli,
+direccion_recld,activo_recld,fecha_transaccion_fafac,valor_iva_fafac,total_fafac,
+cantidad_fadef,fecha_fadef,valor_fadef,total_fadef,ide_bomat,detalle_bomat,subtotal
+from fac_factura a
+left join (
+select a.ide_recli,nombre_comercial_recli,ruc_comercial_recli,telefono_factura_recli,direccion_recld,activo_recld
+from rec_clientes a
+left join rec_cliente_direccion b on a.ide_recli = b.ide_recli  and activo_recld =true
+) b on a.ide_recli=b.ide_recli
+left join (select sum(total_fadef) as subtotal,ide_fafac from fac_detalle_factura group by ide_fafac ) c on a.ide_fafac=c.ide_fafac
+left join (select ide_fafac,cantidad_fadef,fecha_fadef,valor_fadef,total_fadef,a.ide_bomat,detalle_bomat
+from fac_detalle_factura a, bodt_material b where a.ide_bomat = b.ide_bomat ) d on a.ide_fafac= d.ide_fafac
+where a.ide_fafac =$P{pide_fafac}
+order by ide_bomat,fecha_fadef]]>
+	</queryString>
+	<field name="ide_fafac" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla fac_factura.]]></fieldDescription>
+	</field>
+	<field name="ide_recli" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla rec_clientes.]]></fieldDescription>
+	</field>
+	<field name="nombre_comercial_recli" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre comercial del cliente.]]></fieldDescription>
+	</field>
+	<field name="ruc_comercial_recli" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el ruc comercial del cliente.]]></fieldDescription>
+	</field>
+	<field name="telefono_factura_recli" class="java.lang.String"/>
+	<field name="direccion_recld" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del tipo de asistencia, ejemplo: Continuo, Ocasional.]]></fieldDescription>
+	</field>
+	<field name="activo_recld" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[Define el estado del registro si se encuentra activo o inactivo.]]></fieldDescription>
+	</field>
+	<field name="fecha_transaccion_fafac" class="java.sql.Date"/>
+	<field name="valor_iva_fafac" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el valor total del iva en la factura.]]></fieldDescription>
+	</field>
+	<field name="total_fafac" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el valor total de la factura.]]></fieldDescription>
+	</field>
+	<field name="cantidad_fadef" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define la cantidad de productos vendidos.]]></fieldDescription>
+	</field>
+	<field name="fecha_fadef" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_ fadef]]></fieldDescription>
+	</field>
+	<field name="valor_fadef" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Estecampo define el valor de venta del producto o servicio.]]></fieldDescription>
+	</field>
+	<field name="total_fadef" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el valor total de venta.]]></fieldDescription>
+	</field>
+	<field name="ide_bomat" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla bodt_material.]]></fieldDescription>
+	</field>
+	<field name="detalle_bomat" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del material de acuerdo al grupo de material al cual pertenece.]]></fieldDescription>
+	</field>
+	<field name="subtotal" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="41" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="86" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement uuid="92b2b395-b7a0-477e-ab91-0970f938cd08" mode="Transparent" x="13" y="4" width="472" height="81"/>
+			</rectangle>
+			<line>
+				<reportElement uuid="7732b14d-b936-412d-a9eb-0e1b5a95ae54" x="13" y="67" width="471" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="af9a5dbc-91a5-4475-af44-a2fd8729779d" x="66" y="50" width="239" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{direccion_recld}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="756dedc0-5b64-4431-aad9-f7e89c2a1882" x="54" y="14" width="166" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{fecha_transaccion_fafac}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0edbfd77-b7d3-494d-82a5-756d3dafadac" x="57" y="31" width="280" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{nombre_comercial_recli}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4f61c211-4189-4203-a09f-e73382a0ca0b" x="330" y="50" width="142" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{telefono_factura_recli}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8ac3392c-b72d-49ff-89e3-75fe560c3171" x="334" y="14" width="127" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ruc_comercial_recli}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5d31dedb-a20c-4f58-bb65-166f183434fd" x="18" y="14" width="39" height="15"/>
+				<textElement/>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2f671ee9-c9c9-479e-b8c8-c1cc20f3a6de" x="16" y="31" width="47" height="15"/>
+				<textElement/>
+				<text><![CDATA[Nombre:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="007cd6f9-6135-4f52-a460-e5cc33bf5e8e" x="16" y="49" width="56" height="15"/>
+				<textElement/>
+				<text><![CDATA[Direcciòn:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5a6b0845-e62f-47c4-97a5-86dacfd87ef5" x="309" y="14" width="30" height="15"/>
+				<textElement/>
+				<text><![CDATA[RUC:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4b8bf53e-5744-400f-bf4c-13cf6b15f108" x="308" y="50" width="25" height="15"/>
+				<textElement/>
+				<text><![CDATA[Telf:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="465a0ee8-7b96-4245-87be-6f26975b9096" x="18" y="69" width="54" height="15"/>
+				<textElement/>
+				<text><![CDATA[Cant.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8256af54-b7e9-4855-9dcb-81ec140d12fe" x="161" y="70" width="95" height="15"/>
+				<textElement textAlignment="Justified"/>
+				<text><![CDATA[DESCRIPCIÒN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7643cef8-e078-43df-bdde-52ac77262a3d" x="308" y="70" width="68" height="15"/>
+				<textElement/>
+				<text><![CDATA[V.Unitario]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="37d712e5-aea5-47c1-9358-f003d91af6cf" x="391" y="69" width="79" height="15"/>
+				<textElement/>
+				<text><![CDATA[V.Total]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="8c90f0c1-4b92-477a-a4c8-86598993bc24" x="298" y="67" width="1" height="17"/>
+			</line>
+			<line>
+				<reportElement uuid="dfde3d3c-0460-4e50-a4bc-f4253ddf54ba" x="81" y="67" width="1" height="18"/>
+			</line>
+			<line>
+				<reportElement uuid="f05f1e9c-88f8-423f-bfd0-bd5e83f8d1ab" x="381" y="67" width="1" height="17"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="29" splitType="Stretch">
+			<line>
+				<reportElement uuid="61034887-6ad0-4483-8788-fcbe3209f4a8" x="382" y="2" width="1" height="24"/>
+			</line>
+			<line>
+				<reportElement uuid="c07eb15c-d392-4673-8182-ca9f3fb8aca1" x="298" y="2" width="1" height="25"/>
+			</line>
+			<line>
+				<reportElement uuid="4cb91830-e207-4088-ba6c-7826d91afa15" x="82" y="2" width="1" height="25"/>
+			</line>
+			<rectangle radius="10">
+				<reportElement uuid="474ddab5-25b6-4a1b-a85c-4ee28e562116" mode="Transparent" x="13" y="2" width="472" height="25"/>
+			</rectangle>
+			<textField>
+				<reportElement uuid="47187830-7f2b-4cb9-b430-b05c85501518" x="94" y="4" width="162" height="21"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{detalle_bomat}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e812eeb1-a724-4a91-ad47-bd28cd0b29d5" x="24" y="5" width="48" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{cantidad_fadef}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0a90a1f8-af07-4fd5-ba81-e457ffa88761" x="308" y="7" width="61" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{valor_fadef}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f773190c-00b4-4310-96f2-3809f4d00c3b" x="388" y="5" width="88" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{total_fadef}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="92" splitType="Stretch">
+			<line>
+				<reportElement uuid="3f98f459-2edb-4da9-b200-91cc225e6ca9" x="381" y="3" width="1" height="87"/>
+			</line>
+			<rectangle radius="10">
+				<reportElement uuid="98b20098-d404-48e2-815f-70a5e8f375aa" mode="Transparent" x="299" y="3" width="185" height="87"/>
+			</rectangle>
+			<line>
+				<reportElement uuid="2483486c-f8fe-42c7-bdd4-47e1119d5333" x="300" y="59" width="181" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="b02696ab-a41a-4c73-bc23-cdfae2d9d36f" x="300" y="32" width="181" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="21208517-f81d-444b-86c7-be4e62d34768" x="395" y="12" width="79" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{subtotal}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6f48432b-460d-4fad-a316-43e89aac38f7" x="395" y="38" width="81" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{valor_iva_fafac}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="96a473aa-64b8-4843-8161-23af082c9d74" x="395" y="67" width="79" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{total_fafac}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="59272f93-8725-497c-b202-efaa53d7d592" x="309" y="11" width="61" height="20"/>
+				<textElement/>
+				<text><![CDATA[SUBTOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="987f17dc-c113-4eba-8ef3-77b4d22ca6af" x="309" y="39" width="57" height="20"/>
+				<textElement/>
+				<text><![CDATA[I.V.A %]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="af6e404e-55aa-4d92-b3e4-3b3c062d2422" x="309" y="67" width="68" height="20"/>
+				<textElement/>
+				<text><![CDATA[TOTAL USD]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="87" splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_autorizacion_debito_anticipos" language="groovy" pageWidth="554" pageHeight="749" whenNoDataType="AllSectionsNoDetail" columnWidth="554" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="fea5355a-b74d-4d42-8cba-a0a49c16a704">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="3"/>
+	<parameter name="IDE_GTEMP" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IDE_NRANT" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_cuota_mensual" class="java.lang.String"/>
+	<parameter name="p_valores" class="java.lang.String"/>
+	<parameter name="IDE_NRANI" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_coordinador_tthh" class="java.lang.String"/>
+	<parameter name="p_analista_tthh" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT a.IDE_NRANT,
+a.IDE_GTEMP,
+b.EMPLEADO,
+b.DOCUMENTO,
+b.FECHA_INGRESO_GTEMP,
+d.DEPARTAMENTO,
+e.CARGO_FUNCIONAL,
+a.FECHA_APROBACION_NRANT,
+f.CONTRATO,
+a.FECHA_VENCIMIENTO_NRANT,
+a.MONTO_APROBADO_NRANT,
+h.MOTIVO,
+g.NOM_SUCU,
+a.NRO_ANTICIPO_NRANT,
+i.NOMBRES_GARANTE,
+(CASE WHEN j.CUOTA_MENSUAL_NRCAP IS NULL THEN 0 ELSE j.CUOTA_MENSUAL_NRCAP END)AS CUOTA_MENSUAL_NRCAP,total_ingreso_nrcap,total_egreso_nrcap,
+l.FECHA_INICIO AS FECHA_INICIO,
+m.FECHA_FINAL AS FECHA_FIN,
+c.RMU_GEEDP,
+k.PLAZO_NRANI,
+N.FECHA_CANCELACION_PRES
+FROM NRH_ANTICIPO a
+LEFT JOIN (
+SELECT IDE_GTEMP,APELLIDO_PATERNO_GTEMP ||' '|| APELLIDO_MATERNO_GTEMP||' '||PRIMER_NOMBRE_GTEMP||''||SEGUNDO_NOMBRE_GTEMP as EMPLEADO,
+DOCUMENTO_IDENTIDAD_GTEMP AS DOCUMENTO,FECHA_INGRESO_GTEMP FROM GTH_EMPLEADO
+)b ON b.IDE_GTEMP=a.IDE_GTEMP
+LEFT JOIN(
+SELECT IDE_GTEMP,IDE_GEDEP,IDE_GECAF,IDE_GTTCO,IDE_SUCU,RMU_GEEDP FROM GEN_EMPLEADOS_DEPARTAMENTO_PAR
+)c ON c.IDE_GTEMP=a.IDE_GTEMP
+LEFT JOIN(
+SELECT IDE_GEDEP,DETALLE_GEDEP AS DEPARTAMENTO FROM GEN_DEPARTAMENTO
+)d ON d.IDE_GEDEP=c.IDE_GEDEP
+LEFT JOIN(
+SELECT IDE_GECAF,DETALLE_GECAF AS CARGO_FUNCIONAL FROM GEN_CARGO_FUNCIONAL
+)e ON e.IDE_GECAF=c.IDE_GECAF
+LEFT JOIN (
+SELECT IDE_GTTCO,DETALLE_GTTCO AS CONTRATO FROM GTH_TIPO_CONTRATO
+)f ON f.IDE_GTTCO=c.IDE_GTTCO
+LEFT JOIN (
+SELECT IDE_SUCU,NOM_SUCU FROM SIS_SUCURSAL
+)g ON g.IDE_SUCU=c.IDE_SUCU
+LEFT JOIN (
+SELECT IDE_NRMOA,DETALLE_NRMOA AS MOTIVO FROM NRH_MOTIVO_ANTICIPO
+)h ON h.IDE_NRMOA=a.IDE_NRMOA
+LEFT JOIN (
+SELECT IDE_NRANT,APELLIDO_PATERNOG_NRGAR||' '||APELLIDO_MATERNOG_NRGAR||' '||PRIMER_NOMBREG_NRGAR||' '||SEGUNDO_NOMBREG_NRGAR AS NOMBRES_GARANTE FROM  NRH_GARANTE
+)i ON i.IDE_NRANT=a.IDE_NRANT
+LEFT JOIN (
+SELECT IDE_NRANT,CUOTA_MENSUAL_NRCAP,total_ingreso_nrcap,total_egreso_nrcap FROM NRH_CAPACIDAD_PAGO
+)j ON j.IDE_NRANT=a.IDE_NRANT
+LEFT JOIN(
+SELECT IDE_NRANT,IDE_NRANI,PLAZO_NRANI FROM NRH_ANTICIPO_INTERES
+)k ON k.IDE_NRANT=a.IDE_NRANT
+LEFT JOIN (
+SELECT IDE_NRANI,FECHA_VENCIMIENTO_NRAMO AS FECHA_INICIO
+FROM (
+SELECT * FROM NRH_AMORTIZACION
+WHERE
+IDE_NRANI=$P{IDE_NRANI} ORDER BY FECHA_VENCIMIENTO_NRAMO ASC
+) a
+limit 1
+)l ON l.IDE_NRANI=k.IDE_NRANI
+LEFT JOIN(
+SELECT IDE_NRANI,FECHA_VENCIMIENTO_NRAMO AS FECHA_FINAL
+FROM (
+SELECT * FROM NRH_AMORTIZACION
+WHERE
+IDE_NRANI=$P{IDE_NRANI} ORDER BY FECHA_VENCIMIENTO_NRAMO DESC
+) a
+limit 1
+)m ON m.IDE_NRANI=k.IDE_NRANI
+LEFT JOIN(
+SELECT IDE_NRANI,FECHA_VENCIMIENTO_NRAMO AS FECHA_CANCELACION_PRES
+FROM (
+SELECT * FROM NRH_AMORTIZACION
+WHERE
+IDE_NRANI=$P{IDE_NRANI} ORDER BY FECHA_VENCIMIENTO_NRAMO DESC
+) a
+limit 1
+)n ON n.IDE_NRANI=k.IDE_NRANI
+WHERE a.IDE_NRANT=$P{IDE_NRANT} AND  a.IDE_GTEMP=$P{IDE_GTEMP}]]>
+	</queryString>
+	<field name="ide_nrant" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla nrh_anticipo, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_gtemp" class="java.lang.Integer"/>
+	<field name="empleado" class="java.lang.String"/>
+	<field name="documento" class="java.lang.String"/>
+	<field name="fecha_ingreso_gtemp" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_ingreso_gtemp]]></fieldDescription>
+	</field>
+	<field name="departamento" class="java.lang.String"/>
+	<field name="cargo_funcional" class="java.lang.String"/>
+	<field name="fecha_aprobacion_nrant" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha de aprobacion del anticipo.]]></fieldDescription>
+	</field>
+	<field name="contrato" class="java.lang.String"/>
+	<field name="fecha_vencimiento_nrant" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha de vencimiento del anticipo.]]></fieldDescription>
+	</field>
+	<field name="monto_aprobado_nrant" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el monto aprobado para el anticipo de acuerdo a la capacidad de pago.]]></fieldDescription>
+	</field>
+	<field name="motivo" class="java.lang.String"/>
+	<field name="nom_sucu" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre de la sucursal.]]></fieldDescription>
+	</field>
+	<field name="nro_anticipo_nrant" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define el numero de anticipo que solicita el empleado.]]></fieldDescription>
+	</field>
+	<field name="nombres_garante" class="java.lang.String"/>
+	<field name="cuota_mensual_nrcap" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el valor de la cuota mensual que tendria que pagar el empleado por el monto del anticipo solicitado.]]></fieldDescription>
+	</field>
+	<field name="total_ingreso_nrcap" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el total de ingresos promedio del empleado,]]></fieldDescription>
+	</field>
+	<field name="total_egreso_nrcap" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el total de egreso promedio del empleado.]]></fieldDescription>
+	</field>
+	<field name="fecha_inicio" class="java.sql.Date"/>
+	<field name="fecha_fin" class="java.sql.Date"/>
+	<field name="rmu_geedp" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define la remuneracion unificada del empleado, que mantiene con su respectivo contrato.]]></fieldDescription>
+	</field>
+	<field name="plazo_nrani" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define el numero de meses plazo solicitado para cancelar el anticipo.]]></fieldDescription>
+	</field>
+	<field name="fecha_cancelacion_pres" class="java.sql.Date"/>
+	<variable name="var_descuento" class="java.lang.Double">
+		<variableExpression><![CDATA[$F{rmu_geedp}-$F{cuota_mensual_nrcap}]]></variableExpression>
+	</variable>
+	<variable name="prueba" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="428" splitType="Stretch">
+			<line>
+				<reportElement uuid="a3158997-b0ca-4029-84fc-f1cb724d6501" x="1" y="1" width="554" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement uuid="616cbaae-382d-4052-a819-71dd3cc046bf" x="0" y="2" width="555" height="20"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[4. GARANTIA POR ANTICIPO DE REMUNERACION]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e5a27ab3-4384-4743-a4bf-6e1bc8b762f4" x="1" y="205" width="554" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[5. COORDINACION DE TALENTO HUMANO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="27ef9ddf-0ff3-4e67-ac6e-3cb59f084286" x="0" y="236" width="553" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[APROBACIONES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f98b1055-dee3-467d-8787-bf5925529e64" stretchType="RelativeToBandHeight" x="275" y="388" width="179" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[APROBADO POR COORDINADOR DE TTHH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="762a1f30-dc70-4be2-99e0-f5df8ab29078" stretchType="RelativeToBandHeight" x="176" y="392" width="85" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1b6b64c8-ab91-4786-ae2e-c547b29c58a8" stretchType="RelativeToBandHeight" x="474" y="389" width="71" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ca8010e4-7fae-4d04-bade-1504ed799d29" stretchType="RelativeToBandHeight" x="66" y="391" width="100" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALIDADO POR]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="70ebd07e-63d3-4703-b0df-1c99434b89c5" x="304" y="388" width="100" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement uuid="c8f24c67-0ea0-48c0-9f1a-a41f79a5f2e7" x="474" y="389" width="71" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement uuid="51f724b1-fd76-418b-b60a-9a27f932a3e5" x="66" y="390" width="100" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement uuid="e9cdee54-dc3e-48f9-bcd8-724377ba9288" x="180" y="390" width="81" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement uuid="c82017ce-2d3f-4ad5-8d6a-389db4a49f82" x="3" y="62" width="549" height="62"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Adicionalmente autorizo que en caso de desvincularme del EMGIRS-EP, que de mi liquidación de haberes como de mi última remuneración se cancele el saldo de anticipo de remuneraciones otorgado. Es importante indicar que si no cubriere el valor total con lo anteriormente dicho procederé a realizar la cancelación total del saldo, de contado a su vez el garante asumirá las cuotas pendientes del anticipo.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0cbc66a5-2ffa-4598-9fe0-f4031939c9a3" x="4" y="121" width="548" height="31"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Adjunto un pagaré a la orden como garantía del indicado anticipo, con todas las condiciones e implicaciones legales que con esto conlleva.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="99786efb-0b0b-4d87-a6f9-e76cd5e1a270" x="-3" y="285" width="205" height="15"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR INGRESO:]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="939a26f0-5e5d-4a32-9600-19f2404cc001" x="555" y="1" width="1" height="415"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement uuid="3abe1cd8-732a-4e38-a1ae-0021ae73e42d" x="1" y="1" width="1" height="415"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement uuid="f939854b-987d-4938-950a-6b8cf5bf00a4" x="2" y="416" width="553" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true" pattern="EEEEE dd MMMMM yyyy" isBlankWhenNull="true">
+				<reportElement uuid="67ee11a5-7f0c-4e08-a536-a8ab06e9e9a3" x="4" y="50" width="63" height="12"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Por el lapso de "]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="EEEEE dd MMMMM yyyy" isBlankWhenNull="true">
+				<reportElement uuid="c502c273-cf5f-4016-9820-4e8920069cd0" x="-3" y="22" width="550" height="27"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Como funcionario del EMGIRS-EP firmo conjuntamente con mi garante y autorizo para que, se me realice el descuento de mi remuneración en cuotas mensuales por el valor de USD "+new java.text.DecimalFormat("#,##0.00").format($F{cuota_mensual_nrcap})+
+" ("+$P{p_cuota_mensual}+") Dólares de los Estados Unidos de América."]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="EEEEE dd MMMMM yyyy" isBlankWhenNull="true">
+				<reportElement uuid="84651c49-36e3-4754-81ec-d24971709dec" x="250" y="50" width="267" height="12"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["acorde a la Tabla de Descuentos adjunto."]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="MMMMM  &apos;   a&apos;" isBlankWhenNull="true">
+				<reportElement uuid="021b8a49-8f3b-4896-8d8d-8a9f3a0fe15d" x="66" y="50" width="69" height="12"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_inicio}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="MMMMM yyyy ;" isBlankWhenNull="true">
+				<reportElement uuid="14dfd39a-dba9-47ef-aa73-1aec79c52d39" x="154" y="50" width="96" height="12"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_fin}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5c612b23-74ea-431f-8d39-89dc24e2dabd" x="-3" y="330" width="205" height="15"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR CUOTA:]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="200883d1-720c-4160-ab44-69a2ff29f58c" positionType="Float" x="96" y="177" width="120" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="322a9e1d-4d62-414e-a4fb-e7614824c3d5" positionType="Float" x="93" y="181" width="138" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[FIRMA DEL SOLICITANTE]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="bbbf862f-0d41-49d8-a6a5-c355aba2f400" positionType="Float" x="334" y="176" width="120" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="aa49a162-084e-45a7-b155-9f45f1bd6b43" positionType="Float" x="295" y="181" width="179" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[FIRMA DEL GARANTE]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="6b4123d7-b2f8-47e3-80f5-20fbc32bb96b" x="285" y="401" width="147" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_coordinador_tthh}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="4d6ce683-e080-490b-95a6-e8ca5b08a04f" x="44" y="400" width="147" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_analista_tthh}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5c612b23-74ea-431f-8d39-89dc24e2dabd" x="-3" y="300" width="205" height="15"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR EGRESOS:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5c612b23-74ea-431f-8d39-89dc24e2dabd" x="2" y="315" width="200" height="15"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SUB TOTAL:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5c612b23-74ea-431f-8d39-89dc24e2dabd" x="-3" y="345" width="205" height="15"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR ROL A RECIBIR:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="4d6ce683-e080-490b-95a6-e8ca5b08a04f" x="205" y="285" width="99" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_ingreso_nrcap}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="4d6ce683-e080-490b-95a6-e8ca5b08a04f" x="205" y="300" width="99" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_egreso_nrcap}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="4d6ce683-e080-490b-95a6-e8ca5b08a04f" x="205" y="315" width="99" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_ingreso_nrcap}-$F{total_egreso_nrcap}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="4d6ce683-e080-490b-95a6-e8ca5b08a04f" x="205" y="330" width="99" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cuota_mensual_nrcap}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="4d6ce683-e080-490b-95a6-e8ca5b08a04f" x="205" y="345" width="99" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_ingreso_nrcap}-$F{total_egreso_nrcap}-$F{cuota_mensual_nrcap}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="e9cdee54-dc3e-48f9-bcd8-724377ba9288" x="211" y="345" width="93" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<rectangle>
+				<reportElement uuid="7c62324e-d7a6-4b18-b6c1-87ac04a42d73" x="29" y="370" width="25" height="20"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="7c62324e-d7a6-4b18-b6c1-87ac04a42d73" x="275" y="368" width="25" height="20"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="99786efb-0b0b-4d87-a6f9-e76cd5e1a270" x="316" y="285" width="138" height="15"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PORCENTAJE ENDEUDAMIENTO:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="4d6ce683-e080-490b-95a6-e8ca5b08a04f" x="454" y="285" width="42" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($F{total_egreso_nrcap}+$F{cuota_mensual_nrcap})/($F{total_ingreso_nrcap})*(100))]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="99786efb-0b0b-4d87-a6f9-e76cd5e1a270" x="496" y="285" width="16" height="15"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[%]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

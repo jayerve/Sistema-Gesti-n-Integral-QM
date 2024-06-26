@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_permisos_empleado" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="806e8a53-8cec-4dbd-95e7-090eae29fc10">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="41"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["D:\\workspace\\biess\\WebContent\\reportes\\rep_gestion\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IDE_GTEMP" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FECHA_INICIO" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FECHA_FIN" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT a.IDE_ASNOV,b.IDE_GTEMP,c.documento,c.nombre_empleado,b.OBSERVACION_ASNOD,
+TO_CHAR(b.HORA_INICIO_ASNOD, 'yyyy-mm-dd') as FECHA_DESDE,
+TO_CHAR(b.HORA_FIN_ASNOD, 'yyyy-mm-dd') as FECHA_HASTA,
+TO_CHAR(b.HORA_INICIO_ASNOD,'hh24:mi:ss')AS HORA_DESDE,
+TO_CHAR(b.HORA_FIN_ASNOD,'hh24:mi:ss')AS HORA_HASTA,
+b.NRO_HORAS_ASNOD,
+b.NRO_HORAS_APROBADO_ASNOD,b.APROBADO_ASNOD,
+b.NOMINA_ASNOD,b.VACACIONES_ASNOD
+from ASI_NOVEDAD a
+LEFT JOIN (
+SELECT IDE_ASNOV,IDE_GTEMP,IDE_ASMOT,OBSERVACION_ASNOD,
+HORA_INICIO_ASNOD,HORA_FIN_ASNOD,NRO_HORAS_ASNOD,
+NRO_HORAS_APROBADO_ASNOD,APROBADO_ASNOD,
+NOMINA_ASNOD,VACACIONES_ASNOD from ASI_NOVEDAD_DETALLE
+)b ON b.IDE_ASNOV=a.IDE_ASNOV
+left join (
+select ide_gtemp,documento_identidad_gtemp as documento,apellido_paterno_gtemp||' '||apellido_materno_gtemp||' '||primer_nombre_gtemp||' '||segundo_nombre_gtemp as nombre_empleado
+from gth_empleado
+)c on c.ide_gtemp=b.ide_gtemp
+left join(
+SELECT IDE_ASMOT,DETALLE_ASMOT from ASI_MOTIVO
+)d on d.IDE_ASMOT=b.IDE_ASMOT
+where a.FECHA_INICIO_ASNOV BETWEEN TO_DATE($P{FECHA_INICIO}, 'yy-mm-dd') and TO_DATE($P{FECHA_FIN}, 'yy-mm-dd')
+AND b.IDE_GTEMP IN ($P!{IDE_GTEMP})
+ORDER BY FECHA_DESDE DESC,FECHA_HASTA DESC, c.nombre_empleado asc]]>
+	</queryString>
+	<field name="ide_asnov" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla asi_novedad, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_gtemp" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gth_empleado, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="documento" class="java.lang.String"/>
+	<field name="nombre_empleado" class="java.lang.String"/>
+	<field name="observacion_asnod" class="java.lang.String">
+		<fieldDescription><![CDATA[Eset campo define el detalle de la novedad que pude ser ingresada por el usuario responsable.]]></fieldDescription>
+	</field>
+	<field name="fecha_desde" class="java.lang.String"/>
+	<field name="fecha_hasta" class="java.lang.String"/>
+	<field name="hora_desde" class="java.lang.String"/>
+	<field name="hora_hasta" class="java.lang.String"/>
+	<field name="nro_horas_asnod" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el nro de horas de novedad marcados por el reloj biometrico.]]></fieldDescription>
+	</field>
+	<field name="nro_horas_aprobado_asnod" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el numero de horas aprobado por el usuario responsable del control de horarios.]]></fieldDescription>
+	</field>
+	<field name="aprobado_asnod" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Esta campo define que la novedad registrada se encuentra aprobada, para ser registrada en nomina.  1   Si   /   0   No]]></fieldDescription>
+	</field>
+	<field name="nomina_asnod" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define si la novedad fue registra en nomina, 1  Si  /  0  No.]]></fieldDescription>
+	</field>
+	<field name="vacaciones_asnod" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define si la novedad fue tomada en consideracion en vacaciones dependiendo del motivo,   1   Si  /   0   No.]]></fieldDescription>
+	</field>
+	<variable name="IDE_ASNOV_1" class="java.lang.Integer" resetType="Page" calculation="Count">
+		<variableExpression><![CDATA[$F{ide_asnov}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="77" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="fe250519-eeb5-4d12-9e0d-b2f4deafe173" x="0" y="0" width="802" height="40"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_horizontal.jasper"]]></subreportExpression>
+			</subreport>
+			<textField pattern="yyyy/MM/dd">
+				<reportElement uuid="43c8cf66-1301-4edd-8083-0ca562c726ec" positionType="Float" x="375" y="50" width="90" height="16"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{FECHA_INICIO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy/MM/dd">
+				<reportElement uuid="68327f23-e3f8-4cc1-afee-c26e87cc43a7" positionType="Float" x="513" y="50" width="90" height="16"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{FECHA_FIN}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="eb757b4b-1192-4ed7-96dc-6395d15b3dc8" positionType="Float" x="464" y="50" width="50" height="16"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HASTA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b65957d8-3e68-44f7-b149-8520d7d66e22" positionType="Float" x="279" y="50" width="97" height="16"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA DESDE:]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="e464fea7-a33d-4802-b1cf-ec7b0e8f59e7" x="22" y="0" width="43" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[C. I.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="aa45ec77-70ce-4713-a8f2-5723262a42bf" x="65" y="0" width="155" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[EMPLEADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4fc59c2d-aef5-46c9-a248-d1b8116d89e1" x="220" y="0" width="242" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MOTIVO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="57352a55-8599-4445-93c0-f3fe5e79a52b" x="532" y="0" width="35" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HORA DESDE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d6c7ff03-7e4f-4821-86a3-60271cd06add" x="567" y="0" width="35" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HORA HASTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="05dbf7ac-e124-4492-86aa-f3701b9f84da" x="602" y="0" width="35" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NUM. HORAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bd15a14f-1e51-45eb-a8f8-d7447f3c9544" x="637" y="0" width="29" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HORAS APRO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="dfa291d4-95bb-4a1a-a595-be49202cd87e" x="666" y="0" width="44" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[APROBADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0514991b-d0bd-4e2f-a5d8-43ed5714b833" x="710" y="0" width="38" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOMINA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d7a41b9c-a86b-4b0b-b781-ab8bdf601ae3" x="748" y="0" width="54" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VACACIONES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c147e534-6e30-433e-9b35-47c7bb9349a0" x="0" y="0" width="22" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NRO.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c8549cb5-4c62-405f-8df2-a7e7ef93e218" x="462" y="0" width="35" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA DESDE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7e1b8fd2-6320-4623-b512-9673fcd233c6" x="497" y="0" width="35" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA HASTA]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="10" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="bc11058a-bcc0-474e-976a-a60f268442f6" stretchType="RelativeToBandHeight" x="22" y="0" width="43" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{documento}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="2eebbac2-41f5-420e-8330-83b007dce2de" stretchType="RelativeToBandHeight" x="65" y="0" width="155" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_empleado}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="0529271f-499a-41af-ae83-8b1efb44f9f7" stretchType="RelativeToBandHeight" x="220" y="0" width="242" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{observacion_asnod}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="HH.mm" isBlankWhenNull="true">
+				<reportElement uuid="26977e1b-db60-43bd-8b6b-68955fb1ce91" stretchType="RelativeToBandHeight" x="532" y="0" width="35" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""+$F{hora_desde}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="h.mm a" isBlankWhenNull="true">
+				<reportElement uuid="249abd59-19bf-4a32-a69c-40339517ccae" stretchType="RelativeToBandHeight" x="567" y="0" width="35" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""+$F{hora_hasta}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="1585325a-f30d-4dc3-a3b6-8f790b553173" stretchType="RelativeToBandHeight" x="602" y="0" width="35" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nro_horas_asnod}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="3d935f6f-c1f8-4f88-83fe-741bfe938829" stretchType="RelativeToBandHeight" x="637" y="0" width="29" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nro_horas_aprobado_asnod}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="d95e9319-1274-4672-8d32-b1a7e7dd8870" stretchType="RelativeToBandHeight" x="666" y="0" width="44" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{aprobado_asnod}==1?"SI":"NO"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="3eb344b4-5f02-46dc-93fa-07d1087c1f97" stretchType="RelativeToBandHeight" x="710" y="0" width="38" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nomina_asnod}==1?"SI":"NO"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="1a0f5a4a-ceb1-45c0-9e2f-09f6e2248673" stretchType="RelativeToBandHeight" x="748" y="0" width="54" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{vacaciones_asnod}==1?"SI":"NO"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="841cee76-905c-4abc-b020-c326a442833f" stretchType="RelativeToBandHeight" x="0" y="0" width="22" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{IDE_ASNOV_1}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="2c26b111-3c01-4943-8ad3-4cbd36beda1d" stretchType="RelativeToTallestObject" x="462" y="0" width="35" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_desde}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="66f65a20-70a9-40e3-be32-52a3cb459a33" stretchType="RelativeToTallestObject" x="497" y="0" width="35" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_hasta}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="7" splitType="Stretch">
+			<textField>
+				<reportElement uuid="8f75aa9d-6959-4184-90f1-4a26387710ab" x="727" y="0" width="48" height="7"/>
+				<textElement textAlignment="Right">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de: "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="fa61e10f-f1bb-48f1-934c-e5ba57ffd4f5" x="775" y="0" width="28" height="7"/>
+				<textElement>
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

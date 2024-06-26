@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_afi_acta_entregarecep_firmas" language="groovy" columnCount="3" printOrder="Horizontal" pageWidth="801" pageHeight="595" orientation="Landscape" columnWidth="267" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isFloatColumnFooter="true" isIgnorePagination="true" uuid="41257d9a-af55-4c51-9927-2c01b118e4ef">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_afdoc" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[6]]></defaultValueExpression>
+	</parameter>
+	<parameter name="empleado_generacion" class="java.lang.String"/>
+	<parameter name="pjefe_activos" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+	doc.ide_geani,
+	emp.ide_gtemp,
+	emp.apellido_paterno_gtemp,
+	(case when emp.apellido_materno_gtemp is null then '' else emp.apellido_materno_gtemp end) as apellido_materno_gtemp,
+	emp.primer_nombre_gtemp,
+	(case when emp.segundo_nombre_gtemp is null then '' else emp.segundo_nombre_gtemp end) as segundo_nombre_gtemp,
+	emp.documento_identidad_gtemp,
+	(select count(*) as numCust from afi_doc_detalle_custodio where activo_afdda = TRUE AND ide_afdoc = $P{ide_afdoc}),
+	area.detalle_geare
+FROM
+afi_docu doc LEFT JOIN afi_doc_detalle_custodio cusdoc ON doc.ide_afdoc = cusdoc.ide_afdoc
+	     LEFT JOIN gth_empleado emp ON emp.ide_gtemp = cusdoc.ide_gtemp
+	     LEFT JOIN gen_empleados_departamento_par dep ON emp.ide_gtemp = dep.ide_gtemp
+	     LEFT JOIN gen_area area ON area.ide_geare = dep.ide_geare
+WHERE
+doc.ide_aftidoc = 1 AND
+cusdoc.activo_afdda = TRUE AND
+dep.activo_geedp = TRUE AND
+doc.ide_afdoc = $P{ide_afdoc}
+ORDER BY ide_gtemp DESC;]]>
+	</queryString>
+	<field name="ide_geani" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_anio, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_gtemp" class="java.lang.Integer"/>
+	<field name="apellido_paterno_gtemp" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el apellido paterno del empleado.]]></fieldDescription>
+	</field>
+	<field name="apellido_materno_gtemp" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el apellido materno del empleado.]]></fieldDescription>
+	</field>
+	<field name="primer_nombre_gtemp" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el prmer nombre del empleado.]]></fieldDescription>
+	</field>
+	<field name="segundo_nombre_gtemp" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el segundo nombre del empleado.]]></fieldDescription>
+	</field>
+	<field name="documento_identidad_gtemp" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el numero de documento de identidad que posee el empleado.]]></fieldDescription>
+	</field>
+	<field name="numcust" class="java.lang.Long"/>
+	<field name="detalle_geare" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del area ejemplo: Directorio, Auditoria Interna, etc.]]></fieldDescription>
+	</field>
+	<variable name="countCustodios" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{documento_identidad_gtemp}]]></variableExpression>
+	</variable>
+	<group name="documento_identidad_gtemp">
+		<groupExpression><![CDATA[$F{documento_identidad_gtemp}]]></groupExpression>
+	</group>
+	<summary>
+		<band height="55">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="91aea013-27b3-4e87-9d48-709ad4b139b3" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="250" y="43" width="200" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{empleado_generacion}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="2087e3b5-5d5f-4c4c-a137-d976a35d9776" key="line-1" x="250" y="30" width="200" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="c3e1311d-b386-4332-9ea9-3e395029cb66" key="staticText-9" mode="Transparent" x="250" y="31" width="200" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None">
+					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[REALIZADO POR:]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="23cb13cd-e5b3-49ce-b3e1-90ff1d7c4ef9" key="line-1" x="520" y="30" width="200" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="a37d1ce3-2653-46ca-ab93-faf354a629c7" key="staticText-9" mode="Transparent" x="520" y="31" width="200" height="12" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None">
+					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[AUTORIZADO POR:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="1a30a41a-dea7-4786-b48c-114d7e2b29ad" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="520" y="43" width="200" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pjefe_activos}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

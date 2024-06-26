@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rep_garante" language="groovy" pageWidth="555" pageHeight="749" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="9dfdef7e-a92d-47bd-9651-d6bac70699f5">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="IDE_NRANT" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+GAR.IDE_NRANT,
+EDP.IDE_GEEDP,
+CON.IDE_GTCON,
+GAR.APELLIDO_PATERNOG_NRGAR || '  ' ||
+GAR.APELLIDO_MATERNOG_NRGAR || '  ' ||
+GAR.PRIMER_NOMBREG_NRGAR || '  ' ||
+GAR.SEGUNDO_NOMBREG_NRGAR AS NOMBRES,
+GAR.DOCUMENTO_IDENTIDADG_NRGAR AS CEDULA,
+GAR.APELLIDO_PATERNOC_NRGAR || '  ' ||
+GAR.APELLIDO_MATERNOC_NRGAR || '  ' ||
+GAR.PRIMER_NOMBREC_NRGAR || '  ' ||
+GAR.SEGUNDO_NOMBREC_NRGAR AS NOMBRES_CONYUGE,
+GAR.DOCUMENTO_IDENTIDADG_NRGAR AS CEDULA_CONYUGE,
+emp.fecha_ingreso_grupo_gtemp AS FECHA_INGRESO,
+GAR.RMU_NRGAR AS RMU,
+dep.detalle_gedep AS DEPARTAMENTO,
+b.MONTO_VIVIENDA,
+c.MONTO_VEHICULO,
+GAR.TOTAL_PATRIMONIO_NRGAR AS PATRIMONIO,
+GAR.lugar_trabajo_nrgar AS DIRECCION,
+ARA.DETALLE_GEARE AS COORDINACION,
+GPG.TITULO_CARGO_GEPGC AS CARGO,
+
+a.numero_telefono_gttel,
+(case when b.MONTO_VIVIENDA is null then 'NO' else 'SI' END)as TIENE_VIVIENDA,
+(case when c.MONTO_VEHICULO is null then 'NO' else 'SI' END)as TIENE_VEHICULO,
+(case when MONTO_VIVIENDA is null then 0 else MONTO_VIVIENDA end) + (case when MONTO_VEHICULO is null then 0 else MONTO_VEHICULO end) as PATRIMONIO
+FROM NRH_GARANTE GAR
+LEFT JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR EDP ON  EDP.IDE_GEEDP=GAR.IDE_GEEDP
+LEFT JOIN GTH_EMPLEADO EMP ON EMP.IDE_GTEMP=EDP.IDE_GTEMP
+LEFT JOIN GEN_DEPARTAMENTO DEP ON DEP.IDE_GEDEP=EDP.IDE_GEDEP
+LEFT JOIN NRH_TIPO_GARANTE  TGA ON TGA.IDE_NRTIG=GAR.IDE_NRTIG
+LEFT JOIN GTH_CONYUGE CON ON CON.IDE_GTEMP=EDP.IDE_GTEMP
+LEFT JOIN GEN_AREA ARA ON ARA.IDE_GEARE =EDP.IDE_GEARE
+LEFT JOIN GEN_PARTIDA_GRUPO_CARGO GPG ON GPG.IDE_GEPGC =EDP.IDE_GEPGC
+
+LEFT JOIN(
+SELECT ide_gttel,ide_nrgar,numero_telefono_gttel FROM gth_telefono WHERE IDE_GTTEL IN(
+SELECT MAX(ide_gttel) FROM gth_telefono WHERE activo_gttel=true
+GROUP BY ide_nrgar)
+)a on a.ide_nrgar=GAR.ide_nrgar
+LEFT JOIN(
+SELECT SUM(AVALUO_GTCSE) as MONTO_VIVIENDA,ide_gtemp FROM gth_casa_empleado WHERE activo_gtcse=true group BY ide_gtemp
+)b on b.ide_gtemp=EDP.ide_gtemp
+left join(
+SELECT SUM(avaluo_gtvee) as MONTO_VEHICULO,ide_gtemp FROM gth_vehiculo_empleado WHERE activo_gtvee=true group BY ide_gtemp
+)c on c.ide_gtemp=EDP.ide_gtemp
+WHERE GAR.IDE_NRANT=$P{IDE_NRANT}]]>
+	</queryString>
+	<field name="ide_nrant" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla nrh_anticipo, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_geedp" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_empleados_departamento_par, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_gtcon" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_gtcon]]></fieldDescription>
+	</field>
+	<field name="nombres" class="java.lang.String"/>
+	<field name="cedula" class="java.lang.String"/>
+	<field name="nombres_conyuge" class="java.lang.String"/>
+	<field name="cedula_conyuge" class="java.lang.String"/>
+	<field name="fecha_ingreso" class="java.sql.Date"/>
+	<field name="rmu" class="java.math.BigDecimal"/>
+	<field name="departamento" class="java.lang.String"/>
+	<field name="monto_vivienda" class="java.math.BigDecimal"/>
+	<field name="monto_vehiculo" class="java.math.BigDecimal"/>
+	<field name="patrimonio" class="java.math.BigDecimal"/>
+	<field name="direccion" class="java.lang.String">
+		<fieldDescription><![CDATA[DIRECCION]]></fieldDescription>
+	</field>
+	<field name="coordinacion" class="java.lang.String"/>
+	<field name="cargo" class="java.lang.String">
+		<fieldDescription><![CDATA[CARGO]]></fieldDescription>
+	</field>
+	<field name="numero_telefono_gttel" class="java.lang.String">
+		<fieldDescription><![CDATA[numero_telefono_gttel]]></fieldDescription>
+	</field>
+	<field name="tiene_vivienda" class="java.lang.String"/>
+	<field name="tiene_vehiculo" class="java.lang.String"/>
+	<columnHeader>
+		<band height="59">
+			<staticText>
+				<reportElement uuid="f541992f-4496-4938-b257-af6a59676178" x="0" y="0" width="555" height="17"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[3.- DATOS GARANTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d5034cdb-9ba8-4121-883d-fc7466804050" x="0" y="17" width="145" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[NOMBRES COMPLETOS:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="c31a86cd-ef9b-4d52-a97d-5b5ea971d8d8" x="145" y="27" width="192" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cedula}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="a43584a3-a252-4b2f-a323-733684be5825" x="0" y="27" width="145" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[CEDULA GARANTE:]]></text>
+			</staticText>
+			<textField pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="79c55d89-f4f3-4730-8417-8bb1c7595506" x="420" y="27" width="135" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_ingreso}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="53493a77-43e0-4824-983b-b847b667cad1" x="337" y="27" width="83" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[FECHA INGRESO:]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="d3498d26-0f77-410a-a561-1e59843e26e7" x="420" y="47" width="135" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rmu}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3b56cb5c-069d-49e9-94ae-afcc0dc17a68" x="337" y="47" width="83" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[RMU:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="d0f9fff1-1db4-4cdb-9dea-5d58baaa8f01" x="145" y="37" width="192" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cargo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="32459b72-7bb9-4f4d-b999-2560588f1299" x="0" y="37" width="145" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[CARGO:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="2c7e4bc2-9b84-4f91-ac70-c69c01a1f829" x="145" y="47" width="192" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{coordinacion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="34dd697b-10ae-4248-b286-4270ce76da87" x="0" y="47" width="145" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[COORDINACION:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="41e6807a-d944-4de1-b358-14ccae550c2e" x="145" y="17" width="410" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombres}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="073a088d-c950-421d-a6d7-5b7daf4e043e" x="337" y="37" width="83" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="3eb1fdeb-4089-46f9-9a27-13a72bc2ee18" x="420" y="37" width="135" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+</jasperReport>

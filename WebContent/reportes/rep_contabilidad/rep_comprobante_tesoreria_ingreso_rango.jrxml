@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_ingreso_rango_fechas" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4f88d28a-8afc-4abc-95b3-23e811e4bb26">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:\\eclipse-jee-kepler-SR2-win32\\Proyectos\\sampu\\WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="p_contador_general" class="java.lang.String"/>
+	<parameter name="p_ide_conac" class="java.lang.Integer"/>
+	<parameter name="p_fecha_i" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_fecha_f" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select detalle_conac,
+                        cue_codigo_cocac,cue_descripcion_cocac, sum(debe_codem) as debe_codem, sum(haber_codem) as haber_codem, sum(cobrado) as cobrado, codigo_clasificador_prcla
+                        from(
+                        select b.ide_comov,c.ide_codem,mov_fecha_comov,detalle_conac,
+                        cue_codigo_cocac,cue_descripcion_cocac,debe_codem,haber_codem,coalesce(cobrado,0.00) as cobrado, coalesce(h.codigo_clasificador_prcla,pta.codigo_clasificador_prcla) as codigo_clasificador_prcla
+                        from cont_movimiento b
+                        left join cont_nombre_asiento_contable at on at.ide_conac = b.ide_conac
+                        left join cont_detalle_movimiento c on b.ide_comov = c.ide_comov
+                        left join (select ide_comov,sum(haber_codem) as valor from cont_detalle_movimiento where transferencia_codem = true group by ide_comov) g on g.ide_comov = b.ide_comov
+                        left join (select a.ide_pranu,b.ide_codem,codigo_clasificador_prcla,descripcion_clasificador_prcla, sum(cobrado_prmen) as cobrado
+                        from pre_anual a
+                        left join pre_mensual b on b.ide_pranu = a.ide_pranu
+                        left join pre_clasificador c on c.ide_prcla = a.ide_prcla
+                        group by a.ide_pranu,b.ide_codem,codigo_clasificador_prcla,descripcion_clasificador_prcla) h on c.ide_codem = h.ide_codem
+                        left join (select a.ide_pranu, codigo_clasificador_prcla,descripcion_clasificador_prcla from pre_anual a
+                               left join pre_programa prg on prg.ide_prpro=a.ide_prpro
+                               left join pre_clasificador pcl on pcl.ide_prcla=prg.ide_prcla) pta on pta.ide_pranu=h.ide_pranu
+                        left join cont_catalogo_cuenta i on c.ide_cocac = i.ide_cocac
+                        where b.ide_conac = $P{p_ide_conac} and mov_fecha_comov between to_date($P{p_fecha_i},'yyyy-mm-dd') and to_date($P{p_fecha_f},'yyyy-mm-dd') order by ide_gelua
+                        ) x
+                        group by  detalle_conac,
+                        cue_codigo_cocac,cue_descripcion_cocac,codigo_clasificador_prcla]]>
+	</queryString>
+	<field name="detalle_conac" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_conac]]></fieldDescription>
+	</field>
+	<field name="cue_codigo_cocac" class="java.lang.String">
+		<fieldDescription><![CDATA[cue_codigo_cocac]]></fieldDescription>
+	</field>
+	<field name="cue_descripcion_cocac" class="java.lang.String">
+		<fieldDescription><![CDATA[cue_descripcion_cocac]]></fieldDescription>
+	</field>
+	<field name="debe_codem" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[debe_codem]]></fieldDescription>
+	</field>
+	<field name="haber_codem" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[haber_codem]]></fieldDescription>
+	</field>
+	<field name="cobrado" class="java.math.BigDecimal"/>
+	<field name="codigo_clasificador_prcla" class="java.lang.String">
+		<fieldDescription><![CDATA[codigo_clasificador_prcla]]></fieldDescription>
+	</field>
+	<variable name="v_debe_total" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{debe_codem}]]></variableExpression>
+	</variable>
+	<variable name="v_haber_total" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{haber_codem}]]></variableExpression>
+	</variable>
+	<variable name="v_dev_total" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{cobrado}]]></variableExpression>
+	</variable>
+	<title>
+		<band height="79" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="f482c810-b464-4181-a969-7b5006ceb234" x="0" y="0" width="555" height="79"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"/reportes/rep_sistema/rep_cabecera_simple2.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="115" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="d8da22e2-2268-4a23-98b8-8a5c9cddbfe4" mode="Transparent" x="0" y="0" width="555" height="115"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="3bb131dd-2410-4b71-89c2-9fc30bc44c53" x="9" y="32" width="68" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DESDE:]]></text>
+			</staticText>
+			<textField pattern="dd MMMMM yyyy">
+				<reportElement uuid="34bccf04-0ed2-4a30-b8fd-b32fb7d83259" x="78" y="32" width="124" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_fecha_i}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="1914a5c9-0b8e-4afe-8c8e-24d9811dc482" x="0" y="56" width="555" height="1"/>
+			</line>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="728a36f2-25b7-4e31-9ecd-2d97eb2a1e03" x="87" y="62" width="456" height="50"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_conac}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="2dba0223-9d69-400d-99ab-95b29d5c1110" x="5" y="62" width="78" height="30"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ASIENTO TIPO:]]></text>
+			</staticText>
+			<textField pattern="dd MMMMM yyyy">
+				<reportElement uuid="7eb8fc3a-bd24-459a-9562-65fb9580e072" x="252" y="32" width="124" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_fecha_f}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="07efd552-1911-4599-8431-8cf6424aeee9" x="202" y="32" width="50" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HASTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2f659c7a-c53f-4901-bf22-45a128fe4669" x="0" y="1" width="554" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COMPROBANTE DE INGRESO]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="22" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="d8497233-a936-491c-b92e-67093e05c3a2" mode="Transparent" x="0" y="0" width="555" height="22"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="f58a5e36-9190-4e8e-81ff-7382f3b27908" x="5" y="5" width="49" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CÓDIGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2970295b-ff82-4f6b-b9af-f18114bcf916" x="96" y="5" width="73" height="17"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONCEPTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8e2d597a-c0a6-48b3-bd23-1c52aafc0deb" x="275" y="5" width="82" height="17"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEBE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="90e27cae-c040-4fb1-b995-6b4422a68987" x="369" y="5" width="49" height="17"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HABER]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5ca15dbd-f53d-495b-b4c8-c7a7bc84b8f7" x="440" y="5" width="49" height="17"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PARTIDA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b463d04f-bd86-484a-990b-1fba80b19b3e" x="475" y="5" width="73" height="17"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COBRO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="">
+				<reportElement uuid="6aa22f12-b3b1-405c-b03f-d91a77012cf3" x="5" y="0" width="91" height="15"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cue_codigo_cocac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="b9b46cb3-edf6-4757-9cce-110b803f3210" x="96" y="0" width="207" height="15"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cue_descripcion_cocac}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="6a2d7c5d-1117-43ca-91dd-fe9d647e5534" x="303" y="0" width="59" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{debe_codem}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="b126c161-8b42-41d1-90df-0de6857da5ad" x="363" y="0" width="59" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{haber_codem}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="19e3418f-e969-4b6b-b258-9cedf523ef24" x="424" y="0" width="65" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo_clasificador_prcla}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="60335da1-6ec1-442f-a8e4-0c87b96acc34" x="489" y="0" width="59" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cobrado}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="20309793-b910-4a9e-b9e7-7290f2a80787" x="554" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="9f6ea661-30e7-4c58-b86d-b2e905d3819a" x="0" y="0" width="1" height="15"/>
+			</line>
+		</band>
+	</detail>
+	<summary>
+		<band height="122" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="b556ae9d-e6e2-42a2-8126-2ed7da70444a" x="303" y="3" width="59" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{v_debe_total}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="40651495-63cb-4d80-be2f-95a8a96c1c84" x="363" y="3" width="59" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{v_haber_total}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="abb0884f-7f00-4dc0-a9c9-c4e73b132dbf" x="119" y="3" width="49" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="92059c4d-44a8-4874-a5a9-7da9e27af65d" x="133" y="79" width="284" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$P{p_contador_general}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="2b8b3f6d-e781-4c11-8462-55d163408996" x="122" y="75" width="300" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="3e68ef77-3597-4115-8a97-9bf1df0723f2" x="133" y="99" width="284" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TESORERÍA]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement uuid="82561625-f4a1-4f3a-8165-5ae432a31830" mode="Transparent" x="0" y="0" width="555" height="20"/>
+			</rectangle>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="3e1e224a-e060-401e-9e26-66a37c3f3a88" x="489" y="2" width="59" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{v_dev_total}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

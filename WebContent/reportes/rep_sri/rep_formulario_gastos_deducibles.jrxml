@@ -1,0 +1,1389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_formulario_gastos_deducibles" language="groovy" pageWidth="595" pageHeight="900" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="5d21d273-a064-4481-b2c3-60f49e809e6d">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="1844"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:\\eclipse-jee-kepler-SR2-win32\\Proyectos\\sampu\\WebContent\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_gtemp" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="anio" class="java.lang.Integer"/>
+	<parameter name="mes" class="java.lang.Integer"/>
+	<parameter name="dia" class="java.lang.Integer"/>
+	<parameter name="total_gastos" class="java.math.BigDecimal"/>
+	<parameter name="total_ingresos" class="java.math.BigDecimal"/>
+	<parameter name="total_ingresos_otros_empleador" class="java.math.BigDecimal"/>
+	<parameter name="ruc" class="java.lang.String"/>
+	<parameter name="firma_contador" class="java.lang.String"/>
+	<parameter name="VIVIENDA" class="java.lang.Double"/>
+	<parameter name="EDUCACION" class="java.lang.Double"/>
+	<parameter name="SALUD" class="java.lang.Double"/>
+	<parameter name="VESTIMENTA" class="java.lang.Double"/>
+	<parameter name="ALIMENTACION" class="java.lang.Double"/>
+	<parameter name="documentoIdentificacion" class="java.lang.String"/>
+	<parameter name="apellidosNombres" class="java.lang.String"/>
+	<parameter name="TURISMO" class="java.lang.Double"/>
+	<parameter name="total_rebaja" class="java.lang.Double"/>
+	<queryString>
+		<![CDATA[SELECT
+dedu.ide_srdee, dedu.ide_srded, dedu.valor_deducible_srdee, dedu.observacion_srdee,EMP.IDE_GTEMP,
+EMP.DOCUMENTO_IDENTIDAD_GTEMP,
+				EMP.APELLIDO_PATERNO_GTEMP || ' ' ||
+				(case when EMP.APELLIDO_MATERNO_GTEMP is null then '' else EMP.APELLIDO_MATERNO_GTEMP end) || ' ' ||
+				EMP.PRIMER_NOMBRE_GTEMP || ' ' ||
+				(case when EMP.SEGUNDO_NOMBRE_GTEMP is null then '' else EMP.SEGUNDO_NOMBRE_GTEMP end) AS NOMBRES_APELLIDOS
+
+
+  FROM sri_deducibles_empleado dedu
+
+left join gth_empleado EMP on emp.ide_gtemp=dedu.ide_gtemp
+
+  where emp.ide_gtemp=$P!{ide_gtemp} and dedu.ide_srded in(select ide_srded
+        		FROM sri_deducibles
+        		WHERE IDE_SRIMR IN(select IDE_SRIMR from sri_impuesto_renta
+        		where detalle_srimr like '%$P!{anio}%')
+        		order by ide_srded)]]>
+	</queryString>
+	<field name="ide_srdee" class="java.lang.Integer"/>
+	<field name="ide_srded" class="java.lang.Integer"/>
+	<field name="valor_deducible_srdee" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[valor_deducible_srdee]]></fieldDescription>
+	</field>
+	<field name="observacion_srdee" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define las detalles adicionales respecto al deducible ingresado por el empleado.]]></fieldDescription>
+	</field>
+	<field name="ide_gtemp" class="java.lang.Integer"/>
+	<field name="documento_identidad_gtemp" class="java.lang.String"/>
+	<field name="nombres_apellidos" class="java.lang.String"/>
+	<group name="EMPLEADO">
+		<groupExpression><![CDATA[$F{ide_gtemp}]]></groupExpression>
+		<groupHeader>
+			<band height="832">
+				<staticText>
+					<reportElement uuid="c02d064c-3cf0-4a98-92b7-3046767da7de" key="staticText-83" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="269" y="651" width="261" height="104" isPrintInFirstWholeBand="true"/>
+					<box leftPadding="2" rightPadding="2">
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font fontName="Tahoma" size="5" isBold="true"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="106ded7f-cb40-48af-a355-ec81d3752ed1" key="staticText-79" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="-1" y="651" width="270" height="104" isPrintInFirstWholeBand="true"/>
+					<box leftPadding="2" rightPadding="2">
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font fontName="Tahoma" size="5" isBold="true"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="de75b59a-7f76-4269-9a76-0b1a8800776b" key="staticText-97" positionType="FixRelativeToBottom" mode="Transparent" x="0" y="183" width="532" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box topPadding="1" leftPadding="2" rightPadding="2">
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" size="6" isBold="true"/>
+					</textElement>
+					<text><![CDATA[INGRESOS GRAVADOS PROYECTADOS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="df0a4f3a-450b-4a48-997f-a3adc04573bf" key="staticText-89" x="214" y="151" width="25" height="20" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[102]]></text>
+				</staticText>
+				<image vAlign="Middle">
+					<reportElement uuid="0631b6ce-c334-4f9f-849c-882583adff39" key="image-1" mode="Transparent" x="29" y="35" width="47" height="35"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<imageExpression><![CDATA[]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement uuid="85d88e5b-5161-4390-8fd6-866fdef8f331" key="staticText-93" x="25" y="151" width="189" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="2">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[CÉDULA O PASAPORTE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="e35d0cf9-2d24-4469-8347-bf6704f511be" key="staticText-67" x="432" y="99" width="50" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="4" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[MES]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="5b3493f7-aaaa-4bd7-8452-64e0e6c9bfa3" key="staticText-95" x="239" y="151" width="293" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="2">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[APELLIDOS Y NOMBRES COMPLETOS]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="a388ea06-06a2-4895-aef1-9f16e14937ef" key="textField-103" positionType="Float" x="362" y="109" width="70" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
+					<box>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="329e7c09-c0e1-4a2b-acf4-e3fe74e131f5" key="staticText-61" x="209" y="99" width="84" height="25" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[CIUDAD Y FECHA DE ENTREGA/RECEPCIÓN]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="e2c35281-e634-4d4d-a9ce-f06ad016dd51" key="textField-105" positionType="Float" x="482" y="109" width="50" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="a8705504-4467-4218-a6b9-cc718bf36c27" key="staticText-87" x="0" y="151" width="25" height="20" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[101]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="60f6709a-cd3c-4f39-9839-3a3739d3a546" key="staticText-86" positionType="FixRelativeToBottom" mode="Transparent" x="0" y="135" width="532" height="15"/>
+					<box topPadding="1" leftPadding="2" rightPadding="2">
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" size="6" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Información / Identificación del empleado contribuyente (a ser llenado por el empleado)]]></text>
+				</staticText>
+				<image>
+					<reportElement uuid="09569284-6bdd-4c12-8132-8b3ea2ef44b8" x="28" y="39" width="39" height="24"/>
+					<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/reportes/rep_sri/im_sri.jpg"]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement uuid="1896e813-11e9-4bc0-8892-ba53ce9bd43c" key="staticText-66" x="362" y="99" width="70" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="4" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[AÑO]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="5fc67d7a-ed47-47f0-b5b8-a007e513a7e9" key="textField-104" positionType="Float" x="432" y="109" width="50" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
+					<box>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="25232db3-d288-46c0-9bce-9a7c0027bb60" key="staticText-5" x="0" y="99" width="77" height="25" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[EJERCICIO FISCAL]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="3f745eef-dfea-437c-bc61-4efa6c916e16" key="staticText-1" x="102" y="33" width="431" height="37" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="7" isBold="true" isItalic="false" isUnderline="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[DECLARACIÓN DE GASTOS PERSONALES A SER UTILIZADOS POR EL EMPLEADO EN EL CASO DE INGRESOS EN RELACIÓN DE DEPENDENCIA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="c431a245-ea53-4cd4-ab4f-731019ecb995" key="staticText-59" x="1" y="69" width="101" height="15"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="true" isItalic="false" isUnderline="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[FORMULARIO SRI-GP]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="b9413766-e355-4fc2-933b-d0e373bcba1d" key="staticText-68" x="482" y="99" width="50" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="4" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[DIA]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="b0b6a02c-0894-4311-96db-55d243d1d3fd" x="362" y="109" width="70" height="15" isPrintWhenDetailOverflows="true"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{anio}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="80da592e-8779-410f-a606-937cb9cf79a3" x="432" y="109" width="49" height="15" isPrintWhenDetailOverflows="true"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{mes}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="bb06fcb2-127d-48c4-82a0-5c6ff626ed7f" x="482" y="109" width="50" height="15" isPrintWhenDetailOverflows="true"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{dia}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="eff61a31-31d7-4390-bbd2-faa50e734cff" key="staticText-66" x="307" y="99" width="55" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="4" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[CIUDAD]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="32b0327a-44d4-430b-a78c-f31438a63f92" x="91" y="99" width="53" height="25" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{anio}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="6598c657-59c5-4f4b-8c64-329f20cfbf94" key="staticText-62" x="307" y="109" width="55" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[QUITO]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="7a2dbd36-0c9a-4afd-907c-10271199ae49" x="239" y="161" width="293" height="10"/>
+					<box leftPadding="2">
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nombres_apellidos}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="234460af-95f7-4ffe-9898-daaf9fdbdb42" x="25" y="161" width="189" height="10"/>
+					<box leftPadding="2">
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{documento_identidad_gtemp}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="8cba3f82-ccc6-4414-ac86-8b1939c645d6" key="staticText-98" x="0" y="198" width="386" height="12"/>
+					<box leftPadding="2">
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[(+) TOTAL INGRESOS GRAVADOS CON ESTE EMPLEADOR (con el empleador que más ingresos perciba)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="28c90f34-429e-42d5-a25a-ec2c65a53342" key="staticText-99" x="387" y="198" width="20" height="12"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[103]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="ab5c875a-4ac7-4987-8807-e0e3aa82b095" key="staticText-100" x="407" y="198" width="20" height="12"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[USD $]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="582a6967-7696-400c-a0fb-148e85406cd0" key="staticText-101" x="0" y="210" width="386" height="12"/>
+					<box leftPadding="2">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[(+) TOTAL INGRESOS CON OTROS EMPLEADORES (en caso de haberlos)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="40c4952d-93f9-4fc6-8e1b-ebfb356d75c0" key="staticText-102" x="0" y="222" width="386" height="12"/>
+					<box leftPadding="2">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[(=) TOTAL INGRESOS PROYECTADOS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="76179383-3d8c-4657-bf66-7e6439408013" key="staticText-109" x="0" y="321" width="386" height="12"/>
+					<box leftPadding="2">
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[(=) TOTAL GASTOS PROYECTADOS ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="9e214fcf-d653-4d92-a1a9-62e58b8c286c" key="staticText-125" x="387" y="210" width="20" height="12"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[104]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="fd81b9e3-44d3-4cc3-884e-3b0f11e5226d" key="staticText-126" x="407" y="210" width="20" height="12"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[USD $]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="8be655db-bde1-404b-b9b0-0e06ff1f4c6a" key="staticText-127" x="387" y="222" width="20" height="12"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[105]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="09117dbb-8863-41c8-9ad7-f4ab8c36bc7b" key="staticText-128" x="407" y="222" width="20" height="12"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[USD $]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="262d209d-b081-41da-a37f-7ff9a3a31ecf" key="staticText-138" x="405" y="370" width="21" height="12"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[111]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="9f751a64-d3d5-4802-bc64-397faf65ad59" key="staticText-79" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="269" y="614" width="261" height="17" isPrintInFirstWholeBand="true"/>
+					<box leftPadding="2" rightPadding="2">
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Bottom">
+						<font fontName="Tahoma" size="6" isBold="true"/>
+					</textElement>
+					<text><![CDATA[EMPRESA PÚBLICA METROPOLITANA DE GESTIÓN INTEGRAL DE RESIDUOS SÓLIDOS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="c2d96676-76fa-4d20-b04f-ab27d635fad3" key="staticText-97" positionType="FixRelativeToBottom" mode="Transparent" x="0" y="234" width="532" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box topPadding="1" leftPadding="2" rightPadding="2">
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" size="6" isBold="true"/>
+					</textElement>
+					<text><![CDATA[GASTOS PROYECTADOS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="3aac3454-f4a4-49c5-b8bb-4ac383315e21" key="staticText-58" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="-1" y="353" width="532" height="15" isPrintInFirstWholeBand="true"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font fontName="Tahoma" size="7" isBold="true"/>
+					</textElement>
+					<text><![CDATA[NOTAS:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="25602d40-96bd-4042-85bc-19da3c01c214" key="staticText-69" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="-1" y="365" width="532" height="28" isPrintInFirstWholeBand="true"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5"/>
+					</textElement>
+					<text><![CDATA[1.- Cuando un contribuyente trabaje con DOS O MÁS empleadores, presentará este informe al empleador con el que perciba mayores ingresos, el que efectuará la retención considerando los ingresos gravados y deducciones (aportes personales al IESS) con todos los empleadores, sobre la base imponible así obtenida, se aplicará la tarifa contenida en la tabla de Impuesto a la Renta de personas naturales y sucesiones indivisas de la Ley de Régimen Tributario Interno, con lo que se obtendrá la proyección del Impuesto a la Renta causado en el ejercicio económico. Al resultado obtenido se le restará la rebaja por la proyección de gastos personales, según los límites establecidos en la Ley, y se dividirá para 12, para determinar la alícuota mensual a retener por concepto de Impuesto a la Renta.
+Una copia certificada, con la respectiva firma y sello del empleador, será presentada a los demás empleadores para que se abstengan de efectuar retenciones sobre los pagos efectuados por concepto de remuneración del trabajo en relación de dependencia. ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="af621907-767e-4898-8e1c-ccb8b477f8bb" key="staticText-69" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="-1" y="421" width="532" height="18" isPrintInFirstWholeBand="true"/>
+					<box topPadding="1" leftPadding="5" bottomPadding="1" rightPadding="2">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5"/>
+					</textElement>
+					<text><![CDATA[• Si la renta bruta anual (Casilla 105) del trabajador no excede de 2,13 fracciones básicas desgravadas de Impuesto a la Renta, el monto máximo de la rebaja por gastos personales será el que resulte de aplicar la siguiente fórmula: R= L x 20]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="2815136a-d825-43fd-80eb-1c968445f52b" key="staticText-140" x="239" y="606" width="30" height="25"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[114]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="734f6588-8286-4bb7-8204-8f02132c5cdf" key="staticText-85" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="269" y="606" width="261" height="8" isPrintInFirstWholeBand="true"/>
+					<box leftPadding="2" rightPadding="2">
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ RAZON SOCIAL, DENOMINACION O APELLIDOS Y NOMBRES COMPLETOS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="a1741e3d-edc1-45d3-b277-9877f1aaca20" key="staticText-85" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="-2" y="606" width="241" height="8" isPrintInFirstWholeBand="true"/>
+					<box leftPadding="2" rightPadding="2">
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="true"/>
+					</textElement>
+					<text><![CDATA[RUC ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="92a120b4-efaf-41e3-8499-5b8258234787" key="staticText-77" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="-2" y="597" width="532" height="9" isPrintInFirstWholeBand="true"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font fontName="Tahoma" size="5" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ Identificación del Agente de Retención (a ser llenado por el empleador)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="4a00dc94-77ac-44f0-a6cb-6af7bafc53e4" key="staticText-77" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="-1" y="642" width="531" height="9" isPrintInFirstWholeBand="true"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font fontName="Tahoma" size="5" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Firmas]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="4a8e19e2-7705-443b-ad65-c2a33c86c622" key="staticText-78" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="-1" y="651" width="270" height="7" isPrintInFirstWholeBand="true"/>
+					<box leftPadding="2" rightPadding="2">
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font fontName="Tahoma" size="5" isBold="true"/>
+					</textElement>
+					<text><![CDATA[EMPLEADOR / AGENTE DE RETENCIÓN]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="1321b383-ce6a-4254-9680-73e3d2263537" key="staticText-82" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="269" y="651" width="261" height="7" isPrintInFirstWholeBand="true"/>
+					<box leftPadding="2" rightPadding="2">
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font fontName="Tahoma" size="5" isBold="true"/>
+					</textElement>
+					<text><![CDATA[EMPLEADO CONTRIBUYENTE]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
+					<reportElement uuid="5ab39f2e-93fa-46d7-8cda-60b9b5f82088" x="426" y="321" width="106" height="12"/>
+					<box leftPadding="2" rightPadding="2">
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{total_gastos}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
+					<reportElement uuid="874e0820-d005-42b6-9599-d932ac3f8a96" x="427" y="222" width="105" height="12"/>
+					<box leftPadding="2" rightPadding="2">
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{total_ingresos}+$P{total_ingresos_otros_empleador}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
+					<reportElement uuid="3940bfe6-bf21-4922-a80a-aad5506fd4e0" x="427" y="198" width="105" height="12"/>
+					<box leftPadding="2" rightPadding="2">
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{total_ingresos}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement uuid="a24536ca-fc4f-4250-b428-61d249aecb2b" x="427" y="210" width="105" height="12"/>
+					<box leftPadding="2" rightPadding="2">
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{total_ingresos_otros_empleador}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="ec69d334-c28c-4948-aab6-bcc227e85f4e" key="staticText-62" x="293" y="99" width="14" height="25" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="814f8820-b2be-4372-8f10-595096924833" key="staticText-62" x="77" y="99" width="14" height="25" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#CCCCFF" backcolor="#CCCCFF"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="3974413b-5ce2-4619-a76a-5fc857145f83" key="staticText-62" x="144" y="99" width="65" height="25" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#CCCCFF" backcolor="#CCCCFF"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="13d46613-db5a-493d-8ed8-b8544238036f" key="staticText-140" x="-2" y="614" width="30" height="17"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[113]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="7a61c7ae-d42d-445c-a641-7e65116321b2" x="28" y="614" width="211" height="17"/>
+					<box leftPadding="2">
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="6"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{ruc}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement uuid="6fa2d6be-0b93-4c48-96c2-bfd3fcf2dee3" x="338" y="723" width="127" height="1"/>
+				</line>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="d85b4013-84e3-4374-807a-45a7f7d16132" x="338" y="724" width="127" height="9" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="2">
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nombres_apellidos}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="6365aeaa-eab9-4891-8c0b-70374daec3c8" key="staticText-102" x="0" y="249" width="386" height="12"/>
+					<box leftPadding="2">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[(+) VIVIENDA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="87dee90c-898d-4da2-a545-2eb978e6e4f4" key="staticText-102" x="0" y="261" width="386" height="12"/>
+					<box leftPadding="2">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[(+) EDUCACION, ARTE Y CULTURA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="9ae3b922-999e-466a-a631-bd27cfb1dc86" key="staticText-102" x="0" y="273" width="386" height="12"/>
+					<box leftPadding="2">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[(+) SALUD]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="42b904c3-d836-451b-910e-74fffc7ace1e" key="staticText-102" x="0" y="285" width="386" height="12"/>
+					<box leftPadding="2">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[(+) VESTIMENTA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="f719caba-c0bf-405e-90dc-fe7406b5fce9" key="staticText-102" x="0" y="297" width="386" height="12"/>
+					<box leftPadding="2">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[(+) ALIMENTACIÓN]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="1473579b-b334-44a6-a114-afdb36cdca58" key="staticText-99" x="386" y="249" width="20" height="12"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[106]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="b11af5d7-e386-469e-8a6f-7bd5f10a8154" key="staticText-99" x="386" y="261" width="20" height="12"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[107]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="4bd94540-4f81-4daa-9ea1-c220df307a79" key="staticText-99" x="386" y="273" width="20" height="12"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[108]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="6fe52ada-7059-4d68-968d-30fccab3175a" key="staticText-99" x="386" y="285" width="20" height="12"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[109]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="15e6a945-7885-49dd-adfa-320f58ded154" key="staticText-99" x="386" y="297" width="20" height="12"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[110]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="baa98a26-4801-464a-840b-9af6507a875c" key="staticText-100" x="406" y="249" width="20" height="12"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[USD $]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="4aa4583e-4ccb-487f-bf3e-7e061bf52bbe" key="staticText-100" x="406" y="261" width="20" height="12"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[USD $]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="fa3e5f17-6320-47ca-823b-017727d4bf43" key="staticText-100" x="406" y="273" width="20" height="12"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[USD $]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="4e0e3ee7-e3fa-4fa8-b95a-c4e0f7119374" key="staticText-100" x="406" y="285" width="20" height="12"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[USD $]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="9e3f1d43-c65b-4144-801b-47c9afe6930d" key="staticText-100" x="406" y="297" width="20" height="12"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[USD $]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement uuid="a66085ba-c56b-44d8-90f1-de74e020e457" x="426" y="249" width="106" height="12"/>
+					<box rightPadding="2">
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{VIVIENDA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement uuid="e8d0d407-e151-4482-847a-96e805f0b811" x="426" y="273" width="106" height="12"/>
+					<box rightPadding="2">
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{SALUD}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement uuid="e6974d02-d8fd-4d90-89aa-4cb9ff28b671" x="426" y="285" width="106" height="12"/>
+					<box rightPadding="2">
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{VESTIMENTA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement uuid="fcdd7a1a-a36f-45dd-8688-1fdf5b8b8810" x="426" y="297" width="106" height="12"/>
+					<box rightPadding="2">
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{ALIMENTACION}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="0815ac48-a7de-4890-8897-b883ca949157" key="staticText-99" x="386" y="321" width="20" height="12"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[112]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="0714377e-c56b-4e43-9705-4ea41b4ac8cf" key="staticText-100" x="405" y="321" width="21" height="12"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[USD $]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement uuid="12211571-fdeb-4a17-84ad-7731bee409e2" x="426" y="261" width="106" height="12"/>
+					<box rightPadding="2">
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{EDUCACION}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="b6fe6dd9-32fe-4e22-a5c5-1501cc03c1e3" key="staticText-102" x="0" y="309" width="386" height="12"/>
+					<box leftPadding="2">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[(+) TURISMO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="cb34e48e-3a4e-4df9-80cb-80d7f6921365" key="staticText-99" x="386" y="309" width="20" height="12"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[111]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="9cd16d03-fbfa-4e59-97e7-31bd28af350f" key="staticText-100" x="406" y="309" width="20" height="12"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[USD $]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement uuid="6b9d5584-1f7b-49ae-9797-1667ec230d6c" x="426" y="309" width="106" height="12"/>
+					<box rightPadding="2">
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{TURISMO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="5ecc1447-b298-46c7-b634-1e214ec5f68f" key="staticText-69" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="-1" y="457" width="532" height="29" isPrintInFirstWholeBand="true"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Top">
+						<font fontName="Tahoma" size="5"/>
+					</textElement>
+					<text><![CDATA[Donde:
+R= rebaja por gastos personales
+L= El valor que resulte menor entre los gastos personales proyectados del periodo fiscal anual (casilla 112) y el valor de la canasta básica familiar multiplicado por siete (7).]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="4b929d7f-4cf1-4798-8ec8-d089b48ed8f8" key="staticText-173" x="1" y="33" width="101" height="36"/>
+					<box>
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="c239472b-2afd-4ae9-bd3a-7cdaab02b7bb" key="staticText-69" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="-1" y="562" width="532" height="25" isPrintInFirstWholeBand="true"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Top">
+						<font fontName="Tahoma" size="5"/>
+					</textElement>
+					<text><![CDATA[3.- De conformidad con la normativa vigente, el contribuyente, al momento de liquidar su Impuesto a la Renta, deberá considerar el valor de la Canasta Familiar Básica vigente al mes de diciembre del ejercicio fiscal del cual corresponden los ingresos a ser declarados. En caso de que existan valores a ser reliquidados respecto a las retenciones efectuadas por el empleador, el empleado deberá presentar su declaración de impuesto a la renta en el respectivo formulario.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="4992f6f7-9536-4967-899f-632f2ac93dfe" key="staticText-69" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="-1" y="393" width="532" height="28" isPrintInFirstWholeBand="true"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5"/>
+					</textElement>
+					<text><![CDATA[2.- Para efectos de determinar el monto de la rebaja, el empleador deberá considerar que el monto a aplicar varía dependiendo de si los ingresos brutos anuales del trabajador (casilla 105) superan o no el valor de dos coma trece (2,13) fracciones básicas desgravadas de Impuesto a la Renta del ejercicio fiscal sobre el que se va a realizar la proyección. Consecuentemente: ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="68cdd00f-9cbd-4a3f-8592-52829c0af7f5" key="staticText-69" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="-1" y="439" width="532" height="18" isPrintInFirstWholeBand="true"/>
+					<box topPadding="1" leftPadding="5" bottomPadding="1" rightPadding="2">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5"/>
+					</textElement>
+					<text><![CDATA[• Si la renta bruta anual (Casilla 105) del trabajador excede de 2,13 fracciones básicas desgravadas de Impuesto a la Renta, el monto máximo de la rebaja por gastos personales será el que resulte de aplicar la siguiente fórmula: R= L x 10%]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="689d4d21-4072-4ef1-800d-c3aea54c9308" key="staticText-69" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="-1" y="486" width="532" height="25" isPrintInFirstWholeBand="true"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5"/>
+					</textElement>
+					<text><![CDATA[El valor de la fracción básica desgravada de Impuesto a la Renta para personas naturales y sucesiones indivisas puede ser revisado en la tabla que consta en el siguiente link: https://www.sri.gob.ec/web/intersri/impuesto-renta#%C2%BFcu%C3%A1l-es ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="1b3df7fd-13cc-41b9-935c-2249eea714e6" key="staticText-69" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="-1" y="510" width="532" height="29" isPrintInFirstWholeBand="true"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5"/>
+					</textElement>
+					<text><![CDATA[Para realizar el cálculo del valor a retener por parte del empleador en lo que respecta el límite de siete canastas básicas familiares, se considerará el valor de la Canasta Familiar Básica al mes de diciembre del ejercicio fiscal anterior del cual corresponden los ingresos sujetos a retención en la fuente. ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="a0232603-982d-458f-bf3d-e82b6a8c8e40" key="staticText-69" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="-1" y="533" width="532" height="29" isPrintInFirstWholeBand="true"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5"/>
+					</textElement>
+					<text><![CDATA[Para la rebaja del cálculo diferenciado, aplicable al Impuesto a la Renta causado, para el Régimen Especial de la Provincia de Galápagos, los valores de (i) siete veces la canasta familiar básica; y, (ii) dos coma trece (2,13) fracciones básicas desgravadas de impuesto a la renta señalados en la Ley, se deberán multiplicar por el Índice de Precios al Consumidor Espacial de Galápagos IPCEG de 1,803.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="62bfbf67-490b-47de-992a-9223b894f0e4" key="staticText-109" x="0" y="333" width="386" height="12"/>
+					<box leftPadding="2">
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[ REBAJA DE IMPUESTO A LA RENTA POR GASTOS PERSONALES PROYECTADOS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="39542eae-66a0-4fc9-995d-fe101c27b44f" key="staticText-99" x="386" y="333" width="20" height="12"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[113]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="1a8a25f0-ba18-4b1e-9a97-5efac19992f2" key="staticText-100" x="405" y="333" width="21" height="12"/>
+					<box>
+						<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[USD $]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
+					<reportElement uuid="10ed3e2a-93ad-4a67-ad20-cd5546ed7eaf" x="426" y="333" width="106" height="12"/>
+					<box leftPadding="2" rightPadding="2">
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Tahoma" size="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{total_rebaja}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="983d03a9-f116-4e79-a8ab-5bd10a72aa91" key="staticText-77" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="-1" y="637" width="271" height="5" isPrintInFirstWholeBand="true"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font fontName="Tahoma" size="5" isBold="true"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="a3ada0db-18eb-470c-ae28-8ff87b054029" key="staticText-77" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="270" y="637" width="260" height="5" isPrintInFirstWholeBand="true"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+						<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font fontName="Tahoma" size="5" isBold="true"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="20" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

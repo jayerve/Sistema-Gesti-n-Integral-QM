@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_pac_certificacion" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="86204aec-e63f-4eb1-9f97-aa5b0292b336">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="48"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:/eclipse-jee-kepler-SR2-win32/Proyectos/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="nro_documento" class="java.lang.String"/>
+	<parameter name="ide_prpac" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT
+
+pac.ide_prpac,detalle_geani,nro_orden_prpac, cpc_prpac,detalle_copec, descripcion_prpac,cat_electronico_prpac,cantidad_prpac,valor_unitario_prpac, valor_total_prpac, detalle_cotio, detalle_coest, detalle_bounm,detalle_adtic,detalle_geare, publicado_prpac,
+(case when tipo_prod_prpac=0 then 'NORMALIZADO' else 'NO NORMALIZADO' end) as tipo_prod_prpac, (case when tregimen_prpac=0 then 'ESPECIAL' else 'COMUN' end) tregimen_prpac, justificacion_prpac,
+codigo_clasificador_prcla,descripcion_clasificador_prcla,valor_prpap,portal_prpap, anio_prpap
+
+  FROM pre_pac pac
+  left join gen_anio a on a.ide_geani= pac.ide_geani
+  left join pre_partida_pac dpac on dpac.ide_prpac=pac.ide_prpac
+  left join cont_periodo_cuatrimestre pcu on pcu.ide_copec=pac.ide_copec
+  left join cont_tipo_compra tcom on tcom.ide_cotio=pac.ide_cotio
+  left join cont_estado est on est.ide_coest=pac.ide_coest
+  left join bodt_unidad_medida uni on uni.ide_bounm=pac.ide_bounm
+  left join adq_tipo_contratacion tcon on tcon.ide_adtic=pac.ide_adtic
+  left join gen_area ar on ar.ide_geare=pac.ide_geare
+  left join pre_clasificador par on par.ide_prcla=dpac.ide_prcla
+where pac.ide_prpac=$P{ide_prpac}]]>
+	</queryString>
+	<field name="ide_prpac" class="java.lang.Long"/>
+	<field name="detalle_geani" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del ano ejemplo: 2013, 2014, etc]]></fieldDescription>
+	</field>
+	<field name="nro_orden_prpac" class="java.lang.Long">
+		<fieldDescription><![CDATA[nro_orden_prpac]]></fieldDescription>
+	</field>
+	<field name="cpc_prpac" class="java.lang.String">
+		<fieldDescription><![CDATA[cpc_prpac]]></fieldDescription>
+	</field>
+	<field name="detalle_copec" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_copec]]></fieldDescription>
+	</field>
+	<field name="descripcion_prpac" class="java.lang.String">
+		<fieldDescription><![CDATA[descripcion_prpac]]></fieldDescription>
+	</field>
+	<field name="cat_electronico_prpac" class="java.lang.Boolean"/>
+	<field name="cantidad_prpac" class="java.math.BigDecimal"/>
+	<field name="valor_unitario_prpac" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[valor_unitario_prpac]]></fieldDescription>
+	</field>
+	<field name="valor_total_prpac" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[valor_ total_prpac]]></fieldDescription>
+	</field>
+	<field name="detalle_cotio" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_cotio]]></fieldDescription>
+	</field>
+	<field name="detalle_coest" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_coest]]></fieldDescription>
+	</field>
+	<field name="detalle_bounm" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_bounm]]></fieldDescription>
+	</field>
+	<field name="detalle_adtic" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_adtic]]></fieldDescription>
+	</field>
+	<field name="detalle_geare" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del area ejemplo: Directorio, Auditoria Interna, etc.]]></fieldDescription>
+	</field>
+	<field name="publicado_prpac" class="java.lang.Boolean"/>
+	<field name="tipo_prod_prpac" class="java.lang.String"/>
+	<field name="tregimen_prpac" class="java.lang.String"/>
+	<field name="justificacion_prpac" class="java.lang.String"/>
+	<field name="codigo_clasificador_prcla" class="java.lang.String">
+		<fieldDescription><![CDATA[codigo_clasificador_prcla]]></fieldDescription>
+	</field>
+	<field name="descripcion_clasificador_prcla" class="java.lang.String">
+		<fieldDescription><![CDATA[descripcion_clasificador_prcla]]></fieldDescription>
+	</field>
+	<field name="valor_prpap" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[valor_prpap]]></fieldDescription>
+	</field>
+	<field name="portal_prpap" class="java.lang.Boolean"/>
+	<field name="anio_prpap" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="58" splitType="Stretch">
+			<image hAlign="Center">
+				<reportElement uuid="f81ae0ed-84b6-4b8c-9e70-d8d166ce3b8e" x="1" y="0" width="117" height="44"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="bc02f684-495a-4b3d-a42e-50e4dfcc319e" x="118" y="1" width="319" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CERTIFICACIONES PAC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="545e550f-38d7-4639-a8ae-c1b0738206a0" x="437" y="1" width="117" height="23"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código: FOR-POE-DO-004-001]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1e7b1ca5-57c0-4b59-b4f3-14ac3549e460" x="437" y="24" width="117" height="19"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vigencia: Enero 2020]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d6257219-3dd8-48c7-b55a-22d919547b2f" x="437" y="43" width="117" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Versión: 1.0]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="ba890978-f352-407a-a574-ad1a9f98b391" x="1" y="33" width="436" height="25"/>
+				<textElement textAlignment="Center" markup="none">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["No. Certificación PAC \n"+
+$P{nro_documento}.toUpperCase()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="237" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="3d87b6d0-fb7b-4bc7-ae92-9df3d7839bdb" x="0" y="0" width="554" height="20" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[UNIDAD DE COMPRAS PÚBLICAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a1c5cf97-2e15-4d24-bd60-0cd42c94ebe0" x="13" y="30" width="39" height="15"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="90173a59-c35e-49f0-9f22-7aab9bc68880" x="13" y="45" width="91" height="14"/>
+				<textElement markup="none">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Linea del PAC "+$F{detalle_geani}+":"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="53f0278d-d020-4ed2-aa75-d7fd58ba93f7" x="138" y="45" width="100" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ide_prpac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="4a59ebc3-2dbf-4ef9-9c71-84fe5e441d58" x="138" y="30" width="65" height="15"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6bb6de98-cddb-4ff2-b175-23937e310a2b" x="384" y="45" width="100" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nro_orden_prpac}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="4a74924c-529a-4dac-89e2-339f396bc5de" x="259" y="45" width="91" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nro.:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="ef2c2ea8-a68b-43c0-8db1-9fcc7c667810" x="138" y="59" width="100" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cpc_prpac}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="66ca08c9-997a-4b2f-94b2-8c5c723b258c" x="13" y="59" width="91" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CPC:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="6a29cea1-85b0-4ef4-99d8-5bb1811f77e3" x="384" y="30" width="100" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_coest}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3030bd9e-af4e-4939-a54f-54580987f3ef" x="259" y="30" width="91" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estado:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="b181468e-b88b-489f-97df-291c96111347" x="384" y="59" width="100" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_cotio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="d1332820-fa49-40f5-888a-5871f17e7027" x="259" y="59" width="91" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo Compra:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="3357e622-bce4-43a4-add0-eff40b53ee9a" x="138" y="73" width="100" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tregimen_prpac}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="94ef2bf0-43fc-4364-831e-0ed07c5fdfc2" x="259" y="73" width="91" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo Producto:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ae33d216-6c9d-4fea-9726-970586c1efe6" x="13" y="73" width="91" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo Regimen:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="40e05576-4bc8-4e98-8772-6e0de5154480" x="384" y="73" width="100" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipo_prod_prpac}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="2268d571-91cb-4a34-8a2b-192627cd9dca" x="13" y="115" width="124" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Detalle del Producto:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="bd007a1e-8574-4da4-8349-e93bc8fc16de" x="138" y="115" width="375" height="25"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion_prpac}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f4f15f1c-5dd9-454f-8fc0-2d496c2e8905" x="384" y="87" width="156" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_adtic}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f76420b7-9f75-4601-8185-77863c54cf9f" x="259" y="87" width="91" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Procedimiento:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="1e0ace3d-d4b2-46f9-836e-42cc4f139d08" x="138" y="87" width="100" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_copec}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="53bf3b1b-0c0a-421f-9cb4-12795c3f5be9" x="13" y="87" width="91" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cuatrimestre:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="0b120cc0-564f-4ae7-9f07-a1d169025dd7" x="138" y="101" width="375" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_geare}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="00ec37cd-1155-48d8-8186-eadb15397504" x="13" y="101" width="91" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Área:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="27963e0e-41cb-4266-bf7f-343752cbec33" x="138" y="140" width="100" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_bounm}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="1fe70b5e-e0fd-48a5-96b1-1eabe01a0350" x="259" y="140" width="91" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cantidad:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5511082d-8a49-43db-9a79-985c4e13f272" x="13" y="140" width="91" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Unidad Medida:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="5a179418-ad3b-4f80-bf85-6663b85d42a4" x="384" y="140" width="100" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cantidad_prpac}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3077da20-5a32-4970-bef9-2c74fb7ee31d" x="13" y="155" width="108" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor Unitario:]]></text>
+			</staticText>
+			<textField pattern="¤ #,##0.00">
+				<reportElement uuid="35d19a3e-f300-47f2-bb0b-61218ecf5501" x="138" y="155" width="100" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_unitario_prpac}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="094b652f-e175-45e3-89c2-55c19b816dc6" x="259" y="155" width="108" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Valor Total:]]></text>
+			</staticText>
+			<textField pattern="¤ #,##0.00">
+				<reportElement uuid="375eeec7-260a-4ab5-8ccd-139526717e9c" x="384" y="155" width="100" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_total_prpac}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="ddfa10d8-1455-442b-8a64-82c735f41990" x="13" y="169" width="124" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Justificación:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="595a863b-ec63-443c-a5b5-93019c80be19" x="138" y="169" width="375" height="25"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{justificacion_prpac}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="b18b8a99-2901-46de-b3dd-ff4f936bd9db" x="13" y="204" width="91" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Publicado PORTAL:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="ccdb59ce-2312-4a83-a7e3-a7e6342f1225" x="138" y="204" width="100" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{publicado_prpac}?"SI":"NO"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9d371a07-0629-4987-a188-b67e1219d5e5" x="385" y="204" width="100" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cat_electronico_prpac}?"SI":"NO"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="95e7097c-50d7-465e-bcea-4bed4d3a92ee" x="260" y="204" width="91" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Catálogo Elctrónico:]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="17" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="43c03857-cf4b-448b-86bb-1a30be04e1d0" x="0" y="0" width="554" height="16"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="3c492e15-bd57-43c3-9a49-53a3e73f76d8" x="86" y="1" width="91" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Partida Presupuestaria]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a9e232ed-355a-4e09-b5ee-50e9debe59d9" x="380" y="1" width="104" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Monto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bb6a1fbd-0dc0-4ccb-a9eb-999f6eded6e5" x="210" y="1" width="125" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre Partida Presupuestaria]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ea82efda-55eb-4b1a-910f-de6b587cc317" x="0" y="1" width="70" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Año]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6a197a11-d0ef-4735-a488-f848327d6bb5" x="488" y="1" width="65" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Publicado]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement uuid="dea15798-3281-4a57-b3c8-98ac8b3c400d" x="86" y="0" width="91" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo_clasificador_prcla}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8f94f27f-4328-40dd-941e-f7cdadc0b356" x="1" y="0" width="69" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{anio_prpap}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="435ce11d-b8b4-4d73-ab6c-a62b415dcb78" x="203" y="0" width="174" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion_clasificador_prcla}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement uuid="9e1382fd-3717-4e93-a04c-f60c38b11f57" x="381" y="0" width="103" height="14"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_prpap}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="50c12d59-da80-4d93-881b-cbddcbcb602a" x="488" y="0" width="65" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{portal_prpap}?"SI":"NO"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="fb6b959b-6b6b-49f4-a7fa-097f377ae293" x="85" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="d97a5707-59ee-40d3-bf26-c26134c8db20" x="0" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="d45d9fb9-7173-4dc0-8e44-7b94b1acac61" x="554" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="23eec1fb-cf1e-494f-9fda-812509c41c2b" x="191" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="d2253e60-5fd3-447b-9313-968e3729f679" x="379" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="781896ad-89da-4044-a72a-5ea7f1548f3f" x="488" y="0" width="1" height="15"/>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<summary>
+		<band height="126">
+			<textField>
+				<reportElement uuid="a74adc82-bd15-47c3-ab2b-e2f27974e50b" x="433" y="98" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="5c0e1b59-fd1b-41e3-8467-b8c9f638aefa" x="513" y="98" width="40" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f176706d-873e-4c43-910c-50d0a4c2454e" x="13" y="13" width="124" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Aprobado:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="adc3b54e-1233-4dcb-9f2a-3f838757d374" x="138" y="13" width="197" height="14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Unidad de Compras Públicas"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="eb64499f-6958-473f-b899-e40fefad9d82" x="335" y="13" width="50" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Firma:]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="9e4cca27-0223-4ba0-b58e-0ea2d630a9b4" x="393" y="52" width="150" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="aa2dbafc-8e40-4cfc-a9f1-f02728105fb5" x="13" y="53" width="124" height="14"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOTAS:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="367f2411-943a-42c1-902f-08288575d459" x="13" y="67" width="540" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[1. El presente documento certifica única y exclusivamente que el proceso de contratación consta en el Plan Anual de Contratación.]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

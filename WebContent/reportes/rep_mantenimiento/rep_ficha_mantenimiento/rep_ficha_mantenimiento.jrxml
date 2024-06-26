@@ -1,0 +1,696 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_ficha_mantenimiento" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fbd583e5-9c6e-445a-ac38-e94ea5f01173">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="461"/>
+	<parameter name="IDE_MTMAN" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IDE_MTEQU" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:/eclipse-jee-kepler-SR2-win32/Proyectos/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="logo_empr" class="java.lang.String"/>
+	<parameter name="direccion_empr" class="java.lang.String"/>
+	<parameter name="telefono_empr" class="java.lang.String"/>
+	<parameter name="ubicacion" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT man.ide_mtman, man.ide_mtequ, man.ide_estman,mest.nombre_mtesm, man.version, man.activo_mtman, man.ide_geani,ani.detalle_geani, man.ide_gtemp_custodio_mantenimiento, man.ide_gtemp_respomsable,
+       man.ide_geedp_custodio, man.ide_geedp_responsable, man.fecha_mtman,
+       EMP.DOCUMENTO_IDENTIDAD_GTEMP,
+				EMP.APELLIDO_PATERNO_GTEMP || ' ' ||
+				(case when EMP.APELLIDO_MATERNO_GTEMP is null then '' else EMP.APELLIDO_MATERNO_GTEMP end) || ' ' ||
+				EMP.PRIMER_NOMBRE_GTEMP || ' ' ||
+				(case when EMP.SEGUNDO_NOMBRE_GTEMP is null then '' else EMP.SEGUNDO_NOMBRE_GTEMP end) AS NOMBRES_APELLIDOS,
+				SUCU.NOM_SUCU, AREA.DETALLE_GEARE,
+				DEPA.DETALLE_GEDEP,
+				EMP1.DOCUMENTO_IDENTIDAD_GTEMP,
+				EMP1.APELLIDO_PATERNO_GTEMP || ' ' ||
+				(case when EMP1.APELLIDO_MATERNO_GTEMP is null then '' else EMP1.APELLIDO_MATERNO_GTEMP end) || ' ' ||
+				EMP1.PRIMER_NOMBRE_GTEMP || ' ' ||
+				(case when EMP1.SEGUNDO_NOMBRE_GTEMP is null then '' else EMP1.SEGUNDO_NOMBRE_GTEMP end) AS NOMBRES_APELLIDOS_RESPONSABLE,GEPCG.TITULO_CARGO_GEPGC,man.observacion_mtman,ext
+         FROM mto_mantenimiento man
+
+       left join gen_empleados_departamento_par EPAR on EPAR.ide_geedp=man.ide_geedp_custodio
+       LEFT JOIN GTH_EMPLEADO EMP ON EMP.IDE_GTEMP=EPAR.IDE_GTEMP
+       LEFT JOIN SIS_SUCURSAL SUCU ON SUCU.IDE_SUCU=EPAR.IDE_SUCU
+       LEFT JOIN GEN_DEPARTAMENTO DEPA ON DEPA.IDE_GEDEP=EPAR.IDE_GEDEP
+       LEFT JOIN GEN_AREA AREA ON AREA.IDE_GEARE=EPAR.IDE_GEARE
+       LEFT JOIN mto_estado_mantenimiento mest on mest.ide_mtesm=man.ide_estman
+       left join gen_anio ani on ani.ide_geani=man.ide_geani
+       left join gen_empleados_departamento_par EPAR1 on EPAR1.ide_geedp=man.ide_geedp_responsable
+       LEFT JOIN GTH_EMPLEADO EMP1 ON EMP1.IDE_GTEMP=EPAR1.IDE_GTEMP
+       LEFT JOIN gen_partida_grupo_cargo GEPCG on GEPCG.IDE_GEPGC=EPAR.IDE_GEPGC
+       LEFT JOIN MTO_EQUIPO EQUI ON EQUI.IDE_MTEQU=MAN.IDE_MTEQU
+
+
+where MAN.IDE_MTMAN=$P!{IDE_MTMAN} AND MAN.IDE_MTEQU=$P!{IDE_MTEQU}
+
+order by man.ide_mtman asc]]>
+	</queryString>
+	<field name="ide_mtman" class="java.lang.Long"/>
+	<field name="ide_mtequ" class="java.lang.Long"/>
+	<field name="ide_estman" class="java.lang.Long"/>
+	<field name="nombre_mtesm" class="java.lang.String">
+		<fieldDescription><![CDATA[Para colocar el nombre que se va a mostrar en los combobox]]></fieldDescription>
+	</field>
+	<field name="version" class="java.lang.Long"/>
+	<field name="activo_mtman" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[Define el estado del registro si se encuentra activo o inactivo.]]></fieldDescription>
+	</field>
+	<field name="ide_geani" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_anio, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="detalle_geani" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del ano ejemplo: 2013, 2014, etc]]></fieldDescription>
+	</field>
+	<field name="ide_gtemp_custodio_mantenimiento" class="java.lang.Integer"/>
+	<field name="ide_gtemp_respomsable" class="java.lang.Integer"/>
+	<field name="ide_geedp_custodio" class="java.lang.Integer"/>
+	<field name="ide_geedp_responsable" class="java.lang.Integer"/>
+	<field name="fecha_mtman" class="java.sql.Date"/>
+	<field name="documento_identidad_gtemp" class="java.lang.String"/>
+	<field name="nombres_apellidos" class="java.lang.String"/>
+	<field name="nom_sucu" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre de la sucursal.]]></fieldDescription>
+	</field>
+	<field name="detalle_geare" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del area ejemplo: Directorio, Auditoria Interna, etc.]]></fieldDescription>
+	</field>
+	<field name="detalle_gedep" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del departamento, ejemplo: DIRECTORIO, TECNOLOGIA, INFRAESTRUCTURA, etc.]]></fieldDescription>
+	</field>
+	<field name="nombres_apellidos_responsable" class="java.lang.String"/>
+	<field name="titulo_cargo_gepgc" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo contiene el titulo del cargo]]></fieldDescription>
+	</field>
+	<field name="observacion_mtman" class="java.lang.String"/>
+	<field name="ext" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="53" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="415b9207-9f02-4511-a956-b790b3ca9df8" x="125" y="0" width="430" height="53"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="13" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[CORDINACIÓN DE TECNOLOGIAS DE LA INFORMACIÓN Y COMUNICACIÓN MANTENIMIENTO DE EQUIPOS INFORMÁTICOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d880f792-84e0-4c0f-bfe2-f2db1b3864b9" x="0" y="0" width="125" height="53"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<image hAlign="Center">
+				<reportElement uuid="cdf4c880-9b27-461c-8985-e56fe4ccd729" x="0" y="0" width="125" height="31"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+""+$P{logo_empr}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement uuid="0101f12e-62d9-4011-8728-7e4c9006029f" x="0" y="43" width="125" height="10"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Teléfono: "+$P{telefono_empr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4aa350a8-a785-4a09-bbb8-999f5e0fc64d" x="0" y="31" width="125" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Dirección:"+$P{direccion_empr}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="112" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="6bd263c6-e79e-4f58-905d-40d42914252d" x="393" y="73" width="162" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_mtesm}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b1731cab-8826-4494-8040-2a8603c15fb5" x="90" y="33" width="465" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombres_apellidos}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="4abf91e2-0778-40b3-9056-993847ed9985" x="90" y="53" width="465" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_geare}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="761bde75-d536-4517-9ab5-5fa6077c9b9a" x="0" y="33" width="90" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[USUARIO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2e072dbb-41dd-449d-816a-5da83929de60" x="0" y="53" width="90" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[AREA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ab4810aa-5abd-45de-9b0d-fa5a49b5c882" x="0" y="73" width="90" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[FECHA MANTENIMIENTO:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="a340c727-e766-4950-9e9d-b6631dc16ae1" x="90" y="73" width="218" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_mtman}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="be992d53-2c25-4d8f-a7cc-6400846c721d" x="308" y="63" width="85" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[ELABORADO POR:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="b739701a-bfad-4a38-a0ea-c66f00ee01e8" x="393" y="63" width="162" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombres_apellidos_responsable}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="089982ee-2015-4570-9a6d-c3bee4677892" x="0" y="43" width="90" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[CARGO:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="0f97ef54-f30d-490c-b691-b1f1f72d818b" x="90" y="43" width="465" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{titulo_cargo_gepgc}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="90a7a7db-b148-4501-9245-5e55125c7779" x="0" y="63" width="90" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[UBICACIÓN:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="8fcb67c0-2c29-4807-8226-0f9b5207eced" x="90" y="63" width="218" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ubicacion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="b52bf231-3dcb-459f-a67e-79d32e9d9657" x="308" y="73" width="85" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[TIPO MANTENIMIENTO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fe8ac4cb-abcc-4fd1-b3e5-4053c20c65c8" x="0" y="0" width="555" height="23" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[DATOS DE USUARIO]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b13e09d9-6988-48ae-9d9f-2b3f0045ed5d" x="90" y="23" width="465" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ide_mtman}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="7230411f-e13f-42a2-9a32-fe67696f7876" x="0" y="23" width="90" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[ID ACTA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ed70b4a3-eea2-4d35-aadd-1f7ff098cffd" x="0" y="83" width="90" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[EXT:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement uuid="c0b43652-52a7-40f4-8ef7-c9d0451a7366" x="90" y="83" width="218" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ext}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="87">
+			<staticText>
+				<reportElement uuid="6dfa1f72-f0c1-40d6-8eb1-b06769ed5b7a" x="0" y="0" width="555" height="23" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[DATOS DE EQUIPO]]></text>
+			</staticText>
+			<subreport>
+				<reportElement uuid="cc5b9f6c-7cf5-457b-8109-edc7a10c5920" x="0" y="23" width="555" height="64" isPrintWhenDetailOverflows="true"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IDE_MTMAN">
+					<subreportParameterExpression><![CDATA[$P{IDE_MTMAN}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IDE_MTEQU">
+					<subreportParameterExpression><![CDATA[$P{IDE_MTEQU}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_mantenimiento/rep_ficha_mantenimiento/rep_ficha_mantenimiento_equipo.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="87">
+			<staticText>
+				<reportElement uuid="b0e541ba-b396-4498-bf4b-6bccb982815a" x="0" y="-1" width="555" height="23" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[REVISIÓN / CONFIGURACIÓN DE HARDWARE]]></text>
+			</staticText>
+			<subreport>
+				<reportElement uuid="21f6859b-352e-46d0-8422-020e2d9be84e" x="0" y="22" width="555" height="64" isPrintWhenDetailOverflows="true"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IDE_MTMAN">
+					<subreportParameterExpression><![CDATA[$P{IDE_MTMAN}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IDE_MTEQU">
+					<subreportParameterExpression><![CDATA[$P{IDE_MTEQU}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_mantenimiento/rep_ficha_mantenimiento/rep_ficha_mantenimiento_equipo_hardware.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="87">
+			<staticText>
+				<reportElement uuid="800dc817-2058-4857-8681-0e9491a5205e" x="0" y="-1" width="555" height="23" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[REVISIÓN / CONFIGURACIÓN DE SOFTWARE]]></text>
+			</staticText>
+			<subreport>
+				<reportElement uuid="e82df092-2146-4df8-b061-06b892da3b6e" x="0" y="22" width="555" height="64" isPrintWhenDetailOverflows="true"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IDE_MTMAN">
+					<subreportParameterExpression><![CDATA[$P{IDE_MTMAN}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IDE_MTEQU">
+					<subreportParameterExpression><![CDATA[$P{IDE_MTEQU}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_mantenimiento/rep_ficha_mantenimiento/rep_ficha_mantenimiento_equipo_software.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="85">
+			<staticText>
+				<reportElement uuid="aa1fd8c0-8ce4-4f90-b305-e45b0320ad78" x="0" y="-2" width="555" height="23" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[RUTINA MANTENIMIENTO]]></text>
+			</staticText>
+			<subreport>
+				<reportElement uuid="e6079274-0f62-4da5-b52b-7937dd7da102" x="0" y="21" width="555" height="64" isPrintWhenDetailOverflows="true"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IDE_MTMAN">
+					<subreportParameterExpression><![CDATA[$P{IDE_MTMAN}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IDE_MTEQU">
+					<subreportParameterExpression><![CDATA[$P{IDE_MTEQU}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_mantenimiento/rep_ficha_mantenimiento/rep_ficha_mantenimiento_equipo_rutina.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="49">
+			<staticText>
+				<reportElement uuid="357b276f-6d1a-41e6-9e27-c518d04901e2" x="0" y="-1" width="555" height="23" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[OBSERVACIÓN]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="36b7767c-dbf4-40ee-8670-7e7308034277" x="0" y="22" width="555" height="27" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{observacion_mtman}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="10" splitType="Stretch">
+			<textField>
+				<reportElement uuid="32fd23a8-624b-421a-b326-44d4f8c3706c" x="453" y="0" width="63" height="10"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="0d749f6d-2e52-414d-9e6d-d49527568b8c" x="515" y="0" width="40" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="55" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="72611bfe-292d-4a31-ad03-ee4efa74f8fb" x="23" y="0" width="532" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[TICS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d1761448-24c9-4216-b35b-cfedf90dea1c" x="0" y="0" width="23" height="10"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f88c8f58-2f5a-4739-b8e5-03127088c638" x="0" y="10" width="23" height="10"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="211ec84f-ef67-4670-80c8-1d375b579d93" x="23" y="10" width="78" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[NOMBRE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5026515b-a45f-4f32-9a90-7a2e5f5a475b" x="0" y="20" width="23" height="33"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5b61c8d9-ff68-480a-914a-f283b7ec7667" x="23" y="20" width="78" height="33"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[FIRMA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1aad9c97-6ebb-4548-ba60-4c25498209d4" x="101" y="20" width="376" height="33"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="7b6ee635-6bd5-4e76-b917-8f7f2b9ece57" x="101" y="10" width="376" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombres_apellidos_responsable}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="481be4e8-4f1d-481d-822b-20869e3c561e" x="477" y="10" width="78" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d09b6aa2-153c-4033-a31f-b23c6c56ac7e" x="477" y="20" width="78" height="33"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

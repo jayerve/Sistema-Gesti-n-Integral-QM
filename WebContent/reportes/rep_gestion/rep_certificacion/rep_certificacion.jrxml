@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_certificacion" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="647bf96e-cde4-4e85-b58b-3cc72c9f769b">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="744"/>
+	<parameter name="VALOR_MONETARIO" class="java.lang.String"/>
+	<parameter name="p_coordinador_tthh" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SECUENCIAL" class="java.lang.String"/>
+	<parameter name="IDE_GEEDP" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT EPAR.IDE_GEEDP,EMP.IDE_GTEMP ,EMP.DOCUMENTO_IDENTIDAD_GTEMP,
+				EMP.APELLIDO_PATERNO_GTEMP || ' ' ||
+				(case when EMP.APELLIDO_MATERNO_GTEMP is null then '' else EMP.APELLIDO_MATERNO_GTEMP end) || ' ' ||
+				EMP.PRIMER_NOMBRE_GTEMP || ' ' ||
+				(case when EMP.SEGUNDO_NOMBRE_GTEMP is null then '' else EMP.SEGUNDO_NOMBRE_GTEMP end) AS NOMBRES_APELLIDOS,
+				SUCU.NOM_SUCU, AREA.DETALLE_GEARE,
+				DEPA.DETALLE_GEDEP, EMP.FECHA_INGRESO_GRUPO_GTEMP,GPG.TITULO_CARGO_GEPGC,EPAR.RMU_GEEDP
+				FROM GEN_EMPLEADOS_DEPARTAMENTO_PAR EPAR
+				LEFT JOIN GTH_EMPLEADO EMP ON EMP.IDE_GTEMP=EPAR.IDE_GTEMP
+				LEFT JOIN SIS_SUCURSAL SUCU ON SUCU.IDE_SUCU=EPAR.IDE_SUCU
+				LEFT JOIN GEN_DEPARTAMENTO DEPA ON DEPA.IDE_GEDEP=EPAR.IDE_GEDEP
+				LEFT JOIN GEN_AREA AREA ON AREA.IDE_GEARE=EPAR.IDE_GEARE
+				LEFT JOIN GEN_PARTIDA_GRUPO_CARGO GPG ON GPG.IDE_GEPGC=EPAR.IDE_GEPGC
+				WHERE EPAR.IDE_GEEDP IN($P!{IDE_GEEDP})
+
+
+	order by EMP.APELLIDO_PATERNO_GTEMP]]>
+	</queryString>
+	<field name="ide_geedp" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_empleados_departamento_par, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_gtemp" class="java.lang.Integer"/>
+	<field name="documento_identidad_gtemp" class="java.lang.String"/>
+	<field name="nombres_apellidos" class="java.lang.String"/>
+	<field name="nom_sucu" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre de la sucursal.]]></fieldDescription>
+	</field>
+	<field name="detalle_geare" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del area ejemplo: Directorio, Auditoria Interna, etc.]]></fieldDescription>
+	</field>
+	<field name="detalle_gedep" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del departamento, ejemplo: DIRECTORIO, TECNOLOGIA, INFRAESTRUCTURA, etc.]]></fieldDescription>
+	</field>
+	<field name="fecha_ingreso_grupo_gtemp" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_ingreso_grupo_gtemp]]></fieldDescription>
+	</field>
+	<field name="titulo_cargo_gepgc" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo contiene el titulo del cargo]]></fieldDescription>
+	</field>
+	<field name="rmu_geedp" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define la remuneracion unificada del empleado, que mantiene con su respectivo contrato.]]></fieldDescription>
+	</field>
+	<group name="IDE_GEED">
+		<groupExpression><![CDATA[$F{ide_geedp}]]></groupExpression>
+		<groupHeader>
+			<band height="161">
+				<textField>
+					<reportElement uuid="e84a0a9a-4a5a-41a9-8408-e3ea995d9f8e" isPrintRepeatedValues="false" x="77" y="10" width="393" height="56" isPrintWhenDetailOverflows="true"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle" markup="html">
+						<font fontName="Times New Roman" size="10" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Que,  el/la  señor/a "+$F{nombres_apellidos}+", con  cédula de ciudadanía  N° "+$F{documento_identidad_gtemp}
++", labora en la "+"<b> Empresa Pública de Gestión Integral de Residuos Sólidos EMGIRS-EP </b>"+", en la <b> "+ $F{detalle_geare}+"</b>, desde el "+$F{fecha_ingreso_grupo_gtemp}+", hasta la presente fecha, cumpliendo a cabalidad con las actividades encomendadas."]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="5874dc4c-562a-4e97-92e5-d195a494a13e" isPrintRepeatedValues="false" x="77" y="65" width="393" height="33" isPrintWhenDetailOverflows="true"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle" markup="html">
+						<font fontName="Times New Roman" size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Actualmente, mantiene un cargo como "+$F{titulo_cargo_gepgc}+" con una remuneración de USD "+new java.text.DecimalFormat("#,##0.00").format($F{rmu_geedp})+" ("+$P{VALOR_MONETARIO}+")"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="1aabd68a-9375-4675-a5a1-2fe10a7dceaf" isPrintRepeatedValues="false" x="77" y="97" width="393" height="36" isPrintWhenDetailOverflows="true"/>
+					<textElement textAlignment="Justified" verticalAlignment="Middle" markup="html">
+						<font fontName="Times New Roman" size="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA["El/la señor/a "+$F{nombres_apellidos}+", puede hacer uso del presente certificado para los fines pertinentes."]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="291">
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement uuid="a271bb4f-d1c0-4b1d-837b-b30ea6d80799" positionType="Float" x="173" y="147" width="175" height="23" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<bottomPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Times New Roman" size="10" isUnderline="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{p_coordinador_tthh}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement uuid="d88b141e-d997-4e66-8063-3ce25969f89f" positionType="Float" x="173" y="119" width="175" height="1"/>
+				</line>
+				<staticText>
+					<reportElement uuid="c0f0a95b-2d13-4e8a-9053-e2a9972028c6" positionType="Float" x="205" y="124" width="100" height="23" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Times New Roman" size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Aprobado Por:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="c6b5ed8c-a04c-4a84-9876-9b5dbe58d3b7" positionType="Float" x="189" y="49" width="135" height="16" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Times New Roman" size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Atentamente, ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="b08b0c17-dbcf-44b3-9401-f9e7ccf302c3" positionType="Float" x="224" y="170" width="74" height="16" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Times New Roman" size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[EMGIRS-EP]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<title>
+		<band height="169" splitType="Stretch">
+			<image>
+				<reportElement uuid="adc23b96-6f92-4268-a878-5657f34dcd76" x="421" y="0" width="134" height="67"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/reportes/rep_gestion/rep_certificacion/imagenes/emgirs_certificacion.jpg"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement uuid="da5ea08b-5c31-4c6e-b059-cd4183b8bd7c" x="113" y="67" width="294" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<b>CERTIFICACIÓN N°GAF-CTH-2021-</b>"+$P{SECUENCIAL}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="a2c3696a-59c9-42d0-ad45-eee97d907b9f" x="77" y="104" width="406" height="30"/>
+				<textElement>
+					<font fontName="Times New Roman" size="10" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[La Coordinación de Talento Humano de la Empresa Pública Metropolitana de Gestión Integral de Residuos Sólidos EMGIRS-EP, en atención a la petición de parte interesada:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f7814628-ad64-44fd-bac3-b04bc38948ee" x="224" y="147" width="100" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
+					<font size="12" isBold="true" isUnderline="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[CERTIFICA]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band/>
+	</columnHeader>
+	<detail>
+		<band splitType="Immediate"/>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<lastPageFooter>
+		<band height="149">
+			<image>
+				<reportElement uuid="218721da-c1a3-4706-ac9a-939d514244ce" positionType="FixRelativeToBottom" stretchType="RelativeToBandHeight" x="114" y="35" width="338" height="113"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/reportes/rep_gestion/rep_certificacion/imagenes/emgirs_certificacion_pie.jpg"]]></imageExpression>
+			</image>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>

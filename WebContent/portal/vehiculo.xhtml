@@ -1,0 +1,379 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="templates/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"                
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+	<ui:define name="tituloPagina">Vehiculos</ui:define>
+
+	<ui:define name="opciones">
+		<h:form prependId="false" name="formvehiculo" autoUpdate="true" enctype="multipart/form-data">
+			<p:menu style="width: 96%;margin-top: 10px">
+				<p:submenu label="Transporte / Vehiculo">
+
+					<p:menuitem value="Solicitudes" icon="ui-documento"
+						update=":cuerpo">
+						<f:setPropertyActionListener value="1"
+							target="#{controladorVehiculo.strOpcion}" />
+						<p:resetInput target=":cuerpo" />
+					</p:menuitem>
+  					<p:menuitem value="Listado de Solicitudes" icon="ui-tabla"
+						update=":cuerpo">
+						<f:setPropertyActionListener value="2"
+							target="#{controladorVehiculo.strOpcion}" />
+						<p:resetInput target=":cuerpo" />
+					</p:menuitem>
+
+				</p:submenu>
+			</p:menu>
+		</h:form>
+
+	</ui:define>
+
+
+	<ui:define name="contenido">
+		<p:growl id="groMensajes" autoUpdate="true" showDetail="true" />
+		<h:panelGroup id="cuerpo">
+			<h:form id="formVehiculo" prependId="false" autoUpdate="true" enctype="multipart/form-data"
+				rendered="#{controladorVehiculo.strOpcion == 1}">
+				<p:fieldset legend="Solicitud de Vehiculos">
+					<h:panelGrid columns="4">
+
+						<h:outputText value="Lugar Agendamiento: *" style="font-weight: bold" />
+						<p:selectOneMenu
+							value="#{controladorVehiculo.solicitudVehiculo.ideSucu}"
+							required="true" requiredMessage="Debe seleccionar el lugar del Agendamiento">
+							<f:selectItems value="#{controladorVehiculo.listaSucursal}"
+								var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+						</p:selectOneMenu>
+						
+						<h:outputText value="Área : *" style="font-weight: bold" />
+						<p:inputText id="txtDetalleDepartamento" cols="60" rows="4"
+							value="#{controladorVehiculo.descripcionDepartamento}"
+							disabled="true" requiredMessage="Debe ingresar un Detalle" />
+	
+						<h:outputText value="Genera Solicitud : *"
+							style="font-weight: bold" />
+						<p:selectOneMenu
+							value="#{controladorVehiculo.solicitudVehiculo.ideGtemp}"
+							disabled="true" required="true">
+							<!-- <f:selectItem itemLabel="Seleccione Genera Solicitud..."  />-->
+							<f:selectItems
+								value="#{controladorVehiculo.listaGeneraSolicitud}" var="combo"
+								itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+						</p:selectOneMenu>
+
+						<h:outputText value="Nombre Persona Quien solicita : "
+							style="font-weight: bold" />
+						<p:selectOneMenu
+							value="#{controladorVehiculo.solicitudVehiculo.genIdeGtemp}"
+							required="false" requiredMessage="Escoja quien solicita">
+							<f:selectItem itemLabel="Seleccione Quien solicita..." />
+							<f:selectItems value="#{controladorVehiculo.listaNombreSolicita}"
+								var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+							<p:ajax event="change"
+								listener="#{controladorVehiculo.seleccionaEmpleado}"
+								update="txtDetalleDepartamento"></p:ajax>
+						</p:selectOneMenu>
+						
+						<h:outputText value="Fecha Solicitud : *"
+							style="font-weight: bold" />
+						<p:calendar
+							value="#{controladorVehiculo.solicitudVehiculo.fechaSolicitudVesol}"
+							required="true" requiredMessage="Debe ingresar la fecha de solicitud"
+							disabled="true" pattern="dd/MM/yyyy" />
+						
+						<h:outputText value="Jefe Inmediato : *" style="font-weight: bold"/>
+                        <p:selectOneMenu value="#{controladorVehiculo.solicitudVehiculo.ideGeedp.ideGeedp}" required="true" requiredMessage="Debe seleccionar su Jefe Inmediato">
+                            <f:selectItem itemLabel="Seleccionar Jefe Inmediato..."  />  
+                            <f:selectItems  value="#{controladorVacaciones.listaJefesInmediatos}" var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+                        </p:selectOneMenu> 
+
+						<h:outputText value="Motivo : *" style="font-weight: bold" />
+						<p:inputTextarea cols="60" rows="4" required="true" maxlength="250"
+							value="#{controladorVehiculo.solicitudVehiculo.motivoVesol}"
+							requiredMessage="Debe ingresar un Motivo" />
+
+						<h:outputText value="Nota : *" style="font-weight: bold" />
+						<h:outputText value="Los agendamientos se lo deberá de ingresar con un día de anticipación y ser ingresados de Lunes a Viernes hasta las 16:30H." />
+	
+						<h:outputText id="lblFecSalida" value="Fecha Salida : *" style="font-weight: bold" />
+						<p:calendar id="calFecSalida" value="#{controladorVehiculo.solicitudVehiculo.fechaSalidaVesol}" pattern="dd/MM/yyyy" 
+						required="true" requiredMessage="Debe ingresar la fecha de salida">
+						<p:ajax event="dateSelect" listener="#{controladorVehiculo.calcularDias}" update="txtDias,calFecRetorno" />
+						<p:ajax event="change" listener="#{controladorVehiculo.calcularDias}" update="txtDias,calFecRetorno" />
+						</p:calendar>
+
+						<h:outputText id="lblFecRetorno" value="Fecha Retorno : *" style="font-weight: bold" />
+						<p:calendar id="calFecRetorno" value="#{controladorVehiculo.solicitudVehiculo.fechaRegresoVesol}" pattern="dd/MM/yyyy" 
+						required="true" requiredMessage="Debe ingresar la fecha de retorno">
+						<p:ajax event="dateSelect" listener="#{controladorVehiculo.calcularDias}" update="txtDias,calFecRetorno" />
+						<p:ajax event="change" listener="#{controladorVehiculo.calcularDias}" update="txtDias,calFecRetorno" />
+						</p:calendar>	
+						
+						<h:outputText id="idLabelHorDes" value="Hora Salida : *" style="font-weight: bold" />
+						<p:calendar id="calHDesde"
+							value="#{controladorVehiculo.solicitudVehiculo.horaSalidaVesol}"
+							pattern="HH:mm" timeOnly="true" required="true"
+							requiredMessage="Debe ingresar la Hora Desde">
+							<p:ajax event="dateSelect"	listener="#{controladorVehiculo.calcularHoras}"	update="txtHoras" />
+							<p:ajax event="change"	listener="#{controladorVehiculo.calcularHoras}"	update="txtHoras" />
+						</p:calendar>
+
+						<h:outputText id="idLabelHorHas" value="Hora Retorno : *"
+							style="font-weight: bold" />
+						<p:calendar id="calHHasta"
+							value="#{controladorVehiculo.solicitudVehiculo.horaRetornoVesol}"
+							pattern="HH:mm" timeOnly="true" required="true"
+							requiredMessage="Debe ingresar la Hora Hasta">
+							<p:ajax event="dateSelect"
+								listener="#{controladorVehiculo.calcularHoras}"
+								update="txtHoras" />
+							<p:ajax event="change"
+								listener="#{controladorVehiculo.calcularHoras}"
+								update="txtHoras" />
+						</p:calendar>
+
+ 						<h:outputText id="lblNumDias" value="Número de Días : *"
+							style="font-weight: bold"  /> 
+						<p:inputText id="txtDias" size="5" disabled="true"
+							value="#{controladorVehiculo.solicitudVehiculo.diasSolicitadoVesol}"
+							required="true"
+							requiredMessage="No se puede calcular el número de días" />
+
+						<h:outputText id="idLabelNumHor" value="Número de Horas : *"
+							style="font-weight: bold" />
+						<p:inputText id="txtHoras" disabled="true" required="true"
+							value="#{controladorVehiculo.solicitudVehiculo.tiempoSolicitadoVesol}"
+							requiredMessage="No se puede calcular el número de horas" />
+ 
+
+						<h:outputText id="idLabelExtContacto" value="Extensión : "
+							style="font-weight: bold" />
+						<p:inputText id="txtExtContacto" size="5" maxlength="4" 
+							value="#{controladorVehiculo.solicitudVehiculo.extContactoVesol}" />
+
+						<h:outputText id="idOcupantes" value="Ocupantes : *"
+							style="font-weight: bold" />
+						<p:inputText id="txtOcupantes" size="1" maxlength="1" 
+							value="#{controladorVehiculo.solicitudVehiculo.ocupantesVesol}" required="true"	
+							requiredMessage="Debe ingresar los ocupantes" />
+
+						<h:outputText value="Lleva carga consigo:" style="font-weight: bold" />
+						<p:selectBooleanCheckbox value="#{controladorVehiculo.solicitudVehiculo.llevaCargaVesol}" />
+						
+						<h:outputText value="Tipo Vehículo : *" style="font-weight: bold" />
+						<p:selectOneMenu
+							value="#{controladorVehiculo.solicitudVehiculo.ideVetip}"
+							required="true" requiredMessage="Debe seleccionar el tipo de vehículo">
+							<f:selectItem itemLabel="Seleccionar Tipo Vehículo..." />
+							<f:selectItems value="#{controladorVehiculo.listaTipoVehiculo}"
+								var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+							<p:ajax event="change"
+								listener="#{controladorVehiculo.seleccionaTipoVehiculo}" />
+						</p:selectOneMenu>	
+						
+						<h:outputText value="Ruta Salida : *" style="font-weight: bold" />
+						<p:selectOneMenu
+							value="#{controladorVehiculo.solicitudVehiculoRuta.ideSalidaVerut}"
+							required="true" requiredMessage="Debe seleccionar una ruta de Salida">
+							<f:selectItem itemLabel="Seleccionar Ruta..." />
+							<f:selectItems value="#{controladorVehiculo.listaRuta}"
+								var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+							<p:ajax event="change"
+								listener="#{controladorVehiculo.seleccionaRutaSalida}"
+								update="outOtroRutaSalida,txtOtroRutaSalida" />
+						</p:selectOneMenu>
+						
+						<h:outputText id="outOtroRutaSalida" value="Descripción Ruta Salida : *" style="font-weight: bold"  />
+						<p:inputTextarea id="txtOtroRutaSalida" cols="60" rows="4"
+							value="#{controladorVehiculo.solicitudVehiculoRuta.detalleSalidaVesru}"
+							required="true" maxlength="250"
+							requiredMessage="No se ingreso la ruta de salida"
+							disabled="#{controladorVehiculo.esOtroSalida}" />	
+						
+						<h:outputText value="Ruta Destino : *" style="font-weight: bold" />
+						<p:selectOneMenu
+							value="#{controladorVehiculo.solicitudVehiculoRuta.ideVerut.ideVerut}"
+							required="true" requiredMessage="Debe seleccionar una ruta">
+							<f:selectItem itemLabel="Seleccionar Ruta..." />
+							<f:selectItems value="#{controladorVehiculo.listaRuta}"
+								var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+							<p:ajax event="change"
+								listener="#{controladorVehiculo.seleccionaRuta}"
+								update="outOtroRuta,txtOtroRuta" />
+						</p:selectOneMenu>
+
+						<h:outputText id="outOtroRuta" value="Descripción Ruta Destino : *" style="font-weight: bold"  />
+						<p:inputTextarea id="txtOtroRuta" cols="60" rows="4" required="true" maxlength="250"
+							value="#{controladorVehiculo.solicitudVehiculoRuta.detalleVesru}"
+							requiredMessage="No se ingreso la ruta de destino"
+							disabled="#{controladorVehiculo.esOtro}" />
+							
+						
+
+					</h:panelGrid>
+					<p:separator/>
+					<p:fieldset id="fOc" legend="Ocupantes" >
+               			
+	                    <h:panelGrid columns="3" >
+	                    
+		                    <h:outputText value="Ocupante : " style="font-weight: bold" />
+							<p:selectOneMenu
+								value="#{controladorVehiculo.ideGtempOc}"
+								style="width: 180px;" >
+								<f:selectItem itemLabel="Seleccione 1 Ocupante..." />
+								<f:selectItems value="#{controladorVehiculo.listaNombreSolicita}"
+									var="comboOC" itemLabel="#{comboOC[1]}" itemValue="#{comboOC[0]}" />
+							</p:selectOneMenu>
+				
+							<p:commandButton process="fOc" value="Agregar Ocupante"
+								icon="ui-agregar" partialSubmit="true" 
+								actionListener="#{controladorVehiculo.agregarOcupante}"
+								update="fOc,tabOcupantes" />
+			                        
+	                   	</h:panelGrid>
+						<p:dataTable id="tabOcupantes"
+						value="#{controladorVehiculo.listaOcupantes}" var="ocup"
+						rowKey="#{ocup.ideGtemp}" editable="true" emptyMessage="No tiene ocupantes registrados" style="width: 50%">
+		
+	                        <f:facet name="header">
+	                            Listado de Ocupantes
+	                        </f:facet>
+
+	                        <p:column width="40">
+								<p:commandLink process="tabOcupantes" update="tabOcupantes"
+										title="Eliminar" 
+										actionListener="#{controladorVehiculo.eliminarOcupante(ocup)}">
+		                                <h:graphicImage value="../imagenes/im_eliminar.png"/>										
+	                            </p:commandLink>
+	                        </p:column>  
+	                        
+	                        <p:column width="120" headerText="Cedula">	                            
+                                 <h:outputText value="#{ocup.ideGtemp.documentoIdentidadGtemp}"/>    	                                
+	                        </p:column>
+	                        
+	                        <p:column width="150" headerText="Nombres">	                            
+                                 <h:outputText value="#{ocup.ideGtemp.primerNombreGtemp}"/>    	                                
+	                        </p:column>  
+	                        
+	                        <p:column width="150" headerText="Apellidos">	                            
+                                 <h:outputText value="#{ocup.ideGtemp.apellidoPaternoGtemp}"/>    	                                
+	                        </p:column>  
+                    </p:dataTable>
+
+	             	</p:fieldset>
+	             	
+	             	<p:separator/>
+	             	<p:fieldset legend="Justificación">                   
+                    <h:panelGrid columns="2">
+                       <h:outputText value="Archivo adjunto:" style="font-weight: bold"/>
+                    
+			                <p:fileUpload id="fupArchivo1" value="#{controladorVehiculo.adjunto}"
+                                          sizeLimit="3596288"
+                                          invalidSizeMessage="Tamaño máximo del archivo: 3 MB"
+                                          mode="simple"
+                                          skinSimple="true"
+                                          allowTypes="/(\.|\/)(doc|docx|xls|xlsx|pdf|gif|jpe?g|png)$/"
+                                          label="Buscar" />                    
+
+                          <h:outputText value="Detalle Justificación *" style="font-weight: bold" />
+                          <p:inputTextarea cols="60" rows="4" value="#{controladorVehiculo.solicitudJustificacion.detalleVesoa}"
+                              maxlength="250" requiredMessage="Debe ingresar un Detalle"/>
+
+					</h:panelGrid>
+                    
+                </p:fieldset>
+                
+                <p:separator/>	
+                <p:fieldset styleClass="field_set" style="color:red;" legend="INFORMACION IMPORTANTE" >				
+                    <h:panelGrid columns="1" style="width: 80.55%;text-align:center;font-weight: bold;">
+                     <h:outputLabel value="R E C U E R D E" style="align-text:center; color:red;" />
+                    
+                    <h:outputText style="font-weight: bold"
+									value="Se recuerda a todos los funcionarios que se debe de adjuntar el sitra de autorización para el agendamiento fuera del horario laboral..." />
+						
+				</h:panelGrid>
+                    
+                </p:fieldset>
+	             	
+	            <p:separator/> 	
+	             	<p:commandButton partialSubmit="true" process="formVehiculo" ajax="false"
+								update="formVehiculo" value="Guardar" icon="ui-guardar"
+								actionListener="#{controladorVehiculo.guardarSolicitud()}" />
+					</p:fieldset>
+
+			</h:form>
+			
+
+			<h:panelGrid width="100%"
+				rendered="#{controladorVehiculo.strOpcion == 2}">
+				<p:dataTable value="#{controladorVehiculo.listaSolicitudes}"
+					var="tabla" autoUpdate="true" rows="20" paginator="true"
+					paginatorAlwaysVisible="false" id="tab">
+					<f:facet name="header">
+                        Listado de Solicitudes
+                    </f:facet>
+					<p:column style="width:2%;align-text:center;">
+						<p:rowToggler />
+					</p:column>
+
+					<p:rowExpansion>
+
+					</p:rowExpansion>
+
+
+					<p:column style="text-align:center;" headerText="CODIGO">
+						<h:outputText value="#{tabla.ideVesol}" />
+					</p:column>
+
+
+					<p:column style="text-align:right;" headerText="FECHA SOLICITUD">
+						<h:outputText value="#{tabla.fechaSolicitudVesol}">
+							<f:convertDateTime type="date" dateStyle="short" />
+						</h:outputText>
+					</p:column>
+					<p:column style="text-align:center;" headerText="MOTIVO">
+						<h:outputText value="#{tabla.motivoVesol}" />
+
+					</p:column>
+					<p:column style="text-align:right;" headerText="FECHA SALIDA">
+						<h:outputText value="#{tabla.fechaSalidaVesol}">
+							<f:convertDateTime type="date" dateStyle="short" />
+						</h:outputText>
+					</p:column>
+
+					<p:column style="text-align:center;" headerText="# HORAS">
+						<h:outputText value=" #{tabla.tiempoSolicitadoVesol}" />
+					</p:column>
+					
+					<p:column style="text-align:center;" headerText="CONDUCTOR">
+						<h:outputText value=" #{tabla.ideVecon.ideGtemp.apellidoPaternoGtemp}" />
+					</p:column>
+					
+					<p:column style="text-align:center;" headerText="PLACA">
+						<h:outputText value=" #{tabla.ideVeveh.placaVeveh}" />
+					</p:column>
+					
+					<p:column style="text-align:center;" headerText="JEFE INMEDIATO">
+                     <p:selectBooleanCheckbox value="#{tabla.aprobadoVesol}" disabled="true" />
+                     </p:column>
+
+					<p:column style="text-align:center;" headerText="ESTADO">
+						<h:outputText value=" #{tabla.ideVetes.detalleVetes}" />
+					</p:column>
+				</p:dataTable>
+			</h:panelGrid>
+
+		</h:panelGroup>
+
+	</ui:define>
+</ui:composition>
+
+
+
+
+

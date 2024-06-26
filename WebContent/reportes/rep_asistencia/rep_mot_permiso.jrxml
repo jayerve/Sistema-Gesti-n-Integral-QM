@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_mot_permiso" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4289ffec-03dc-4f1f-ab02-bf78b531b41b">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_gtemp" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_desde" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_hasta" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_usua" class="java.lang.Integer"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="titulo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select a.ide_gtemp,a.primer_nombre_gtemp ||' '||
+(case when  a.segundo_nombre_gtemp is null then  '' else a.segundo_nombre_gtemp end) || ''|| a.apellido_paterno_gtemp || ' ' ||
+(case when a.apellido_materno_gtemp is null then '' else a.apellido_materno_gtemp end) Nombre,
+c.ide_gecaf,c.detalle_gecaf,d.ide_geare,d.detalle_geare,e.fecha_solicitud_aspvh,e.nro_horas_aspvh,f.ide_asmot,f.detalle_asmot,
+e.fecha_desde_aspvh,e.fecha_hasta_aspvh
+from gth_empleado a
+left join gen_empleados_departamento_par b on a.ide_gtemp=b.ide_gtemp
+left join gen_cargo_funcional c on c.ide_gecaf=b.ide_gecaf
+left join gen_area d on d.ide_geare=b.ide_geare
+left join asi_permisos_vacacion_hext e on e.ide_gtemp=a.ide_gtemp and b.ide_geedp=e.ide_geedp
+left join asi_motivo f on f.ide_asmot=e.ide_asmot
+where a.ide_gtemp=$P{ide_gtemp}
+and e.fecha_desde_aspvh between  cast($P{fecha_desde} as date) and cast($P{fecha_hasta} as date)
+order by e.fecha_desde_aspvh desc]]>
+	</queryString>
+	<field name="ide_gtemp" class="java.lang.Integer"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="ide_gecaf" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_cargo_funcional, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="detalle_gecaf" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del cargo y el puesto en el caso d emonte de piedad, ejemplo: PROFESIONAL 1, TECNICO A , TECNICO B, asi como los puestos: CAJERO, PQ Y PH, etc]]></fieldDescription>
+	</field>
+	<field name="ide_geare" class="java.lang.Integer"/>
+	<field name="detalle_geare" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del area ejemplo: Directorio, Auditoria Interna, etc.]]></fieldDescription>
+	</field>
+	<field name="fecha_solicitud_aspvh" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha de solicitud tanto del permiso, vaciones como horas extras.]]></fieldDescription>
+	</field>
+	<field name="nro_horas_aspvh" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el numero de horas de restar fecha_desde menos fecha_hasta.]]></fieldDescription>
+	</field>
+	<field name="ide_asmot" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla asi_motivo, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="detalle_asmot" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre de la novedad. ejempo: horas no laboradas por enfermedad, horas extras 100% etc.]]></fieldDescription>
+	</field>
+	<field name="fecha_desde_aspvh" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha desde cuando solicito el permiso o las vacaciones.]]></fieldDescription>
+	</field>
+	<field name="fecha_hasta_aspvh" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha hasta cuanod solicita las vaciones o el permiso depnediendo el motivo y tipo de solicitud.]]></fieldDescription>
+	</field>
+	<variable name="detalle_asmot_1" class="java.lang.String" calculation="Average">
+		<variableExpression><![CDATA[$F{detalle_asmot}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="60" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="018520de-a2dc-4c49-9afd-9baae3d28f1b" x="0" y="0" width="555" height="60"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{ide_usua}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="129" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="754bd5f1-f27e-4086-a652-5d0b2cf9cc08" x="0" y="0" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[NOMBRE: ]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="c47fc201-c46e-4837-859f-3917bb65eaef" x="120" y="0" width="266" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="7fc6733f-2b52-41ce-9907-7af777ef60dc" x="0" y="20" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[CARGO:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="9cd8042f-be9e-46dc-a6e2-7bc8a7deb5c1" x="120" y="20" width="266" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{detalle_gecaf}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c52fc847-00d1-43b8-8460-9352a40dbf20" x="0" y="41" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[AREAS:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="02cd58eb-830c-4077-a9a7-414ed5200f00" x="120" y="40" width="266" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{detalle_geare}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="1e92b3ca-75fe-4416-9b80-bfea1d430d73" x="0" y="76" width="122" height="20"/>
+				<textElement/>
+				<text><![CDATA[PERIODO REPORTE:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e2c0cdcb-f54a-40cf-8a41-d6c90cb1e43d" x="0" y="109" width="120" height="20"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[ FECHA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="15c41519-b414-47cd-82bd-fb588b513173" x="140" y="109" width="120" height="20"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[TIEMPO(EN MINUTOS)  ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e830e44e-eaa8-48ef-8585-0198a276a72b" x="280" y="109" width="150" height="20"/>
+				<textElement/>
+				<text><![CDATA[MOTIVO AUSENTISMO]]></text>
+			</staticText>
+			<textField pattern="MM/dd/yyyy">
+				<reportElement uuid="e3e883d1-68f4-458c-aade-66392aa86a90" x="150" y="77" width="78" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{fecha_desde_aspvh}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MM/dd/yyyy">
+				<reportElement uuid="ff3d109c-15f7-4bc5-bf03-b71fce578c72" x="330" y="77" width="83" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{fecha_hasta_aspvh}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f7a28263-ef29-40d0-a202-648275437a21" x="244" y="77" width="64" height="20"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[HASTA]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="287c1bb7-b6f4-4155-8783-653c516e0181" x="0" y="0" width="120" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{fecha_solicitud_aspvh}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="4a2e9bf9-cf69-427c-91a4-abdcbbb1ba6b" x="140" y="0" width="120" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{nro_horas_aspvh}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="4f5b877c-5892-4eb9-beac-3a97ab82e62f" x="280" y="0" width="150" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA["  "+$F{detalle_asmot}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="22" splitType="Stretch">
+			<textField evaluationTime="Report">
+				<reportElement uuid="1ffd3e63-fafe-477f-a303-2b9c7060df1a" x="515" y="0" width="40" height="21"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="319d04d5-7c77-488e-84c2-765288bbb74f" x="435" y="0" width="80" height="21"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="50" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="bbf86554-7a43-4a33-8daa-5408b8ff5735" x="0" y="0" width="555" height="50"/>
+				<subreportParameter name="ide_gtemp">
+					<subreportParameterExpression><![CDATA[$P{ide_gtemp}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="fecha_desde">
+					<subreportParameterExpression><![CDATA[$P{fecha_desde}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="fecha_hasta">
+					<subreportParameterExpression><![CDATA[$P{fecha_hasta}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_asistencia/sub_rep_motivo.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_recibo_caja_ticket_cur" pageWidth="210" pageHeight="400" columnWidth="194" leftMargin="8" rightMargin="8" topMargin="20" bottomMargin="10" isIgnorePagination="true" uuid="4f88d28a-8afc-4abc-95b3-23e811e4bb26">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="p_nro_comprobante" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select ide_facob, tipoDoc,
+                fecha_cobro,
+                nro_documento,
+                valor_cobro,
+                coalesce(rec.primer_nombre_gtemp,rec.segundo_nombre_gtemp) || ' ' || rec.apellido_paterno_gtemp  as recaudador ,
+                detalle_tecaj as caja,
+                detalle_retip as forma_pag,
+                cliente,
+                ruc_comercial_recli as ruc,
+                coalesce(observaciones_facob,'') as observaciones,
+                coalesce(cliente_pago_facob,'') as cliente_pago,
+                fecha_confirmacion_facur,
+                cast(entidad_facur || '-'||nro_cur_facur as character(15)) as cur,
+                cuenta_monetaria_facur,
+                valor_acreditado_facur,
+                fecha_registro_facur
+                from
+                (
+                    SELECT fc.ide_facob,fc.ide_tecaj,fc.ide_retip,ide_facur,'FACTURA' as tipoDoc,fc.fecha_cobro_facob as fecha_cobro, fac.fecha_transaccion_fafac as fecha_emision, fac.secuencial_fafac as nro_documento,observaciones_facob,
+                    fac.total_fafac as valor, (fc.valor_cobro_facob + fc.valor_cobro_iva_facob) as valor_cobro, ab.abono, fc.ide_gtemp,coalesce(cli.razon_social_recli,cli.nombre_comercial_recli) as cliente,ruc_comercial_recli,cliente_pago_facob
+                    FROM fac_cobro fc
+                    join fac_factura fac on fac.ide_fafac=fc.ide_fafac
+                    left join rec_clientes cli on cli.ide_recli=fac.ide_recli
+                    left join (select ide_fafac, sum(coalesce(valor_cobro_facob,0)+coalesce(valor_cobro_iva_facob,0)) as abono from fac_cobro group by ide_fafac) ab on ab.ide_fafac=fac.ide_fafac
+                    WHERE fc.nro_documento_facob= $P{p_nro_comprobante}
+                    union all
+                    SELECT fc.ide_facob,fc.ide_tecaj,fc.ide_retip,ide_facur,'NOTA D.' as tipoDoc,fc.fecha_cobro_facob as fecha_cobro, nd.fecha_emision_fanod as fecha_emision, nd.nro_nota_debito_elect_fanod as nro_documento,observaciones_facob,
+                    nd.interes_generado_fanod as valor, fc.valor_cobro_interes_facob as valor_cobro, ab.abono, fc.ide_gtemp,coalesce(cli.razon_social_recli,cli.nombre_comercial_recli) as cliente,ruc_comercial_recli,cliente_pago_facob
+                    FROM fac_cobro fc
+                    join fac_nota_debito nd on nd.ide_fanod=fc.ide_fanod
+                    left join rec_clientes cli on cli.ide_recli=nd.ide_recli
+                    left join (select ide_fanod, sum(valor_cobro_interes_facob) as abono from fac_cobro group by ide_fanod) ab on ab.ide_fanod=nd.ide_fanod
+                    WHERE fc.nro_documento_facob= $P{p_nro_comprobante}
+                    union all
+                    SELECT fc.ide_facob,fc.ide_tecaj,fc.ide_retip,ide_facur,'CONTRATO' as tipoDoc,fc.fecha_cobro_facob as fecha_cobro, pc.fecha_firma_prcon as fecha_emision, lpad(pc.numero_contrato_prcon,4,'0') as nro_documento,observaciones_facob,
+                    pc.monto_prcon as valor, fc.valor_cobro_facob as valor_cobro, ab.abono, fc.ide_gtemp,coalesce(cli.razon_social_recli,cli.nombre_comercial_recli) as cliente,ruc_comercial_recli,cliente_pago_facob
+                    FROM fac_cobro fc
+                    join pre_contrato pc on pc.ide_prcon=fc.ide_prcon
+                    left join rec_clientes cli on cli.ide_recli=pc.ide_recli
+                    left join (select ide_prcon, sum(valor_cobro_facob) as abono from fac_cobro group by ide_prcon) ab on ab.ide_prcon=fc.ide_prcon
+                    WHERE fc.nro_documento_facob= $P{p_nro_comprobante}
+                ) doc
+		        join fac_cur_pagos cur on cur.ide_facur=doc.ide_facur
+                left join gth_empleado rec on rec.ide_gtemp=doc.ide_gtemp
+                left join tes_caja caj on caj.ide_tecaj=doc.ide_tecaj
+                left join rec_tipo tp on tp.ide_retip=doc.ide_retip
+
+                order by 1,2]]>
+	</queryString>
+	<field name="ide_facob" class="java.lang.Integer"/>
+	<field name="tipodoc" class="java.lang.String"/>
+	<field name="fecha_cobro" class="java.sql.Date"/>
+	<field name="nro_documento" class="java.lang.String"/>
+	<field name="valor_cobro" class="java.math.BigDecimal"/>
+	<field name="recaudador" class="java.lang.String"/>
+	<field name="caja" class="java.lang.String"/>
+	<field name="forma_pag" class="java.lang.String"/>
+	<field name="cliente" class="java.lang.String"/>
+	<field name="ruc" class="java.lang.String"/>
+	<field name="observaciones" class="java.lang.String"/>
+	<field name="cliente_pago" class="java.lang.String"/>
+	<field name="fecha_confirmacion_facur" class="java.sql.Date"/>
+	<field name="cur" class="java.lang.String"/>
+	<field name="cuenta_monetaria_facur" class="java.lang.String"/>
+	<field name="valor_acreditado_facur" class="java.math.BigDecimal"/>
+	<field name="fecha_registro_facur" class="java.sql.Date"/>
+	<variable name="recaudado" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_cobro}]]></variableExpression>
+	</variable>
+	<title>
+		<band height="205" splitType="Immediate">
+			<staticText>
+				<reportElement uuid="1b88f064-3746-4017-83a9-b592b4b03a6d" x="0" y="0" width="194" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Empresa Pública Metropolitana de Gestión]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="87f58355-fd78-44a0-a60b-a67004433119" x="0" y="11" width="194" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Integral de Residuos Sólidos EMGIRS-EP]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="da32dd36-4a76-4466-a692-9bf0f5fce973" x="0" y="26" width="194" height="27"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Matriz: Pasaje OE3G - N51-84 y Av. Río Amazonas, Quito]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="52a4ef2b-9cf8-4452-bd90-034b6cd50fbc" x="1" y="53" width="193" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["RECIBO DE RECAUDACIÓN No. "+$P{p_nro_comprobante}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="cc889cc8-6619-4fb5-a5e0-c5a2dcdb84c3" x="1" y="158" width="45" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[CLIENTE:]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="45dc9ee3-d7dd-4784-b1ce-d1efec733711" x="48" y="158" width="146" height="30"/>
+				<textElement markup="html">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cliente}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="e144760c-1e1e-437c-ba14-18fbde51d5da" x="1" y="146" width="65" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[RUC:]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="b20f6265-ad7d-485b-a6a9-162db6dca3a1" x="67" y="146" width="127" height="12"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ruc}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="">
+				<reportElement uuid="cb26b381-3ff4-4be9-b150-e6eaca8df074" x="67" y="71" width="72" height="13"/>
+				<textElement textAlignment="Left">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{caja}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="9331732f-2982-4007-ad90-6e4fe843ddca" x="1" y="71" width="65" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[CAJA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b7962daf-4a87-417d-96a9-7c7972dbcdf4" x="1" y="189" width="45" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[PAGO:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="">
+				<reportElement uuid="a840efc1-b3a6-47ca-8d88-ccb8635f6e46" x="49" y="189" width="144" height="12"/>
+				<textElement textAlignment="Left">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{forma_pag}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="681738a4-2b8c-4a0a-992b-7c95f08033f4" x="67" y="110" width="83" height="12"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cuenta_monetaria_facur}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c0c96bb6-5f86-4898-9482-c2d963d88b83" x="1" y="110" width="65" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[CUENTA BANC:]]></text>
+			</staticText>
+			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="true">
+				<reportElement uuid="4e4131db-81ec-4619-8fde-1fb59012f4df" x="67" y="84" width="90" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_cobro}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="77f538b6-e867-47c7-96f9-4d844b43a73d" x="1" y="84" width="65" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[FECHA COBRO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f768e7ff-eedd-49db-9c39-10497f2b18ad" x="1" y="97" width="65" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[FECHA CONFIR.:]]></text>
+			</staticText>
+			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="true">
+				<reportElement uuid="928f1d60-40ab-416b-9050-48cfafd2dd23" x="67" y="97" width="106" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_confirmacion_facur}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="8b2be496-2fa1-4fd9-b0f3-a7f16d4e6ddc" x="1" y="134" width="65" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[CODIGO CUR:]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="ea8eefc0-379f-45a3-805d-e31742d769aa" x="67" y="134" width="83" height="12"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cur}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="e71dcb36-91cd-45b0-a586-690b9ab933fa" x="1" y="122" width="65" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[MONTO CUR:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00">
+				<reportElement uuid="e61702d9-e94b-4cc5-8d04-f51d151fa766" x="67" y="122" width="126" height="12"/>
+				<textElement textAlignment="Left">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_acreditado_facur}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="19" splitType="Stretch">
+			<line>
+				<reportElement uuid="1914a5c9-0b8e-4afe-8c8e-24d9811dc482" x="0" y="0" width="194" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="f58a5e36-9190-4e8e-81ff-7382f3b27908" x="0" y="2" width="28" height="13"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[TIPO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2970295b-ff82-4f6b-b9af-f18114bcf916" x="34" y="2" width="102" height="13"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[NRO DOCUMENTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="90e27cae-c040-4fb1-b995-6b4422a68987" x="139" y="2" width="54" height="13"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[VALOR]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="b61caf0a-e62b-4e93-9806-a136dffa525c" x="0" y="16" width="194" height="1"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="14" splitType="Immediate">
+			<textField>
+				<reportElement uuid="cd617685-f25d-4eb2-a114-fae50e908378" x="1" y="0" width="48" height="13"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipodoc}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="d9fc8106-10bc-4d50-b8d5-4dca9614125c" x="133" y="0" width="60" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_cobro}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="7732f12a-66e3-4d6a-a252-31a9985445bd" x="49" y="0" width="85" height="13"/>
+				<textElement textAlignment="Left">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nro_documento}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="316" splitType="Immediate">
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="40651495-63cb-4d80-be2f-95a8a96c1c84" x="129" y="3" width="64" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{recaudado}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="abb0884f-7f00-4dc0-a9c9-c4e73b132dbf" x="39" y="3" width="89" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[TOTAL RECAUDADO:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="92059c4d-44a8-4874-a5a9-7da9e27af65d" x="0" y="77" width="193" height="13"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{cliente_pago}.isEmpty() || $F{cliente_pago}.toUpperCase().equals("NULL") ? $F{cliente}.toUpperCase() : $F{cliente_pago}.toUpperCase() )]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="2b8b3f6d-e781-4c11-8462-55d163408996" x="1" y="77" width="192" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="3e68ef77-3597-4115-8a97-9bf1df0723f2" x="0" y="88" width="193" height="13"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[CLIENTE]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="180ae95b-b5f6-4f53-a2ea-f87f1993a2f5" x="0" y="156" width="193" height="13"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{recaudador}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5c6ecfce-e70c-4834-b28e-0ab87ca99185" x="0" y="167" width="193" height="13"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[RECAUDADOR]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="3c7770b6-4c78-4c7f-8294-025e5c2025ef" x="1" y="155" width="193" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="ae918b14-60e7-4853-b4f5-119fb643b893" x="0" y="279" width="193" height="21"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Nota.- Comprobante emitido automaticamente por el sistema ERP de la EMGIRS-EP.]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="3e521a2e-521e-4475-917c-a72a320272cb" x="0" y="1" width="194" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="2a14bff0-2c9b-4d74-b784-b468dffdba61" x="0" y="242" width="193" height="38"/>
+				<textElement textAlignment="Justified">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Estimad@ cliente, sus comprobantes los puede descargar
+en el link facturacion.emgirs.gob.ec/addocument_website registrando su cédula o ruc en usuario y en clave los seis primeros dígitos.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a4113f3f-8056-4294-95fb-f2a6c82bdac6" x="1" y="180" width="89" height="13"/>
+				<textElement textAlignment="Left">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[OBSERVACIONES:]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="3a4ce8de-0b66-48e9-947d-839d83d051a4" x="1" y="193" width="192" height="41"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{observaciones}.isEmpty() || $F{observaciones}.toUpperCase().equals("NULL") ? "NINGUNA" : $F{observaciones} )]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="946201c3-2dcd-4001-828e-1f02c8644a98" x="8" y="301" width="82" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[FECHA IMPRESIÓN:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy h.mm a" isBlankWhenNull="true">
+				<reportElement uuid="8c980ecc-8578-4cb3-97b7-bcd62f4f77ee" x="91" y="301" width="89" height="13"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,661 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_factura" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="833" leftMargin="4" rightMargin="5" topMargin="20" bottomMargin="20" uuid="ebfe7de5-9a41-4610-9687-0c7e64ec5332">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="93"/>
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="pide_fafac" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select a.ide_recli,telefono_factura,nombre_comercial_factura,matriz_sucursal_factura,ruc_comercial_factura,
+abreviatura_factura,fecha_transaccion_fafac,subtotal,cantidad_fadef,fecha_fadef,direccion_factura,
+valor_fadef,total_fadef,detalle_bomat,ide_bomat,valor_iva_fafac,total_fafac,razon_social_recli,detalle_bogrm
+from (
+select ide_recli,(case when factura_datos_recli=0 then telefono_factura_reclim else telefono_factura_recli end) as telefono_factura,
+(case when factura_datos_recli=0 then nombre_comercial_reclim else nombre_comercial_recli end) as nombre_comercial_factura,
+(case when  factura_datos_recli=0 then matriz_sucursal_reclim  else matriz_sucursal_recli end) as matriz_sucursal_factura,
+(case when  factura_datos_recli=0 then ruc_comercial_reclim    else ruc_comercial_recli end) as ruc_comercial_factura,
+(case when  factura_datos_recli=0 then abreviatura_reclrm else  abreviatura_reclr end) as abreviatura_factura,
+(case when  factura_datos_recli=0 then direccion_recldm else direccion_recld end) as direccion_factura,
+ telefono_factura_recli as telefono_factura_sucursal, nombre_comercial_recli as nombre_comercial_sucursal,
+ matriz_sucursal_recli as matriz_sucursal_sucursal,ruc_comercial_recli as ruc_comercial_sucursal,
+ abreviatura_reclr as abreviatura_sucursal, direccion_recld as direccion_sucursal ,razon_social_recli
+from ( select a.ide_recli,a.rec_ide_recli,a.telefono_factura_recli,a.nombre_comercial_recli,a.matriz_sucursal_recli,
+a.ruc_comercial_recli, a.abreviatura_reclr,a.direccion_recld,a.factura_datos_recli, b.ide_recli as ide_clientem,b.rec_ide_recli,
+(case when a.rec_ide_recli is null then a.telefono_factura_recli else b.telefono_factura_recli end) as telefono_factura_reclim,
+(case when a.rec_ide_recli is null then a.nombre_comercial_recli else b.nombre_comercial_recli end) as nombre_comercial_reclim,
+(case when a.rec_ide_recli is null then a.matriz_sucursal_recli  else b.matriz_sucursal_recli end) as matriz_sucursal_reclim,
+(case when a.rec_ide_recli is null then a.ruc_comercial_recli    else b.ruc_comercial_recli end) as ruc_comercial_reclim,
+(case when a.rec_ide_recli is null then a.abreviatura_reclr else  b.abreviatura_reclr end) as abreviatura_reclrm,
+(case when a.rec_ide_recli is null then a.direccion_recld else b.direccion_recld end) as direccion_recldm ,razon_social_recli
+from ( select a.ide_recli,rec_ide_recli,telefono_factura_recli,nombre_comercial_recli,matriz_sucursal_recli,ruc_comercial_recli,
+abreviatura_reclr,direccion_recld,factura_datos_recli,razon_social_recli
+from ( select ide_recli,rec_ide_recli,telefono_factura_recli,
+nombre_comercial_recli,matriz_sucursal_recli,ruc_comercial_recli,abreviatura_reclr,factura_datos_recli,razon_social_recli
+from rec_clientes a, rec_cliente_ruta b where a.ide_reclr=b.ide_reclr )  a
+left join (select ide_recli,direccion_recld from rec_cliente_direccion where activo_recld=true ) b on a.ide_recli=b.ide_recli ) a
+left join ( select a.ide_recli,rec_ide_recli,telefono_factura_recli,nombre_comercial_recli,matriz_sucursal_recli,ruc_comercial_recli,
+abreviatura_reclr,direccion_recld from ( select ide_recli,rec_ide_recli,telefono_factura_recli,nombre_comercial_recli,
+matriz_sucursal_recli,ruc_comercial_recli,abreviatura_reclr from rec_clientes a, rec_cliente_ruta b where a.ide_reclr=b.ide_reclr )  a
+left join (select ide_recli,direccion_recld from rec_cliente_direccion where activo_recld=true
+) b on a.ide_recli=b.ide_recli ) b on a.rec_ide_recli=b.ide_recli
+) a order by nombre_comercial_recli
+) a
+left join (select ide_fafac,fecha_transaccion_fafac,ide_recli,valor_iva_fafac,
+total_fafac from fac_factura) b on a.ide_recli = b.ide_recli
+left join (select sum(total_fadef) as subtotal,ide_fafac from fac_detalle_factura group by ide_fafac ) c on b.ide_fafac=c.ide_fafac
+left join (select ide_fafac,cantidad_fadef,fecha_fadef,valor_fadef,total_fadef,a.ide_bomat,detalle_bomat,detalle_bogrm
+from fac_detalle_factura a, bodt_material b ,bodt_grupo_material c where a.ide_bomat = b.ide_bomat and b.ide_bogrm=c.ide_bogrm ) d on b.ide_fafac= d.ide_fafac
+where b.ide_fafac =$P{pide_fafac}
+order by ide_bomat,fecha_fadef]]>
+	</queryString>
+	<field name="ide_recli" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla rec_clientes.]]></fieldDescription>
+	</field>
+	<field name="telefono_factura" class="java.lang.String"/>
+	<field name="nombre_comercial_factura" class="java.lang.String"/>
+	<field name="matriz_sucursal_factura" class="java.lang.Integer"/>
+	<field name="ruc_comercial_factura" class="java.lang.String"/>
+	<field name="abreviatura_factura" class="java.lang.String"/>
+	<field name="fecha_transaccion_fafac" class="java.sql.Date"/>
+	<field name="subtotal" class="java.math.BigDecimal"/>
+	<field name="cantidad_fadef" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define la cantidad de productos vendidos.]]></fieldDescription>
+	</field>
+	<field name="fecha_fadef" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_ fadef]]></fieldDescription>
+	</field>
+	<field name="direccion_factura" class="java.lang.String"/>
+	<field name="valor_fadef" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Estecampo define el valor de venta del producto o servicio.]]></fieldDescription>
+	</field>
+	<field name="total_fadef" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el valor total de venta.]]></fieldDescription>
+	</field>
+	<field name="detalle_bomat" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del material de acuerdo al grupo de material al cual pertenece.]]></fieldDescription>
+	</field>
+	<field name="ide_bomat" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla bodt_material.]]></fieldDescription>
+	</field>
+	<field name="valor_iva_fafac" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el valor total del iva en la factura.]]></fieldDescription>
+	</field>
+	<field name="total_fafac" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el valor total de la factura.]]></fieldDescription>
+	</field>
+	<field name="razon_social_recli" class="java.lang.String"/>
+	<field name="detalle_bogrm" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_bogrm]]></fieldDescription>
+	</field>
+	<group name="ide_bomat" minHeightToStartNewPage="20">
+		<groupExpression><![CDATA[$F{ide_bomat}]]></groupExpression>
+		<groupHeader>
+			<band height="16" splitType="Stretch">
+				<textField isBlankWhenNull="false">
+					<reportElement uuid="b1b5d7b7-6b0e-4909-a5b9-82434d48ca4d" key="textField" x="37" y="6" width="100" height="10"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{detalle_bomat}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement uuid="7827efff-8f61-457c-8808-68a6ac53c399" key="textField" x="326" y="6" width="100" height="10"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{detalle_bomat}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="false">
+					<reportElement uuid="deb8d6d3-f50a-4df1-8cb9-bfcb31c3cbf5" key="textField" x="614" y="6" width="100" height="10"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{detalle_bomat}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band splitType="Stretch"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="98" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="79" splitType="Stretch">
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="8bb7e71a-89a3-4116-9302-361734e28b6b" key="textField" x="186" y="37" width="48" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{telefono_factura}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="3ba322a8-edc0-4ac8-9242-c6cb39e94722" key="textField" x="44" y="-2" width="180" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{razon_social_recli}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="487bce90-7e84-47e9-9d3b-506cada2f789" key="textField" x="36" y="38" width="178" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_transaccion_fafac}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="53520bf2-6ac6-4c00-8ff6-1fa7dbdac2f3" key="textField-1" x="53" y="27" width="180" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{direccion_factura}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="c6824847-91e7-4a16-9725-ed0436e0e4f4" key="textField-2" x="38" y="15" width="180" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ruc_comercial_factura}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="382d6e05-9ea5-4d0e-b973-63853412a58e" key="textField" x="332" y="37" width="178" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_transaccion_fafac}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="b655e130-e0b0-4073-9cf8-0125a42f8fa1" key="textField" x="341" y="-2" width="180" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{razon_social_recli}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="c9ecd744-c57f-46b3-bcc6-f0722870d993" key="textField" x="482" y="36" width="48" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{telefono_factura}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="780fdae3-a4e1-4002-8830-0b96761a37f4" key="textField-1" x="350" y="27" width="180" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{direccion_factura}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="3d6e791c-9cd0-440d-8f50-4063bde20d57" key="textField-2" x="334" y="15" width="180" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ruc_comercial_factura}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="86b6317c-bd1f-42c6-a943-81524023b3f0" key="textField" x="639" y="-2" width="180" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{razon_social_recli}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="2fb05b8a-8d9b-499c-b31b-7bf1966803b5" key="textField-2" x="632" y="15" width="180" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ruc_comercial_factura}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="87d2a779-425b-477f-81ca-016a3e20b45b" key="textField" x="776" y="37" width="48" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{telefono_factura}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="c09b98de-bbc2-4573-b8bf-062883c89fb5" key="textField" x="628" y="37" width="178" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_transaccion_fafac}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="cce2ad65-e286-47d4-aeae-cdae1f829667" key="textField-1" x="642" y="27" width="180" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{direccion_factura}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="e3a124a8-2e61-4116-ad99-47da03acc697" x="36" y="67" width="139" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_bogrm}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="38f8fd6b-f671-4bf9-a26c-a0fd798ec4d4" x="326" y="67" width="139" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_bogrm}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="c85b111f-ea5a-46cc-bd85-e9788a8d5fa1" x="616" y="66" width="139" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_bogrm}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="14" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement uuid="34b66ad0-a18c-4c69-ad24-03f40e509308" key="textField" x="25" y="3" width="119" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_comercial_factura} + " "+$F{fecha_fadef}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##0.00" isBlankWhenNull="false">
+				<reportElement uuid="0d9d3e50-aed9-4f5d-a928-f9ff265c27b4" key="textField" x="-13" y="3" width="29" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cantidad_fadef}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##0.00" isBlankWhenNull="false">
+				<reportElement uuid="fe170b0d-b2e6-4b89-aeb4-0b8c6295a9b2" key="textField" x="175" y="3" width="33" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_fadef}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##0.00" isBlankWhenNull="false">
+				<reportElement uuid="77986d27-c529-4050-9990-6a39b0c55ce7" key="textField" x="215" y="2" width="29" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_fadef}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##0.00" isBlankWhenNull="false">
+				<reportElement uuid="77bf3a89-7a68-40b6-88b3-fc4a2fe304f1" key="textField" x="470" y="3" width="33" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_fadef}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##0.00" isBlankWhenNull="false">
+				<reportElement uuid="7a718962-b302-45aa-a32e-c60bd0e2cf27" key="textField" x="510" y="2" width="29" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_fadef}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement uuid="3ed05f69-e390-4504-81d6-48c29afa9228" key="textField" x="321" y="4" width="130" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_comercial_factura} + " "+$F{fecha_fadef}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##0.00" isBlankWhenNull="false">
+				<reportElement uuid="370d1501-ccdb-4aab-8ff6-920fbc0a13e5" key="textField" x="279" y="4" width="33" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cantidad_fadef}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##0.00" isBlankWhenNull="false">
+				<reportElement uuid="ddc96cea-ec07-4f79-bbc4-1bf02cc90ea7" key="textField" x="570" y="4" width="33" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cantidad_fadef}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement uuid="170bdc2e-ffcf-40d9-baf8-e800a2a72761" key="textField" x="614" y="4" width="88" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_comercial_factura} + " "+$F{fecha_fadef}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##0.00" isBlankWhenNull="false">
+				<reportElement uuid="e93736df-b7e9-4a25-87af-aedf62974a25" key="textField" x="767" y="3" width="33" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_fadef}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##0.00" isBlankWhenNull="false">
+				<reportElement uuid="827d8be5-669e-47fe-b749-756f8fef9d6b" key="textField" x="804" y="2" width="29" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_fadef}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="75" splitType="Stretch">
+			<textField pattern="##0.00" isBlankWhenNull="false">
+				<reportElement uuid="fa1808b9-b9e0-4e7c-96e7-98dcc8a6ccbe" key="textField" x="144" y="2" width="100" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{subtotal}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##0.00" isBlankWhenNull="false">
+				<reportElement uuid="64790d5f-bc2f-42c4-a276-94944913d5a4" key="textField" x="145" y="14" width="100" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_iva_fafac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##0.00" isBlankWhenNull="false">
+				<reportElement uuid="973784df-c709-4b60-843c-33f05fb68666" key="textField" x="145" y="24" width="100" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_fafac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##0.00" isBlankWhenNull="false">
+				<reportElement uuid="73ba8164-f022-42a2-a50e-16b2f4aecf83" key="textField" x="439" y="2" width="100" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{subtotal}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##0.00" isBlankWhenNull="false">
+				<reportElement uuid="fe176a6f-32d1-458d-b1f0-3b69d3226768" key="textField" x="439" y="24" width="100" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_fafac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##0.00" isBlankWhenNull="false">
+				<reportElement uuid="b941f4e9-2dbe-463e-81ef-9e43cb734a6a" key="textField" x="439" y="14" width="100" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_iva_fafac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##0.00" isBlankWhenNull="false">
+				<reportElement uuid="8a55e17b-1e7a-4759-9c12-bfa97d745d20" key="textField" x="734" y="14" width="100" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_iva_fafac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##0.00" isBlankWhenNull="false">
+				<reportElement uuid="66853017-410a-4f70-b29e-60bfbc52b720" key="textField" x="734" y="2" width="100" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{subtotal}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##0.00" isBlankWhenNull="false">
+				<reportElement uuid="697a3d28-c390-4d32-82fe-e6efe2ab65ec" key="textField" x="734" y="24" width="100" height="10"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_fafac}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

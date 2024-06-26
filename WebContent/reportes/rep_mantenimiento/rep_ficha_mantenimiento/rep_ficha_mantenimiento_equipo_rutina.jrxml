@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_ficha_mantenimiento_equipo_rutina" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="5cad558d-212c-4d3e-b6e9-bfb7703046e1">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\eclipse-jee-kepler-SR2-win32\\Proyectos\\sampu\\WebContent\\reportes\\rep_mantenimiento\\rep_ficha_mantenimiento\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IDE_MTEQU" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IDE_MTMAN" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT mrme.ide_mtrum, case when mrme.realizado_mtrum=true then 'SI' ELSE 'NO' END as realizado_mtrum , mrme.activo_mtrum,
+       mrme.ide_mtrut, mrme.ide_mtman,nombre_mtrut,descripcion_mtrut
+  FROM mto_rutina_mantenimiento_equipo  mrme
+left join mto_rutina_mantenimiento mrm on mrm.ide_mtrut=mrme.ide_mtrut
+
+where  mrme.ide_mtman in($P!{IDE_MTMAN})]]>
+	</queryString>
+	<field name="ide_mtrum" class="java.lang.Long"/>
+	<field name="realizado_mtrum" class="java.lang.String"/>
+	<field name="activo_mtrum" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[Define el estado del registro si se encuentra realizado o no.]]></fieldDescription>
+	</field>
+	<field name="ide_mtrut" class="java.lang.Long"/>
+	<field name="ide_mtman" class="java.lang.Long"/>
+	<field name="nombre_mtrut" class="java.lang.String">
+		<fieldDescription><![CDATA[Para colocar el nombre que se va a mostrar en los combobox]]></fieldDescription>
+	</field>
+	<field name="descripcion_mtrut" class="java.lang.String">
+		<fieldDescription><![CDATA[Para colocar la descripción del estado del equipo, del software o del hardware]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="10" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="4683ec37-16c4-47d6-b9be-710fa41463a6" x="0" y="0" width="242" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[ACTIVIDAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="72dc644e-d346-4210-9fb1-7314ea594322" x="242" y="0" width="62" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[ESTADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8b473bca-0862-4a68-aece-089eeaa28724" x="304" y="0" width="251" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[ACCION]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="93e86ff3-423f-45b7-bb43-293cf2fccef1" x="242" y="0" width="62" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{realizado_mtrum}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="6e921a69-fcc6-47ff-b8f6-5bce73812257" x="0" y="0" width="242" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_mtrut}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="bfbc23be-3954-4c9a-bb79-a725cebc9507" x="304" y="0" width="251" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion_mtrut}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

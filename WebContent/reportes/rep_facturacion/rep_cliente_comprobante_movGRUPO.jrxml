@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_cliente_comprobante_movGRUPO" pageWidth="554" pageHeight="842" whenNoDataType="BlankPage" columnWidth="554" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e417e812-fc9d-4d5d-81e0-d26a47801e5c">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:\\eclipse-jee-kepler-SR2-win32\\Proyectos\\sampu\\WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_cliente_ruc" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_fecha_i" class="java.util.Date"/>
+	<parameter name="p_fecha_f" class="java.util.Date"/>
+	<queryString>
+		<![CDATA[SELECT fac.ide_fafac, detalle_coest, fecha_transaccion_fafac,
+                       secuencial_fafac,observacion_fafac,
+                       base_aprobada_fafac, valor_iva_fafac,
+                       total_fafac, coalesce(interes_generado_fanod,0) as interes_generado, coalesce(valor_cobro,0) + (case when valor_cobro is null and fac.ide_coest=16 then total_fafac else 0 end) as cancelado ,
+                       coalesce(valor_cobro_i,0) as valor_cobro_i, autorizada_sri_fafac
+                  FROM fac_factura fac
+                join rec_clientes cli on cli.ide_recli=fac.ide_recli
+                left join cont_estado est on est.ide_coest=fac.ide_coest
+                left join (select detalle_fenod, sum(coalesce(interes_generado_fanod,0)) as interes_generado_fanod from fac_nota_debito where ide_coest in (2,16) group by detalle_fenod) nd on nd.detalle_fenod=secuencial_fafac
+                left join (select ide_fafac, sum(coalesce(valor_cobro_facob,0)+coalesce(valor_cobro_iva_facob,0)) as valor_cobro from fac_cobro group by ide_fafac) d on d.ide_fafac=fac.ide_fafac
+                left join (select ide_fafac, sum(coalesce(valor_cobro_interes_facob,0)) as valor_cobro_i from fac_cobro group by ide_fafac) d1 on d1.ide_fafac=fac.ide_fafac
+
+             where ruc_comercial_recli= $P{p_cliente_ruc} and fecha_transaccion_fafac between $P{p_fecha_i} and $P{p_fecha_f}
+             order by fecha_transaccion_fafac]]>
+	</queryString>
+	<field name="ide_fafac" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla fac_factura.]]></fieldDescription>
+	</field>
+	<field name="detalle_coest" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_coest]]></fieldDescription>
+	</field>
+	<field name="fecha_transaccion_fafac" class="java.sql.Date"/>
+	<field name="secuencial_fafac" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el numero secuencial de la factura.]]></fieldDescription>
+	</field>
+	<field name="observacion_fafac" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define observaciones adicionales que puede tener la emision de la factura.]]></fieldDescription>
+	</field>
+	<field name="base_aprobada_fafac" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define la base imponible aprobada para el calculo del iva.]]></fieldDescription>
+	</field>
+	<field name="valor_iva_fafac" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el valor total del iva en la factura.]]></fieldDescription>
+	</field>
+	<field name="total_fafac" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el valor total de la factura.]]></fieldDescription>
+	</field>
+	<field name="interes_generado" class="java.math.BigDecimal"/>
+	<field name="cancelado" class="java.math.BigDecimal"/>
+	<field name="valor_cobro_i" class="java.math.BigDecimal"/>
+	<field name="autorizada_sri_fafac" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[autorizada_sri_fafac]]></fieldDescription>
+	</field>
+	<detail>
+		<band height="110" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="58acb715-6e6e-46d9-8762-d0e44f10eb0a" x="13" y="5" width="92" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Emisión:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="b1903cc0-275c-493c-a98b-d59238a0b209" x="105" y="5" width="114" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_transaccion_fafac}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="91ede72d-6cb8-4ca1-8c95-726a10d64fc1" x="13" y="25" width="92" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Secuencial:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2ddf2410-ac86-4664-b678-23eaefa0f855" x="13" y="45" width="92" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estado:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f58448ca-edef-41d1-9237-a1cd8a68b3c5" x="13" y="65" width="92" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b7378496-e05b-4333-9a3c-f2265beb8a2c" x="221" y="25" width="92" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Autorizada SRI:]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="bed51659-9548-4526-963d-da810849a84e" x="105" y="25" width="114" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{secuencial_fafac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="913c2bdb-ffaa-4c55-8039-05c2243777c4" x="105" y="45" width="114" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_coest}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="88e1685e-a124-4c7e-83f0-704c9d0e3cdd" x="105" y="65" width="114" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_fafac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="5b3392fd-07d4-42bf-b242-699baeae066b" x="313" y="25" width="132" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{autorizada_sri_fafac}?"SI":"NO"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="26e8b780-5618-4b13-931d-534e148fcdea" x="221" y="5" width="92" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Observaciones:]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="7a1e17dd-185f-4947-915f-e6952079676d" x="313" y="5" width="241" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{observacion_fafac}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="b331e66e-b946-4fdf-8fb8-e0c3124f4a0b" x="221" y="45" width="92" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cancelado:]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="7f4032b1-f76d-4446-8e70-234bb8d24535" x="313" y="45" width="132" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cancelado}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="a9466069-0a6e-48df-a3b2-56b9aea9f2e7" x="105" y="85" width="114" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{interes_generado}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3acbd0f4-2fe0-4467-a6d8-93bb3c4841cb" x="13" y="85" width="92" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Interés Generado:]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="16a35d2a-0433-4717-9212-0b343f49b06c" x="313" y="65" width="132" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_cobro_i}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="d28e9137-3c7d-40a7-8aff-8c39b8546337" x="221" y="65" width="92" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Interes Cancelado:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="478e220c-9b34-4afd-a30e-185695a91dcd" x="221" y="85" width="92" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Saldo:]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="3aa71ded-3d98-427e-ad60-97448afd8835" x="313" y="85" width="132" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{total_fafac}.doubleValue()+$F{interes_generado}.doubleValue())
+-
+($F{cancelado}.doubleValue()+$F{valor_cobro_i}.doubleValue())]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="c2324dad-9526-4166-930f-aeb441a7e696" x="1" y="2" width="553" height="1"/>
+				<graphicElement>
+					<pen lineWidth="1.5" lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+		</band>
+		<band height="42">
+			<subreport>
+				<reportElement uuid="7c58e39f-6e9a-479c-bd0c-ce21b867b839" stretchType="RelativeToTallestObject" x="0" y="0" width="554" height="38" isRemoveLineWhenBlank="true"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_ide_fafac">
+					<subreportParameterExpression><![CDATA[$F{ide_fafac}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_facturacion/rep_cliente_comprobante_movDET.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="42">
+			<subreport>
+				<reportElement uuid="3fde10c1-df2d-4afd-8b40-7319f494a2e2" stretchType="RelativeToTallestObject" x="0" y="0" width="554" height="38" isRemoveLineWhenBlank="true"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_ide_fafac">
+					<subreportParameterExpression><![CDATA[$F{ide_fafac}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_facturacion/rep_cliente_comprobante_movDET_Otros.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="42">
+			<subreport>
+				<reportElement uuid="52f8a52e-dd9d-4f60-9402-d48772131989" stretchType="RelativeToTallestObject" x="0" y="0" width="554" height="38" isRemoveLineWhenBlank="true"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_ide_fafac">
+					<subreportParameterExpression><![CDATA[$F{ide_fafac}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_facturacion/rep_cliente_comprobante_movDET_Comp.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_poa_solicitud" language="groovy" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="20" bottomMargin="20" uuid="7912f3d0-3c9a-4530-bdfd-1f8d452b8948">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="ide_usua" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_adsoc" class="java.lang.Integer"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select a.ide_adsoc,fecha_solicitud_adsoc,detalle_adsoc,detalle_adtie,detalle_retip,
+nombres_apellidos,empleado_solicitante,codigo_actividad,detalle_subactividad,codigo_clasificador_prcla,valor_referencial_poaso,
+cantidad_addes,descripcion_addes,caracteristicas_addes,(case when garantia_addes =true then 'SI' else 'NO' end) as garantia,
+(case when soporte_tecnico_addes =true then 'SI' else 'NO' end) as soporte_tecnico, (case when capacitacion_addes =true then 'SI' else 'NO' end) as capacitacion
+from adq_solicitud_compra a
+left join adq_tiempo_entrega b on a.ide_adtie = b.ide_adtie
+left join rec_tipo c on a.ide_retip = c.ide_retip
+left join ( SELECT EPAR.IDE_GEEDP, EMP.DOCUMENTO_IDENTIDAD_GTEMP,
+EMP.APELLIDO_PATERNO_GTEMP || ' ' || EMP.APELLIDO_MATERNO_GTEMP || ' ' ||EMP.PRIMER_NOMBRE_GTEMP || ' ' || EMP.SEGUNDO_NOMBRE_GTEMP
+AS NOMBRES_APELLIDOS, SUCU.NOM_SUCU, AREA.DETALLE_GEARE, DEPA.DETALLE_GEDEP FROM GEN_EMPLEADOS_DEPARTAMENTO_PAR EPAR
+LEFT JOIN GTH_EMPLEADO EMP ON EMP.IDE_GTEMP=EPAR.IDE_GTEMP LEFT JOIN SIS_SUCURSAL SUCU ON SUCU.IDE_SUCU=EPAR.IDE_SUCU
+LEFT JOIN GEN_DEPARTAMENTO DEPA ON DEPA.IDE_GEDEP=EPAR.IDE_GEDEP LEFT JOIN GEN_AREA AREA ON AREA.IDE_GEARE=EPAR.IDE_GEARE
+) d on a.ide_geedp = d.ide_geedp
+left join ( SELECT ide_gtemp,
+EMP.APELLIDO_PATERNO_GTEMP || ' ' || EMP.APELLIDO_MATERNO_GTEMP || ' ' ||EMP.PRIMER_NOMBRE_GTEMP || ' ' || EMP.SEGUNDO_NOMBRE_GTEMP
+AS empleado_solicitante FROM GTH_EMPLEADO EMP
+) e on a.ide_gtemp = e.ide_gtemp
+left join adq_poa_solicitud f on a.ide_adsoc = f.ide_adsoc
+left join (
+select a.ide_prpoa,codigo_clasificador_prcla,codigo_actividad,codigo_subactividad,detalle_subactividad,descripcion_clasificador_prcla from pre_poa a
+left join  gen_anio b on a.ide_geani= b.ide_geani left join pre_clasificador c on a.ide_prcla = c.ide_prcla left join
+(select a.ide_prfup,codigo_subactividad,codigo_actividad,detalle_subactividad,subactividad,detalle_actividad,actividad,detalle_producto,producto,detalle_proyecto,
+proyecto,detalle_programa ,programa from (select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_subactividad,detalle_prfup as detalle_subactividad,
+detalle_prnfp as subactividad from pre_funcion_programa a, pre_nivel_funcion_programa b where a.ide_prnfp = b.ide_prnfp and a.ide_prnfp =5) a ,
+(select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_actividad,detalle_prfup as detalle_actividad,detalle_prnfp as actividad
+from pre_funcion_programa a, pre_nivel_funcion_programa b where a.ide_prnfp = b.ide_prnfp and a.ide_prnfp =4) b,
+(select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_producto,detalle_prfup as detalle_producto,detalle_prnfp as producto
+from pre_funcion_programa a, pre_nivel_funcion_programa b where a.ide_prnfp = b.ide_prnfp and a.ide_prnfp =3 ) c,
+(select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_proyecto,detalle_prfup as detalle_proyecto,detalle_prnfp as proyecto
+from pre_funcion_programa a, pre_nivel_funcion_programa b where a.ide_prnfp = b.ide_prnfp and a.ide_prnfp =2) d,
+(select ide_prfup ,pre_ide_prfup,codigo_prfup as codigo_programa,detalle_prfup as detalle_programa,detalle_prnfp as programa
+from pre_funcion_programa a, pre_nivel_funcion_programa b where a.ide_prnfp = b.ide_prnfp and a.ide_prnfp =1) e where a.pre_ide_prfup = b.ide_prfup
+and b.pre_ide_prfup = c.ide_prfup and c.pre_ide_prfup = d.ide_prfup and d.pre_ide_prfup = e.ide_prfup ) f on a.ide_prfup = f.ide_prfup
+left join gen_area g on a.ide_geare=g.ide_geare  order by codigo_subactividad,a.ide_prpoa
+) g on f.ide_prpoa = g.ide_prpoa
+left join adq_detalle_solicitud h on a.ide_adsoc = h.ide_adsoc
+where a.ide_adsoc=$P{ide_adsoc}]]>
+	</queryString>
+	<field name="ide_adsoc" class="java.lang.Long">
+		<fieldDescription><![CDATA[Define la clave primaria de la tabla adq_solicitud_compra]]></fieldDescription>
+	</field>
+	<field name="fecha_solicitud_adsoc" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_solicitud_adsoc]]></fieldDescription>
+	</field>
+	<field name="detalle_adsoc" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_adsoc]]></fieldDescription>
+	</field>
+	<field name="detalle_adtie" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_adtie]]></fieldDescription>
+	</field>
+	<field name="detalle_retip" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del tipo de cobro, ejemplo: Efectivo, Tarjeta bancaria, Visa, Mastercar, Trasferencia bancaria, etc.]]></fieldDescription>
+	</field>
+	<field name="nombres_apellidos" class="java.lang.String"/>
+	<field name="empleado_solicitante" class="java.lang.String"/>
+	<field name="codigo_actividad" class="java.lang.String"/>
+	<field name="detalle_subactividad" class="java.lang.String"/>
+	<field name="codigo_clasificador_prcla" class="java.lang.String">
+		<fieldDescription><![CDATA[codigo_clasificador_prcla]]></fieldDescription>
+	</field>
+	<field name="valor_referencial_poaso" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[valor_referencial_poaso]]></fieldDescription>
+	</field>
+	<field name="cantidad_addes" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[cantidad_addes]]></fieldDescription>
+	</field>
+	<field name="descripcion_addes" class="java.lang.String">
+		<fieldDescription><![CDATA[descripcion_addes]]></fieldDescription>
+	</field>
+	<field name="caracteristicas_addes" class="java.lang.String">
+		<fieldDescription><![CDATA[caracteristicas_addes]]></fieldDescription>
+	</field>
+	<field name="garantia" class="java.lang.String"/>
+	<field name="soporte_tecnico" class="java.lang.String"/>
+	<field name="capacitacion" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="64" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="47da976b-2cec-4c89-aa74-001b34b268fa" x="0" y="2" width="555" height="41"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="99b79f1b-dbf8-4665-9242-f107e3d01f92" x="12" y="6" width="132" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TIEMPO DE ENTREGA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9f77fd9f-6889-4d3b-a32f-7c0daaf18787" x="286" y="6" width="132" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[FORMA DE PAGO:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="f45de1b2-85bb-48e6-9de4-28f601c4fb88" x="144" y="6" width="131" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{detalle_adtie}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="77d13b93-f490-430d-b34f-a8b9a7d1725a" x="399" y="6" width="131" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{detalle_retip}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="e7fd4af7-57a6-4931-b086-f66550a61428" x="133" y="27" width="315" height="16"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CON CARGO A LA PARTIDA PRESUPUESTARIA No.]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="18d737e2-0877-44f9-971a-4bed8819ed1f" x="0" y="26" width="555" height="1"/>
+			</line>
+			<rectangle>
+				<reportElement uuid="03f7ec52-b6fc-464a-9bd3-73478907b5d8" x="0" y="43" width="555" height="16"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="162de2bb-8ac1-488b-9ecc-c97560411f5d" x="12" y="43" width="73" height="16"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[ACTIVIDAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5d047b41-e9ef-46bd-9d56-597a8f12fba7" x="75" y="43" width="110" height="16"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SUB ACTIVIDAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e298deaf-cea8-4c97-b2f8-010ee72f0a29" x="408" y="43" width="73" height="16"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[MONTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0ee6e559-1787-433f-9730-86e40bbf0f78" x="468" y="43" width="87" height="16"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[PARTIDA PRES.]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="18" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e602d8f0-981f-4a08-94af-34708873dcf6" x="0" y="0" width="68" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo_actividad}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="343465d4-687f-4f4a-974d-1e624e2b06ee" x="77" y="0" width="326" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_subactividad}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="7423f023-618b-40d6-a3f6-7d619dd65e75" x="408" y="0" width="68" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_referencial_poaso}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="0ec87c05-7138-47d8-93f3-99c3eabcad6e" x="481" y="0" width="68" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo_clasificador_prcla}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="2b453d15-3737-4c07-adf3-9ff7cda34f2f" x="0" y="16" width="555" height="1"/>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

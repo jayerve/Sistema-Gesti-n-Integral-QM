@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rep_anamnesis" language="groovy" pageWidth="184" pageHeight="283" whenNoDataType="AllSectionsNoDetail" columnWidth="144" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fddd8dda-5c1a-4b0e-97ef-f75dc81ba815">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["D:\\workspace\\biess\\WebContent\\reportes\\rep_gestion\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_safim" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new java.lang.Integer(21)]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select ide_safia,a.ide_safim,a.ide_saana,detalle_safia as observaciones,b.detalle_saana
+from sao_ficha_anamnesis a,sao_anamnesis b
+where a.ide_saana = b.ide_saana
+and ide_safim=$P{ide_safim}
+order by b.detalle_saana]]>
+	</queryString>
+	<field name="IDE_SAFIA" class="java.math.BigDecimal"/>
+	<field name="IDE_SAFIM" class="java.math.BigDecimal"/>
+	<field name="IDE_SAANA" class="java.math.BigDecimal"/>
+	<field name="OBSERVACIONES" class="java.lang.String"/>
+	<field name="DETALLE_SAANA" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="24" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="0c060f1d-71bb-4ef5-9f02-e44ca0b8aeb1" key="staticText" x="19" y="4" width="67" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[ANAMNESIS]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="22" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="f17e1197-714b-4ce1-a4d0-d2ad296b369f" key="staticText" x="7" y="1" width="66" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[DETALLE]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement uuid="9480cf51-aaf2-476e-bc94-6ca0aca72cc0" key="textField" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="144" height="15" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DETALLE_SAANA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

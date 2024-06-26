@@ -1,0 +1,2175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_mensual_hxe" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="852c4d6a-0081-4cb4-999b-90b0ee43d843">
+	<property name="ireport.zoom" value="1.2078825000000004"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="style1">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800" fill="Solid"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#999999" fill="Solid"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style2">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia2}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia2}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia2}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia2}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia2}==7]]></conditionExpression>
+			<style mode="Transparent" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia2}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia2}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia2}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia2}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia2}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia2}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia2}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style3">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia3}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia3}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia3}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia3}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia3}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia3}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia3}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia3}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia3}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia3}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia3}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia3}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style4">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia4}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia4}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia4}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia4}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia4}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia4}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia4}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia4}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia4}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia4}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia4}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia4}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style5">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia5}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia5}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia5}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia5}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia5}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia5}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia5}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia5}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia5}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia5}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia5}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia5}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style6">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia6}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia6}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia6}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia6}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia6}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia6}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia6}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia6}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia6}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia6}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia6}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia6}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style7">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia7}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia7}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia7}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia7}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia7}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia7}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia7}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia7}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia7}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia7}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia7}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia7}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style8">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia8}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia8}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia8}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia8}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia8}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia8}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia8}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia8}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia8}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia8}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia8}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia8}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style9">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia9}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia9}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia9}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia9}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia9}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia9}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia9}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia9}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia9}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia9}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia9}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia9}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style10">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia10}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia10}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia10}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia10}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia10}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia10}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia10}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia10}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia10}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia10}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia10}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia10}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style11">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia11}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia11}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia11}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia11}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia11}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia11}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia11}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia11}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia11}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia11}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia11}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia11}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style12">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia12}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia12}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia12}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia12}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia12}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia12}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia12}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia12}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia12}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia12}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia12}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia12}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style13">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia13}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia13}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia13}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia13}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia13}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia13}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia13}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia13}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia13}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia13}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia13}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia13}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style14">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia14}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia14}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia14}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia14}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia14}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia14}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia14}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia14}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia14}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia14}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia14}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia14}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style15">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia15}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia15}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia15}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia15}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia15}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia15}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia15}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia15}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia15}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia15}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia15}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia15}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style16">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia16}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia16}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia16}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia16}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia16}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia16}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia16}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia16}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia16}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia16}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia16}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia16}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style17">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia17}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia17}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia17}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia17}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia17}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia17}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia17}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia17}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia17}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia17}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia17}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia17}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style18">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia18}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia18}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia18}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia18}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia18}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia18}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia18}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia18}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia18}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia18}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia18}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia18}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style19">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia19}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia19}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia19}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia19}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia19}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia19}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia19}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia19}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia19}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia19}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia19}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia19}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style20">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia20}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia20}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia20}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia20}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia20}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia20}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia20}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia20}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia20}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia20}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia20}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia20}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style21">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia21}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia21}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia21}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia21}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia21}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia21}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia21}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia21}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia21}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia21}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia21}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia21}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style22">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia22}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia22}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia22}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia22}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia22}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia22}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia22}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia22}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia22}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia22}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia22}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia22}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style23">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia23}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia23}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia23}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia23}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia23}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia23}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia23}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia23}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia23}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia23}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia23}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia23}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style24">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia24}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia24}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia24}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia24}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia24}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia24}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia24}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia24}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia24}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia24}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia24}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia24}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style25">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia25}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia25}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia25}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia25}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia25}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia25}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia25}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia25}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia25}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia25}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia25}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia25}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style26">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia26}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia26}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia26}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia26}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia26}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia26}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia26}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia26}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia26}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia26}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia26}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia26}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style27">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia27}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia27}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia27}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia27}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia27}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia27}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia27}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia27}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia27}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia27}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia27}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia27}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style28">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia28}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia28}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia28}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia28}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia28}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia28}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia28}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia28}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia28}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia28}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia28}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia28}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style29">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia29}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia29}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia29}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia29}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia29}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia29}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia29}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia29}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia29}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia29}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia29}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia29}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style30">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia30}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia30}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia30}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia30}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia30}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia30}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia30}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia30}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia30}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia30}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia30}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia30}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style31">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia31}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia31}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia31}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia31}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia31}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia31}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia31}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia31}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia31}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia31}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia31}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia31}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<style name="style33"/>
+	<style name="style32">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFC800" fill="Solid"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#999999" fill="Solid"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#009999"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{dia1}.intValue()==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#FFFF00"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:/eclipse-jee-kepler-SR2-win32/Proyectos/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="IDE_GEANI" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IDE_GEMES" class="java.lang.Integer"/>
+	<parameter name="ide_usua" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[10]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_asjei" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="nom_elaborador" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT cbph.ide_cobph,area.detalle_geare,  EMP.DOCUMENTO_IDENTIDAD_GTEMP,EMP.APELLIDO_PATERNO_GTEMP || ' ' ||   (case when EMP.APELLIDO_MATERNO_GTEMP is null then '' else EMP.APELLIDO_MATERNO_GTEMP end) || ' ' ||
+			 EMP.PRIMER_NOMBRE_GTEMP || ' ' ||  (case when EMP.SEGUNDO_NOMBRE_GTEMP is null then '' else EMP.SEGUNDO_NOMBRE_GTEMP end) AS NOMBRES_APELLIDOS,
+			 cbph.actividades_cobph,
+			 cbph.horas25_loep_cobph,
+			 cbph.horas60_loep_cobph,
+			 cbph.horas25_ct_cobph,
+			 cbph.horas50_ct_cobph,
+			 cbph.horas100_loep_ct_cobph,
+			 anio.detalle_geani,mes.detalle_gemes,cbph.ide_asjei,gpgc.titulo_cargo_gepgc,productos_eperado_cobph
+			 FROM con_biometrico_plan_hxe cbph
+			 left join gth_empleado emp on emp.ide_gtemp=cbph.ide_gtemp
+			 left join gen_anio anio on anio.ide_geani=cbph.ide_geani
+			 left join gen_mes mes on mes.ide_gemes=cbph.ide_gemes
+			 left join gen_empleados_departamento_par  par on cbph.ide_gtemp=par.ide_gtemp
+			 left join gen_area area on area.ide_geare=par.ide_geare
+			 left join gen_partida_grupo_cargo gpgc on gpgc.ide_gepgc=par.ide_gepgc
+			 where mes.ide_gemes=$P{IDE_GEMES} and anio.ide_geani=$P{IDE_GEANI} and  cbph.ide_asjei IN ($P!{ide_asjei}) and par.activo_geedp=true
+			 group by cbph.ide_cobph,
+			area.detalle_geare,
+			 EMP.DOCUMENTO_IDENTIDAD_GTEMP,EMP.APELLIDO_PATERNO_GTEMP,EMP.APELLIDO_MATERNO_GTEMP,EMP.PRIMER_NOMBRE_GTEMP,EMP.SEGUNDO_NOMBRE_GTEMP,
+			 cbph.actividades_cobph,
+			 cbph.horas25_loep_cobph,
+			 cbph.horas60_loep_cobph,
+			 cbph.horas25_ct_cobph,
+			 cbph.horas50_ct_cobph,
+			 cbph.horas100_loep_ct_cobph,
+			 anio.detalle_geani,mes.detalle_gemes,cbph.ide_asjei,gpgc.titulo_cargo_gepgc
+			  order by EMP.APELLIDO_PATERNO_GTEMP,EMP.APELLIDO_MATERNO_GTEMP,EMP.PRIMER_NOMBRE_GTEMP,EMP.SEGUNDO_NOMBRE_GTEMP]]>
+	</queryString>
+	<field name="ide_cobph" class="java.lang.Integer"/>
+	<field name="detalle_geare" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del area ejemplo: Directorio, Auditoria Interna, etc.]]></fieldDescription>
+	</field>
+	<field name="documento_identidad_gtemp" class="java.lang.String"/>
+	<field name="nombres_apellidos" class="java.lang.String"/>
+	<field name="actividades_cobph" class="java.lang.String"/>
+	<field name="horas25_loep_cobph" class="java.lang.Integer"/>
+	<field name="horas60_loep_cobph" class="java.lang.Integer"/>
+	<field name="horas25_ct_cobph" class="java.lang.Integer"/>
+	<field name="horas50_ct_cobph" class="java.lang.Integer"/>
+	<field name="horas100_loep_ct_cobph" class="java.lang.Integer"/>
+	<field name="detalle_geani" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del ano ejemplo: 2013, 2014, etc]]></fieldDescription>
+	</field>
+	<field name="detalle_gemes" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el detalle del mes, ejemplo: enero, febrero, marzo, etc.]]></fieldDescription>
+	</field>
+	<field name="ide_asjei" class="java.lang.Integer">
+		<fieldDescription><![CDATA[--Clave Primaria de Jefe Inmediato]]></fieldDescription>
+	</field>
+	<field name="titulo_cargo_gepgc" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo contiene el titulo del cargo]]></fieldDescription>
+	</field>
+	<field name="productos_eperado_cobph" class="java.lang.String"/>
+	<variable name="variable1" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="55" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="89577989-6075-49e5-ac69-4fed0cad38e9" x="2" y="0" width="800" height="55"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{ide_usua}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_horizontal.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="72" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="08ad9b05-b614-4f84-8dd8-cb8c49b2d400" x="0" y="24" width="131" height="20"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AREA ADMINISTRATIVA:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="c13de14b-4602-4dc0-8a47-b66576804e30" x="246" y="43" width="64" height="20" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_gemes}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="ab68fa84-34cd-466f-88eb-699a586e5655" x="0" y="44" width="114" height="20"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MES:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="00bc4abe-4bf2-4510-ad15-ce3a15e304eb" x="246" y="24" width="365" height="20" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_geare}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7e18fd76-f71e-4219-ae2e-75568cfdfd34" x="310" y="43" width="168" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{detalle_geani}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="e9f7afed-dbb8-4506-8512-1cc02176ae20" positionType="Float" x="-221" y="10" width="74" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Elaborado Por:]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="56" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="71acc4f1-5d65-49f5-b445-f5e52d16f43c" x="0" y="0" width="27" height="56"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="97b72003-3e9d-45bb-a552-296ddffb4055" x="27" y="0" width="151" height="56"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRE DEL FUNCIONARIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2378abc8-2e53-4b92-9940-00e7d796318b" x="330" y="0" width="167" height="56"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ACTIVIDADES / PROCESOS ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a9afb604-8918-4107-97f0-607f3a71f410" x="621" y="20" width="33" height="36"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NRO HORAS 25% LOEP]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9d446a9b-3b69-4998-b3f5-22c50209716d" x="654" y="20" width="33" height="36"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NRO HORAS 60% LOEP]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e457dcb0-9493-4483-839a-c113c1a24a4d" x="687" y="20" width="30" height="36"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NRO HORAS 25% CT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5d16529a-269e-49e9-8fb9-8597031cea30" x="717" y="20" width="27" height="36"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NRO HORAS 50% CT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fc026625-18c3-4130-be45-b6f389966f52" x="744" y="20" width="58" height="36"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NRO HORAS 100% LOEP-CT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2cc21e37-7d9a-4466-8e78-e79fa1f5c49a" x="178" y="0" width="52" height="56"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CÉDULA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0681a5cf-9595-42df-88ba-27a86b6a9336" x="230" y="0" width="100" height="56"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CARGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fddd0be4-4292-4c7b-8663-b72e35d78b62" x="621" y="0" width="181" height="20"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HORAS PLANIFICADAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="667a6476-de37-4248-ac59-170e139b6dc1" x="497" y="0" width="124" height="56"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PRODUCTOS / SERVICIOS]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<elementGroup/>
+			<elementGroup/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="f28c04ae-b4ba-4005-adc3-07f3993f3a2e" stretchType="RelativeToTallestObject" x="0" y="0" width="27" height="20" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ide_cobph}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="72b2e25f-0d2a-451c-b320-1731f5f014a8" stretchType="RelativeToTallestObject" x="27" y="0" width="151" height="20" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombres_apellidos}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="8b07c4fa-6e68-4160-a017-8d6f10848c29" stretchType="RelativeToTallestObject" x="330" y="0" width="167" height="20" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{actividades_cobph}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="1edd8044-8041-47a8-9050-be9e2b681bda" stretchType="RelativeToTallestObject" x="654" y="0" width="33" height="20" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{horas60_loep_cobph}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="f30ea019-2898-418e-8b36-5bd32154d21c" stretchType="RelativeToTallestObject" x="687" y="0" width="30" height="20" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{horas25_ct_cobph}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="26dfd07f-7d09-40f7-9238-05eb1c166863" stretchType="RelativeToTallestObject" x="717" y="0" width="27" height="20" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{horas50_ct_cobph}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="ee1e2b49-a311-47a5-b44b-ac54504def9f" stretchType="RelativeToTallestObject" x="744" y="0" width="58" height="20" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{horas100_loep_ct_cobph}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="c7efc615-c704-4356-8ff9-69ac6b0fdf7b" stretchType="RelativeToTallestObject" x="621" y="0" width="33" height="20" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{horas25_loep_cobph}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a219e4a4-0e76-482d-8ba4-d2b2240836b8" stretchType="RelativeToTallestObject" x="178" y="0" width="52" height="20" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{documento_identidad_gtemp}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="303fc2ac-5f6d-45a1-9ae6-d13e46ff55b9" stretchType="RelativeToTallestObject" x="230" y="0" width="100" height="20"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{titulo_cargo_gepgc}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="be04142f-aac9-4b55-b785-1c1c2f7ffa9f" stretchType="RelativeToTallestObject" x="497" y="0" width="124" height="20" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{productos_eperado_cobph}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band/>
+		<band/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="12" splitType="Stretch">
+			<textField evaluationTime="Report">
+				<reportElement uuid="2c8d7721-0c75-4b1f-801f-afd91ca0fc23" style="style33" x="762" y="0" width="40" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0dc8a81c-6675-4160-b7fa-c4805c6fdc58" style="style33" x="682" y="0" width="80" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<lastPageFooter>
+		<band height="25" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="1a71f9d7-37b8-43f0-b5c7-90ac5dbe23a9" positionType="Float" x="-221" y="10" width="74" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Elaborado Por:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="21557c68-6d73-4677-a16a-c61adb185fb3" positionType="Float" x="-221" y="10" width="74" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Elaborado Por:]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="ae39432b-f201-45e5-898c-cd09dd04292f" style="style33" positionType="Float" x="79" y="9" width="227" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="e8dd2494-67c6-47f9-94dc-ef22d88f2bbd" style="style33" positionType="Float" x="460" y="8" width="227" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="baa4bf4b-671b-4b58-9742-06c654967b72" positionType="Float" x="537" y="13" width="74" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Aprobado Por:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4a097100-4c47-44a7-aac1-044d0ce5ff66" positionType="Float" x="142" y="13" width="74" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Elaborado Por:]]></text>
+			</staticText>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

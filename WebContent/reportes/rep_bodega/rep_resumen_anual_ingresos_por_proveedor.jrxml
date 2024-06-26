@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_resumen_anual_egresos_por_solicitante" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f2039012-673d-43a4-8ac7-378ca9838a39">
+	<property name="ireport.zoom" value="1.5000000000000009"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_geani" class="java.lang.Long"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:/codigo_fuente/sampu-existencias/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_usua" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[10]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[1]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_empr" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<parameter name="titulo" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Resumen General Anual"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_inttr" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+    ide_ingeg,
+    fecha_ingeg,
+    EXTRACT(MONTH FROM fecha_ingeg) AS mes,
+    numero_documento_ingeg,
+    total_ingeg,
+    bodt_ingreso_egreso.ide_boubi,
+    detalle_boubi,
+    bodt_ingreso_egreso.ide_adfac,
+    adq_factura.ide_adfac,
+    adq_factura.num_factura_adfac,
+    adq_factura.fecha_factura_adfac,
+    tes_proveedor.ruc_tepro,
+    tes_proveedor.nombre_tepro,
+    adq_factura.subtotal_adfac,
+    adq_factura.total_adfac
+FROM
+    bodt_ingreso_egreso
+    LEFT JOIN bodt_bodega_ubicacion ON bodt_bodega_ubicacion.ide_boubi = bodt_ingreso_egreso.ide_boubi
+    LEFT JOIN adq_factura ON adq_factura.ide_adfac = bodt_ingreso_egreso.ide_adfac
+    LEFT JOIN tes_proveedor ON tes_proveedor.ide_tepro = adq_factura.ide_tepro
+WHERE
+    ide_inttr IN ($P{ide_inttr}) AND activo_ingeg = true
+    AND ide_geani = $P{ide_geani}
+ORDER BY
+    ide_ingeg]]>
+	</queryString>
+	<field name="ide_ingeg" class="java.lang.Integer"/>
+	<field name="fecha_ingeg" class="java.sql.Date">
+		<fieldDescription><![CDATA[Fecha de la transacción]]></fieldDescription>
+	</field>
+	<field name="mes" class="java.lang.Double"/>
+	<field name="numero_documento_ingeg" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Numero del documento, secuencial depende del tipo de transacción]]></fieldDescription>
+	</field>
+	<field name="total_ingeg" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Total de la transacción
+SUM(cantidad_inegd * valor_existencia_inegd)]]></fieldDescription>
+	</field>
+	<field name="ide_boubi" class="java.lang.Long">
+		<fieldDescription><![CDATA[foranea para saber cual es la bodega a la que se debe devolver en caso de ser herramienta]]></fieldDescription>
+	</field>
+	<field name="detalle_boubi" class="java.lang.String"/>
+	<field name="ide_adfac" class="java.lang.Long">
+		<fieldDescription><![CDATA[ide_adfac]]></fieldDescription>
+	</field>
+	<field name="num_factura_adfac" class="java.lang.String">
+		<fieldDescription><![CDATA[num_factura_adfac]]></fieldDescription>
+	</field>
+	<field name="fecha_factura_adfac" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_factura_adfac]]></fieldDescription>
+	</field>
+	<field name="ruc_tepro" class="java.lang.String"/>
+	<field name="nombre_tepro" class="java.lang.String"/>
+	<field name="subtotal_adfac" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[subtotal_adfac]]></fieldDescription>
+	</field>
+	<field name="total_adfac" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[total_adfac]]></fieldDescription>
+	</field>
+	<variable name="sum_total_mes" class="java.math.BigDecimal" resetType="Group" resetGroup="Grupo" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_ingeg}]]></variableExpression>
+	</variable>
+	<group name="Grupo">
+		<groupExpression><![CDATA[$F{mes}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField pattern="###0">
+					<reportElement uuid="9927f790-0fee-41a4-802b-94396b5cad99" x="54" y="0" width="53" height="20"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{mes}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="51a741c3-9e95-465a-9079-f8d17af0a2c1" x="1" y="0" width="54" height="20"/>
+					<textElement textAlignment="Center">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Mes]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField pattern="$ #,##0.00">
+					<reportElement uuid="273fa6ed-4cf0-4c77-a83f-bbe8ba41b418" x="184" y="0" width="75" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isItalic="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sum_total_mes}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="a8b8db16-7c4b-4925-985d-8bb61094b6da" x="1" y="0" width="183" height="20"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Total mes " + $F{mes}.intValue() + ": "]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="63" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="3ad301b0-8107-4db1-b07e-46f8b23bab09" x="-1" y="0" width="802" height="63"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_geani">
+					<subreportParameterExpression><![CDATA[$P{ide_geani}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{ide_usua}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_horizontal.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="39" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="d92da50a-6cfb-423b-94cd-412e4dd8d8f6" x="354" y="25" width="100" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[RUC Proveedor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c4f89c0a-eac5-4752-bfed-0aa45e0d6c13" x="184" y="25" width="75" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bd2147bd-496c-4dd9-8fc9-e8006d638008" x="578" y="25" width="134" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Factura]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="859f216c-ec39-4524-a85a-7ff50e70f64f" x="259" y="25" width="95" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Bodega]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="24e3fafa-e632-449b-897c-9bd90b2be0be" x="54" y="25" width="77" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[No. Documento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1901c191-1aff-4aac-928b-1eb168e04705" x="0" y="25" width="54" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Cod. ERP]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="188dd005-d54e-450f-a702-36d8c3e83de5" x="131" y="25" width="53" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="756e0cc2-0488-440e-9e15-e11b709d10e5" x="454" y="25" width="124" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Nombre Proveedor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="376da50b-383d-44c6-9cfc-fc516c21e3aa" x="712" y="25" width="88" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Fecha Factura]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="7a70e317-f74b-4afe-923a-edef9ac30083" x="1" y="0" width="53" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ide_ingeg}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="84dd0ef7-7ec3-4468-acf1-e782e4c95e81" x="54" y="0" width="77" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numero_documento_ingeg}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="bd2e0512-7ecf-49c3-ac91-d447515da85f" x="259" y="0" width="95" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_boubi}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="d491545c-2125-48d8-b27d-b1eb270ceb4e" x="131" y="0" width="53" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_ingeg}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="012cb5cd-8201-4d01-9e1b-f5265892649a" x="354" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ruc_tepro}]]></textFieldExpression>
+			</textField>
+			<textField pattern="$ #,##0.00">
+				<reportElement uuid="44c3a80f-9e46-4ba1-a1e6-aa3ea4adf742" x="184" y="0" width="75" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_ingeg}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="22e4c92f-9cc0-4df4-9ca5-fe7b8601ceb8" x="578" y="0" width="134" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{num_factura_adfac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="87da40c3-5ce5-4796-b7c3-3ab030029f77" x="454" y="0" width="124" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_tepro}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="470a405a-095d-4279-873e-032cd00271fb" x="712" y="0" width="90" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_factura_adfac}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="4" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="23" splitType="Stretch">
+			<textField>
+				<reportElement uuid="fd5e51f1-7cef-4146-a2f9-a6fd5bdb8c87" x="681" y="1" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="96383702-1391-4c8c-bf74-033f0323d835" x="761" y="1" width="40" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="5" splitType="Stretch"/>
+	</summary>
+</jasperReport>

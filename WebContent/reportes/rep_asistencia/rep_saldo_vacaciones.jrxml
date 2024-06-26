@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_saldo_vacaciones" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7cef14d5-ab94-423c-aa50-c9d7943fbf11">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["D:\\workspace\\biess\\WebContent\\reportes\\rep_gestion\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="IDE_GTEMP" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT EMP.IDE_GTEMP,
+EMP.APELLIDO_PATERNO_GTEMP || '  ' ||
+EMP.APELLIDO_MATERNO_GTEMP || '  ' ||
+EMP.PRIMER_NOMBRE_GTEMP || '  ' ||
+EMP.SEGUNDO_NOMBRE_GTEMP AS Nombres,
+DOCUMENTO_IDENTIDAD_GTEMP as CI,
+a.IDE_ASVAC,a.DIA_ACUMULADO,a.NRO_DIAS_ADICIONAL,a.DIA_DESCONTADO,a.DIA_SOLICITADO,
+a.DIA_ACUMULADO+a.NRO_DIAS_ADICIONAL as NRO_TOTALES_VACACIONES, (a.DIA_ACUMULADO+a.NRO_DIAS_ADICIONAL)-(a.DIA_DESCONTADO+a.DIA_SOLICITADO) AS DIAS_PENDIENTES
+FROM (
+SELECT IDE_ASVAC,(case when sum(DIA_ACUMULADO_ASDEV) is null then 0 else sum(DIA_ACUMULADO_ASDEV) end)AS DIA_ACUMULADO,
+(case when SUM(DIA_ADICIONAL_ASDEV) is null then 0 else SUM(DIA_ADICIONAL_ASDEV) end) as NRO_DIAS_ADICIONAL,
+(case when SUM(DIA_DESCONTADO_ASDEV) is null then 0 else SUM(DIA_DESCONTADO_ASDEV) end)AS DIA_DESCONTADO,
+(case when SUM(DIA_SOLICITADO_ASDEV) is null then 0 else SUM(DIA_SOLICITADO_ASDEV) end)AS DIA_SOLICITADO
+FROM ASI_DETALLE_VACACION WHERE ACTIVO_ASDEV = true GROUP BY IDE_ASVAC
+) a
+LEFT JOIN ASI_VACACION VAC ON VAC.IDE_ASVAC=a.IDE_ASVAC
+left join GTH_EMPLEADO EMP ON EMP.IDE_GTEMP=VAC.IDE_GTEMP
+WHERE VAC.IDE_GTEMP IN($P!{IDE_GTEMP})
+ORDER BY NOMBRES ASC]]>
+	</queryString>
+	<field name="ide_gtemp" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gth_empleado, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="nombres" class="java.lang.String"/>
+	<field name="ci" class="java.lang.String"/>
+	<field name="ide_asvac" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gedia, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="dia_acumulado" class="java.math.BigDecimal"/>
+	<field name="nro_dias_adicional" class="java.math.BigDecimal"/>
+	<field name="dia_descontado" class="java.math.BigDecimal"/>
+	<field name="dia_solicitado" class="java.lang.Long"/>
+	<field name="nro_totales_vacaciones" class="java.math.BigDecimal"/>
+	<field name="dias_pendientes" class="java.math.BigDecimal"/>
+	<variable name="contador" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{ide_gtemp}]]></variableExpression>
+		<initialValueExpression><![CDATA[1]]></initialValueExpression>
+	</variable>
+	<group name="empleado">
+		<groupExpression><![CDATA[$F{ide_gtemp}]]></groupExpression>
+		<groupHeader>
+			<band/>
+		</groupHeader>
+	</group>
+	<title>
+		<band height="37" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="a8d84635-c202-4561-a469-fc3fbdbf433e" x="0" y="0" width="555" height="25"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="10" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="8df4b4a0-2388-4b23-8c79-360f923c9e94" x="157" y="0" width="56" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[C.I.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="42766bed-cf4d-4974-b446-572237087cf6" x="213" y="0" width="58" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[DIA.ACUM]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="102c7e5b-f698-499b-8cc5-86fd97ca8b9c" x="20" y="0" width="137" height="10"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4e1bf811-dc59-42d5-89fd-4cd893a714e1" x="271" y="0" width="53" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[NRO.DIAS.ADIC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9a46d6d3-6b91-4a18-a999-3d82a7a5f320" x="324" y="0" width="70" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[DIA.DESCONTADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ef2a905a-fd71-4913-b884-de90c973af99" x="394" y="0" width="48" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[DIA.SOLIC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="aaeb1935-1d95-4896-b0d0-8bac426960dc" x="442" y="0" width="61" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[NRO.TOTALES.VAC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c1042d3e-60ce-46b4-b523-9f92bc7a963c" x="503" y="0" width="52" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[DIAS.PEND]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a5d6946e-5c26-4191-92b2-e95ae22cf057" x="0" y="0" width="20" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[NRO.]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="10" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="cb09ebb9-5242-42e2-8a35-4744d033bf4f" positionType="Float" stretchType="RelativeToBandHeight" x="157" y="0" width="56" height="10" isPrintWhenDetailOverflows="true"/>
+				<box rightPadding="5">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ci}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="9b4b3fd4-fac5-4e68-8d81-1971bbf62aff" positionType="Float" stretchType="RelativeToBandHeight" x="213" y="0" width="58" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dia_acumulado}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="d0737cd6-9f7b-4078-90aa-c7fe35de7338" positionType="Float" stretchType="RelativeToBandHeight" x="20" y="0" width="137" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="5">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombres}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="1ede65d1-a7f6-4c4d-8d66-f720b9e3cc7b" positionType="Float" stretchType="RelativeToBandHeight" x="271" y="0" width="53" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nro_dias_adicional}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="726e9a54-2109-4845-993f-42fc79448acd" positionType="Float" stretchType="RelativeToBandHeight" x="324" y="0" width="70" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dia_descontado}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="ecc35282-89e0-4d1e-83f3-925021f0b64a" positionType="Float" stretchType="RelativeToBandHeight" x="394" y="0" width="48" height="10" isPrintWhenDetailOverflows="true"/>
+				<box rightPadding="5">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dia_solicitado}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="ade52d44-c1f0-4b20-a92f-a34f644afa34" positionType="Float" stretchType="RelativeToBandHeight" x="442" y="0" width="61" height="10" isPrintWhenDetailOverflows="true"/>
+				<box rightPadding="5">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nro_totales_vacaciones}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="f4a6617a-327e-46c1-9ad6-29b8fc2523bf" positionType="Float" stretchType="RelativeToBandHeight" x="503" y="0" width="52" height="10" isPrintWhenDetailOverflows="true"/>
+				<box rightPadding="5">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dias_pendientes}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="94909c53-95a4-4b17-8655-388424ee4043" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="20" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{contador}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="50">
+			<textField>
+				<reportElement uuid="d1ad09ea-1024-4f26-b009-c2733ddb5a12" x="435" y="0" width="80" height="10"/>
+				<textElement textAlignment="Right">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="9e769d26-fd80-4cbb-82c7-f08b2a99760b" x="515" y="0" width="40" height="10"/>
+				<textElement>
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

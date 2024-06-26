@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_recibo_caja_ticket" language="groovy" pageWidth="210" pageHeight="550" columnWidth="190" leftMargin="10" rightMargin="10" topMargin="20" bottomMargin="10" uuid="4f88d28a-8afc-4abc-95b3-23e811e4bb26">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="p_recaudador" class="java.lang.String"/>
+	<parameter name="p_cliente_cobro" class="java.lang.String"/>
+	<parameter name="p_nro_comprobante" class="java.lang.Integer"/>
+	<parameter name="pide_fafac" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="plugar_cobro" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select row_number() over(order by a.ide_recli,grupo,ide_fafac) as codigo,ide_fafac,a.ide_recli,detalle_bogrm,secuencial_fafac,total_fafac,grupo,
+    razon_social_recli,ruc_comercial_recli,now() as fecha_Actual
+    from (
+    select 1 as ide_fafac,ide_recli,substring(detalle_bogrm from 1 for 25) as detalle_bogrm,'De las Facturas ('||textcat_all(secuencial_fafac || ', ')||')' as secuencial_fafac,sum(total_fafac) as total_fafac,grupo from (
+    select ide_fafac,ide_recli,detalle_bogrm,secuencial_fafac,total_fafac,1 as grupo
+    from (
+    select ide_fafac,ide_fadaf,secuencial_fafac,total_fafac,ide_recli,ide_coest from fac_factura
+    ) a , (
+    select ide_fadaf,autorizacion_sri_bogrm,serie_factura_fadaf, detalle_bogrm
+    from fac_datos_factura a, bodt_grupo_material b where a.ide_bogrm = b.ide_bogrm
+    order by autorizacion_sri_bogrm
+    ) b
+    where a.ide_fadaf = b.ide_fadaf
+    and a.ide_fafac in (select ide_factura from fac_cobro where tipo=1 and ide_lugar_cobro=$P{plugar_cobro} and ide_caja=$P{pide_fafac})
+    ) a group by ide_recli,detalle_bogrm,grupo
+
+    union
+    select 1,ide_recli,'NOTA DE DEBITO','De las Facturas ('||textcat_all(detalle_fenod || ', ')||')' as detalle,sum(interes_generado_fanod) as interes_generado_fanod,2 as grupo
+    from (
+    select ide_fanod,ide_recli,'NOTA DE DEBITO',detalle_fenod,interes_generado_fanod,2 as grupo
+    from fac_nota_debito where ide_fanod in (select ide_factura from fac_cobro where tipo=2 and ide_lugar_cobro=$P{plugar_cobro} and ide_caja=$P{pide_fafac})
+    ) a group by ide_recli
+
+    ) a,rec_clientes b
+    where a.ide_recli =b.ide_recli
+    order by a.ide_recli,grupo,ide_fafac]]>
+	</queryString>
+	<field name="codigo" class="java.lang.Long"/>
+	<field name="ide_fafac" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla fac_factura.]]></fieldDescription>
+	</field>
+	<field name="ide_recli" class="java.lang.Long"/>
+	<field name="detalle_bogrm" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_bogrm]]></fieldDescription>
+	</field>
+	<field name="secuencial_fafac" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el numero secuencial de la factura.]]></fieldDescription>
+	</field>
+	<field name="total_fafac" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el valor total de la factura.]]></fieldDescription>
+	</field>
+	<field name="grupo" class="java.lang.Integer"/>
+	<field name="razon_social_recli" class="java.lang.String"/>
+	<field name="ruc_comercial_recli" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el ruc comercial del cliente.]]></fieldDescription>
+	</field>
+	<field name="fecha_actual" class="java.sql.Timestamp"/>
+	<variable name="recaudado" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_fafac}]]></variableExpression>
+	</variable>
+	<title>
+		<band height="53" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="1b88f064-3746-4017-83a9-b592b4b03a6d" x="0" y="0" width="190" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Empresa Pública Metropolitana de Gestión]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="87f58355-fd78-44a0-a60b-a67004433119" x="0" y="11" width="190" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Integral de Residuos Sólidos EMGIRS-EP]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="da32dd36-4a76-4466-a692-9bf0f5fce973" x="0" y="26" width="190" height="27"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Matriz: Pasaje OE3G - N51-84 y Av. Río Amazonas, Quito]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="88" splitType="Stretch">
+			<textField>
+				<reportElement uuid="52a4ef2b-9cf8-4452-bd90-034b6cd50fbc" x="1" y="1" width="189" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["RECIBO DE RECAUDACIÓN No. "+$P{p_nro_comprobante}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="cc889cc8-6619-4fb5-a5e0-c5a2dcdb84c3" x="1" y="57" width="45" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[CLIENTE:]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="45dc9ee3-d7dd-4784-b1ce-d1efec733711" x="48" y="57" width="130" height="30"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{razon_social_recli}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="e144760c-1e1e-437c-ba14-18fbde51d5da" x="1" y="45" width="45" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[RUC:]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="b20f6265-ad7d-485b-a6a9-162db6dca3a1" x="48" y="45" width="142" height="12"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ruc_comercial_recli}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="true">
+				<reportElement uuid="e5467566-3e0a-44aa-905f-51150d5ca451" x="48" y="19" width="104" height="13"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_actual}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="72aec032-d194-4f99-b587-2c3bca894862" x="1" y="19" width="45" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="946201c3-2dcd-4001-828e-1f02c8644a98" x="1" y="32" width="45" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[HORA:]]></text>
+			</staticText>
+			<textField pattern="h:mm a" isBlankWhenNull="true">
+				<reportElement uuid="8c980ecc-8578-4cb3-97b7-bcd62f4f77ee" x="48" y="32" width="104" height="13"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="19" splitType="Stretch">
+			<line>
+				<reportElement uuid="1914a5c9-0b8e-4afe-8c8e-24d9811dc482" x="0" y="0" width="190" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="f58a5e36-9190-4e8e-81ff-7382f3b27908" x="0" y="2" width="28" height="13"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ORD.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2970295b-ff82-4f6b-b9af-f18114bcf916" x="29" y="2" width="107" height="13"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[CONCEPTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="90e27cae-c040-4fb1-b995-6b4422a68987" x="136" y="2" width="54" height="13"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[VALOR]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="b61caf0a-e62b-4e93-9806-a136dffa525c" x="0" y="16" width="190" height="1"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="72" splitType="Stretch">
+			<textField pattern="###0" isBlankWhenNull="true">
+				<reportElement uuid="017d3342-1ab3-487a-9f6a-6e508d05d80f" x="0" y="0" width="29" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="50ee0785-bbd7-4ac5-9e51-bf5c8e225e9f" x="28" y="0" width="108" height="70"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_bogrm}+"  --  "+$F{secuencial_fafac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="82ae6f23-ba03-42d3-905a-40e3f10a20f8" x="135" y="0" width="54" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_fafac}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="277" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="40651495-63cb-4d80-be2f-95a8a96c1c84" x="124" y="3" width="64" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{recaudado}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="abb0884f-7f00-4dc0-a9c9-c4e73b132dbf" x="34" y="3" width="89" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[TOTAL RECAUDADO:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="92059c4d-44a8-4874-a5a9-7da9e27af65d" x="0" y="77" width="189" height="13"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_cliente_cobro}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="2b8b3f6d-e781-4c11-8462-55d163408996" x="1" y="76" width="188" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="3e68ef77-3597-4115-8a97-9bf1df0723f2" x="0" y="88" width="189" height="13"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[CLIENTE]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="180ae95b-b5f6-4f53-a2ea-f87f1993a2f5" x="0" y="169" width="189" height="13"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_recaudador}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5c6ecfce-e70c-4834-b28e-0ab87ca99185" x="0" y="180" width="189" height="13"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[RECAUDADOR]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="3c7770b6-4c78-4c7f-8294-025e5c2025ef" x="1" y="168" width="188" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="ae918b14-60e7-4853-b4f5-119fb643b893" x="0" y="251" width="189" height="21"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Nota.- Comprobante emitido automaticamente por el sistema ERP de la EMGIRS-EP.]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="3e521a2e-521e-4475-917c-a72a320272cb" x="0" y="1" width="189" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="2a14bff0-2c9b-4d74-b784-b468dffdba61" x="0" y="214" width="189" height="38"/>
+				<textElement textAlignment="Justified">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Estimad@ cliente, sus comprobantes los puede descargar
+en ell link facturacion.emgirs.gob.ec/addocument_website registrando su cédula o ruc en usuario y en clave los seis primeros dígitos.]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

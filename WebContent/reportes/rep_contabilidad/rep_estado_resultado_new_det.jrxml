@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_estado_resultado_new_det" printOrder="Horizontal" pageWidth="560" pageHeight="180" whenNoDataType="BlankPage" columnWidth="560" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e417e812-fc9d-4d5d-81e0-d26a47801e5c">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:/eclipse-jee-kepler-SR2-win32/Proyectos/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select a.ide_estado_resultado,des_cuenta,valor,orden,codigo,ide_grupo_estado,padre,fecha_inicial,fecha_final,valor_padre,
+                (select valor from cont_estado_resultado where ide_estado_resultado = 54) as resultado
+                from cont_estado_resultado a,
+                ( select ide_estado_resultado,des_cuenta as padre,valor as valor_padre from cont_estado_resultado ) b
+                where a.ide_grupo_estado = b.ide_estado_resultado
+                and valor != 0 and ide_grupo_estado=183
+                order by orden]]>
+	</queryString>
+	<field name="ide_estado_resultado" class="java.lang.Integer"/>
+	<field name="des_cuenta" class="java.lang.String"/>
+	<field name="valor" class="java.math.BigDecimal"/>
+	<field name="orden" class="java.lang.Integer"/>
+	<field name="codigo" class="java.lang.String"/>
+	<field name="ide_grupo_estado" class="java.lang.Integer"/>
+	<field name="padre" class="java.lang.String"/>
+	<field name="fecha_inicial" class="java.sql.Date"/>
+	<field name="fecha_final" class="java.sql.Date"/>
+	<field name="valor_padre" class="java.math.BigDecimal"/>
+	<field name="resultado" class="java.math.BigDecimal"/>
+	<variable name="total" class="java.lang.Double" incrementType="Group" incrementGroup="grupo" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_padre}.doubleValue()]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<group name="grupo">
+		<groupExpression><![CDATA[$F{ide_grupo_estado}]]></groupExpression>
+		<groupHeader>
+			<band height="23">
+				<textField>
+					<reportElement uuid="9aa0491c-7b2f-4944-b2cd-06bdaac02395" x="69" y="3" width="443" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{padre}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="24">
+				<textField pattern="#,##0.00;(#,##0.00)">
+					<reportElement uuid="dbe26f7b-8bd4-45ef-8419-2f31f93f4f5d" x="455" y="2" width="100" height="20" printWhenGroupChanges="grupo"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{valor_padre}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="34547335-e4f9-487e-ab3a-837a8d46f885" x="326" y="2" width="119" height="20"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[     TOTAL:]]></text>
+				</staticText>
+				<line>
+					<reportElement uuid="66e55e88-e500-4b75-b6b9-6808ac8543e6" x="0" y="2" width="555" height="1"/>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement uuid="fa445641-4a59-4e30-8816-c47a0b6945a4" x="3" y="0" width="81" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="c0df7ab0-97dd-4fb3-a3cb-0d942c1685ca" x="89" y="0" width="356" height="15"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{des_cuenta}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="d48f9756-0e6c-43f9-9431-cd3045f74a31" x="456" y="0" width="101" height="15"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

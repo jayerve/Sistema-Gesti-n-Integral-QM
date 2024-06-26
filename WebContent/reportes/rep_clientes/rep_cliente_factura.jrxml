@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e50bbc16-e747-4132-8269-004dc2c0e3e1">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:/eclipse-jee-kepler-SR2-win32/Proyectos/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select a.ide_recli,telefono_factura,nombre_comercial_factura,matriz_sucursal_factura,ruc_comercial_factura,
+abreviatura_factura,fecha_transaccion_fafac,subtotal,cantidad_fadef,fecha_fadef,direccion_factura,
+valor_fadef,total_fadef,detalle_bomat,ide_bomat,valor_iva_fafac,total_fafac,razon_social_recli,detalle_bogrm
+from (
+select ide_recli,(case when factura_datos_recli=0 then telefono_factura_reclim else telefono_factura_recli end) as telefono_factura,
+(case when factura_datos_recli=0 then nombre_comercial_reclim else nombre_comercial_recli end) as nombre_comercial_factura,
+(case when  factura_datos_recli=0 then matriz_sucursal_reclim  else matriz_sucursal_recli end) as matriz_sucursal_factura,
+(case when  factura_datos_recli=0 then ruc_comercial_reclim    else ruc_comercial_recli end) as ruc_comercial_factura,
+(case when  factura_datos_recli=0 then abreviatura_reclrm else  abreviatura_reclr end) as abreviatura_factura,
+(case when  factura_datos_recli=0 then direccion_recldm else direccion_recld end) as direccion_factura,
+ telefono_factura_recli as telefono_factura_sucursal, nombre_comercial_recli as nombre_comercial_sucursal,
+ matriz_sucursal_recli as matriz_sucursal_sucursal,ruc_comercial_recli as ruc_comercial_sucursal,
+ abreviatura_reclr as abreviatura_sucursal, direccion_recld as direccion_sucursal ,razon_social_recli
+from ( select a.ide_recli,a.rec_ide_recli,a.telefono_factura_recli,a.nombre_comercial_recli,a.matriz_sucursal_recli,
+a.ruc_comercial_recli, a.abreviatura_reclr,a.direccion_recld,a.factura_datos_recli, b.ide_recli as ide_clientem,b.rec_ide_recli,
+(case when a.rec_ide_recli is null then a.telefono_factura_recli else b.telefono_factura_recli end) as telefono_factura_reclim,
+(case when a.rec_ide_recli is null then a.nombre_comercial_recli else b.nombre_comercial_recli end) as nombre_comercial_reclim,
+(case when a.rec_ide_recli is null then a.matriz_sucursal_recli  else b.matriz_sucursal_recli end) as matriz_sucursal_reclim,
+(case when a.rec_ide_recli is null then a.ruc_comercial_recli    else b.ruc_comercial_recli end) as ruc_comercial_reclim,
+(case when a.rec_ide_recli is null then a.abreviatura_reclr else  b.abreviatura_reclr end) as abreviatura_reclrm,
+(case when a.rec_ide_recli is null then a.direccion_recld else b.direccion_recld end) as direccion_recldm ,razon_social_recli
+from ( select a.ide_recli,rec_ide_recli,telefono_factura_recli,nombre_comercial_recli,matriz_sucursal_recli,ruc_comercial_recli,
+abreviatura_reclr,direccion_recld,factura_datos_recli,razon_social_recli
+from ( select ide_recli,rec_ide_recli,telefono_factura_recli,
+nombre_comercial_recli,matriz_sucursal_recli,ruc_comercial_recli,abreviatura_reclr,factura_datos_recli,razon_social_recli
+from rec_clientes a, rec_cliente_ruta b where a.ide_reclr=b.ide_reclr )  a
+left join (select ide_recli,direccion_recld from rec_cliente_direccion where activo_recld=true ) b on a.ide_recli=b.ide_recli ) a
+left join ( select a.ide_recli,rec_ide_recli,telefono_factura_recli,nombre_comercial_recli,matriz_sucursal_recli,ruc_comercial_recli,
+abreviatura_reclr,direccion_recld from ( select ide_recli,rec_ide_recli,telefono_factura_recli,nombre_comercial_recli,
+matriz_sucursal_recli,ruc_comercial_recli,abreviatura_reclr from rec_clientes a, rec_cliente_ruta b where a.ide_reclr=b.ide_reclr )  a
+left join (select ide_recli,direccion_recld from rec_cliente_direccion where activo_recld=true
+) b on a.ide_recli=b.ide_recli ) b on a.rec_ide_recli=b.ide_recli
+) a order by nombre_comercial_recli
+) a
+left join (select ide_fafac,fecha_transaccion_fafac,ide_recli,valor_iva_fafac,
+total_fafac from fac_factura) b on a.ide_recli = b.ide_recli
+left join (select sum(total_fadef) as subtotal,ide_fafac from fac_detalle_factura group by ide_fafac ) c on b.ide_fafac=c.ide_fafac
+left join (select ide_fafac,cantidad_fadef,fecha_fadef,valor_fadef,total_fadef,a.ide_bomat,detalle_bomat,detalle_bogrm
+from fac_detalle_factura a, bodt_material b ,bodt_grupo_material c where a.ide_bomat = b.ide_bomat and b.ide_bogrm=c.ide_bogrm ) d on b.ide_fafac= d.ide_fafac
+where fecha_transaccion_fafac between '2016/12/29' and '2016/12/31']]>
+	</queryString>
+	<field name="ide_recli" class="java.lang.Long"/>
+	<field name="telefono_factura" class="java.lang.String"/>
+	<field name="nombre_comercial_factura" class="java.lang.String"/>
+	<field name="matriz_sucursal_factura" class="java.lang.Integer"/>
+	<field name="ruc_comercial_factura" class="java.lang.String"/>
+	<field name="abreviatura_factura" class="java.lang.String"/>
+	<field name="fecha_transaccion_fafac" class="java.sql.Date"/>
+	<field name="subtotal" class="java.math.BigDecimal"/>
+	<field name="cantidad_fadef" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define la cantidad de productos vendidos.]]></fieldDescription>
+	</field>
+	<field name="fecha_fadef" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_ fadef]]></fieldDescription>
+	</field>
+	<field name="direccion_factura" class="java.lang.String"/>
+	<field name="valor_fadef" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Estecampo define el valor de venta del producto o servicio.]]></fieldDescription>
+	</field>
+	<field name="total_fadef" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el valor total de venta.]]></fieldDescription>
+	</field>
+	<field name="detalle_bomat" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del material de acuerdo al grupo de material al cual pertenece.]]></fieldDescription>
+	</field>
+	<field name="ide_bomat" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla bodt_material.]]></fieldDescription>
+	</field>
+	<field name="valor_iva_fafac" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el valor total del iva en la factura.]]></fieldDescription>
+	</field>
+	<field name="total_fafac" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el valor total de la factura.]]></fieldDescription>
+	</field>
+	<field name="razon_social_recli" class="java.lang.String"/>
+	<field name="detalle_bogrm" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_bogrm]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="57" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="295003f7-554e-439a-be5e-68520e1e339f" positionType="Float" x="448" y="39" width="50" height="18"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina"+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" isBlankWhenNull="true">
+				<reportElement uuid="50a1306e-3801-466d-941b-4c6a23dc03df" positionType="Float" x="498" y="39" width="40" height="18"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement uuid="d780b1d5-9546-4853-af47-a37e9df239c0" x="0" y="0" width="554" height="37"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"/reportes/rep_sistema/rep_cabecera_horizontal.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="71a3a113-2ac9-4a6b-aec2-116f0500e077" x="0" y="1" width="133" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" isBold="true" isItalic="false"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[RAZÓN SOCIAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9a70140b-8002-4f4b-9b19-784d1c46c94e" x="133" y="1" width="114" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" isBold="true" isItalic="false"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[RUC COMERCIAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e5c47f53-bc46-4637-95dc-4f1ba6c04e41" x="357" y="1" width="66" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d2a3fa6a-8f5e-4fd0-9d4b-d552b149b66a" x="247" y="1" width="110" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" isBold="true" isItalic="false"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[FECHA DE FACTURA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="56c6db07-02f9-4a48-a609-76cb53a2864e" x="423" y="1" width="132" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[PUNTO DE VENTA]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="a0e7afa8-c6bf-4840-a359-1a3113b4d5b7" x="0" y="0" width="133" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_comercial_factura}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9d96eb6f-5edd-4f14-a9a8-32a34a6640ea" x="133" y="0" width="114" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ruc_comercial_factura}]]></textFieldExpression>
+			</textField>
+			<textField pattern="$ #,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="19038ed5-9996-44ba-aa92-f5c2ef966c17" x="357" y="0" width="66" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_fafac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="f76f2a6d-767f-40cf-aa28-d16bf6976779" x="247" y="0" width="110" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_transaccion_fafac}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a7bdc9ac-daeb-44d1-9189-303ea030d0ae" x="423" y="0" width="131" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_bogrm}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

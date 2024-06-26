@@ -1,0 +1,631 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_receta_medica" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="61a5a94f-bd05-4302-a3e0-c1b740038b3b">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["D:\\workspace\\biess\\WebContent\\reportes\\rep_gestion\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="SUCURSAL" class="java.lang.String"/>
+	<parameter name="ide_safim" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new java.lang.Integer(21)]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select a.ide_safim,a.ide_sucu,a.ide_gtemp,a.ide_geedp,a.ide_usua,a.ide_saesp,a.ide_satic,anio_edad_safim,
+mes_edad_safim,peso_safim,talla_safim,imc_safim,temperatura_safim,pulso_safim,superficie_corporal_safim,
+fre_respiratoria_safim,fre_cardiaca_safim,fecha_consulta_safim,presuntivo_safim,definitivo_safim,primera_safim,
+subsecuente_safim,interconsulta_safim,observaciones_safim,
+nom_sucu,apellido_paterno_gtemp||' '||apellido_materno_gtemp||' '||primer_nombre_gtemp||' '||segundo_nombre_gtemp as empleado,
+detalle_gecaf,detalle_gegro, sucursal_empleado,detalle_gedep,detalle_geare,e.detalle_saesp,f.detalle_satic,g.nom_usua as medico,
+cantidad_sarem,indicacion_sarem,detalle_samed,c.documento_identidad_gtemp
+from sao_ficha_medica a, sis_sucursal b,gth_empleado c,(
+select ide_geedp,c.ide_gegro, detalle_gecaf,detalle_gegro,nom_sucu as sucursal_empleado,detalle_gedep,detalle_geare
+from  gen_empleados_departamento_par a
+left join gen_cargo_funcional b on a.ide_gecaf = b.ide_gecaf
+left join gen_grupo_ocupacional c on a.ide_gegro = c.ide_gegro
+left join sis_sucursal d on a.ide_sucu = d.ide_sucu
+left join gen_departamento e on a.ide_gedep = e.ide_gedep
+left join gen_area f on a.ide_geare = f.ide_geare
+) d, sao_especialidad e, sao_tipo_consulta f,sis_usuario g,
+(
+select a.ide_sarem,a.ide_safim,a.ide_samed,cantidad_sarem,indicacion_sarem,b.detalle_samed
+from sao_receta_medica a, sao_medicacion b
+where a.ide_samed = b.ide_samed
+) h
+where a.ide_sucu = b.ide_sucu
+and a.ide_gtemp= c.ide_gtemp
+and a.ide_geedp = d.ide_geedp
+and a.ide_saesp = e.ide_saesp
+and a.ide_satic = f.ide_satic
+and a.ide_usua= g.ide_usua
+and a.ide_safim = h.ide_safim
+and a.ide_safim=$P{ide_safim}]]>
+	</queryString>
+	<field name="ide_safim" class="java.lang.Integer"/>
+	<field name="ide_sucu" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_sucu]]></fieldDescription>
+	</field>
+	<field name="ide_gtemp" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gth_empleado, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_geedp" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_empleados_departamento_par, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_usua" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_usua]]></fieldDescription>
+	</field>
+	<field name="ide_saesp" class="java.lang.Integer"/>
+	<field name="ide_satic" class="java.lang.Integer"/>
+	<field name="anio_edad_safim" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define cuantos anios tiene el empleado al moento de la consulta.]]></fieldDescription>
+	</field>
+	<field name="mes_edad_safim" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define el numero de meses que tiene el empleado al momento de la consulta.]]></fieldDescription>
+	</field>
+	<field name="peso_safim" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el peso que tiene el empleado al momento de la consulta (kg)]]></fieldDescription>
+	</field>
+	<field name="talla_safim" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define la talla del empleado al momento de la consulta (mts)]]></fieldDescription>
+	</field>
+	<field name="imc_safim" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el indice de masa corporal del empleado al momento de la consulta.]]></fieldDescription>
+	</field>
+	<field name="temperatura_safim" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la temperatura del empleado al momento de la consulta.]]></fieldDescription>
+	</field>
+	<field name="pulso_safim" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define el pulso del empleado al momento de la consulta]]></fieldDescription>
+	</field>
+	<field name="superficie_corporal_safim" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define la superficie corporal del empleado.]]></fieldDescription>
+	</field>
+	<field name="fre_respiratoria_safim" class="java.lang.Integer">
+		<fieldDescription><![CDATA[este campo define la frecuencia respiratoria, del empleado.]]></fieldDescription>
+	</field>
+	<field name="fre_cardiaca_safim" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la frecuencia cardiaca del empleado.]]></fieldDescription>
+	</field>
+	<field name="fecha_consulta_safim" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha de consulta del empleado.]]></fieldDescription>
+	</field>
+	<field name="presuntivo_safim" class="java.lang.Boolean"/>
+	<field name="definitivo_safim" class="java.lang.Boolean"/>
+	<field name="primera_safim" class="java.lang.Boolean"/>
+	<field name="subsecuente_safim" class="java.lang.Boolean"/>
+	<field name="interconsulta_safim" class="java.lang.Boolean"/>
+	<field name="observaciones_safim" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define las observaciones adicionales que puede tener la consulat medica.]]></fieldDescription>
+	</field>
+	<field name="nom_sucu" class="java.lang.String">
+		<fieldDescription><![CDATA[nom_sucu]]></fieldDescription>
+	</field>
+	<field name="empleado" class="java.lang.String"/>
+	<field name="detalle_gecaf" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del cargo y el puesto en el caso d emonte de piedad, ejemplo: PROFESIONAL 1, TECNICO A , TECNICO B, asi como los puestos: CAJERO, PQ Y PH, etc]]></fieldDescription>
+	</field>
+	<field name="detalle_gegro" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_gegro]]></fieldDescription>
+	</field>
+	<field name="sucursal_empleado" class="java.lang.String"/>
+	<field name="detalle_gedep" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del departamento, ejemplo: DIRECTORIO, TECNOLOGIA, INFRAESTRUCTURA, etc.]]></fieldDescription>
+	</field>
+	<field name="detalle_geare" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del area ejemplo: Directorio, Auditoria Interna, etc.]]></fieldDescription>
+	</field>
+	<field name="detalle_saesp" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre de la especialida, Ejemplo: Medicina General.]]></fieldDescription>
+	</field>
+	<field name="detalle_satic" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del tipo de consulta. Ejemplo:  Consulta.]]></fieldDescription>
+	</field>
+	<field name="medico" class="java.lang.String"/>
+	<field name="cantidad_sarem" class="java.lang.Integer">
+		<fieldDescription><![CDATA[este campo define la cantidad del medicamento recetado ap empleado paciente.]]></fieldDescription>
+	</field>
+	<field name="indicacion_sarem" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define las indicaciones medicas por cada medicamento recetado.]]></fieldDescription>
+	</field>
+	<field name="detalle_samed" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre de la medicacion para ser recetada al empleado paciente.]]></fieldDescription>
+	</field>
+	<field name="documento_identidad_gtemp" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el numero de documento de identidad que posee el empleado.]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="51" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="e2a55d59-ae00-4be5-8e86-110d1ae32093" x="0" y="0" width="555" height="36"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="155" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="302a4a32-42fd-42a0-bae7-d1c96038d803" key="staticText" x="263" y="69" width="76" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[ESPECIALIDAD:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1f70f836-6763-48b4-939b-6b339736ecae" key="staticText" x="151" y="20" width="99" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[SUCURSAL PACIENTE:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e21c9e16-900e-451a-8bd6-b33954ba7d90" key="textField" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="330" y="72" width="225" height="15" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_saesp}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="17b0cff3-94e7-4c06-9e97-38ef47f164f2" key="staticText-1" x="16" y="3" width="54" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[PACIENTE:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8e92787a-e373-405d-b8de-27be4e34ff2e" key="staticText-2" x="16" y="20" width="54" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[C.I. :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="993bd02b-358f-4bbd-aaa6-243e14718461" key="staticText-3" x="280" y="3" width="87" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[FECHA RECETA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="608c2e27-51c7-4156-9d15-c0b7b86e0fa1" key="staticText-5" x="254" y="37" width="112" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[SUCURSAL DISPENSARIO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8d955324-59a0-4641-85d2-997c60f7edb5" key="staticText-6" x="16" y="37" width="44" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[AREA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d7892cd2-ba22-4f11-8277-6d4db29ed72a" key="staticText-7" x="16" y="51" width="99" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[DEPARTAMENTO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="df104120-45b8-4e16-9a6e-d965b46c7b6a" key="staticText-8" x="16" y="68" width="99" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[GRUPO: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d174d8a4-79e6-4da5-89ab-8963c64ae668" key="staticText-9" x="16" y="84" width="99" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[CARGO:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="c4fbec7f-957f-43e3-bebb-6f89e769138c" key="textField-1" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="64" y="6" width="211" height="15" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{empleado}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="a47f2aae-5968-43fd-8918-c1d5421edc97" key="textField-2" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="365" y="5" width="89" height="15" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_consulta_safim}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="f2495859-85cc-47ba-a287-591703777c64" key="textField-4" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="363" y="39" width="89" height="15" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nom_sucu}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="094a765c-9d7c-45f5-8d38-273b19b12977" key="textField-5" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="36" y="23" width="112" height="15" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{documento_identidad_gtemp}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="691e3686-6e70-4907-8f12-d6bd06c5d1fb" key="textField-6" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="244" y="23" width="87" height="15" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sucursal_empleado}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="3a35b032-5815-4c31-98f2-de69e0efdbef" key="textField-7" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="51" y="41" width="152" height="15" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_geare}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b7aa8225-bac3-4a25-9526-baac2351161a" key="textField-8" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="93" y="54" width="199" height="15" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_gedep}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="5735a8ef-7b1e-4bbf-9232-d2b8044dcc14" key="textField-9" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="52" y="71" width="182" height="15" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_gegro}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="4d05d002-b4ae-4edb-bb9d-57dfc4dda278" key="textField-10" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="53" y="87" width="242" height="15" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_gecaf}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="7c71ff7d-3c55-4d8e-bf33-ed15ebd85639" key="line-1" x="0" y="119" width="555" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="df201baf-f823-4288-83cf-32f4eff19b0c" key="staticText-10" x="16" y="100" width="99" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[EMITIDO  POR:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="3b2bf4b4-2e26-4d47-ad8c-f018ae456cc2" key="textField-11" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="94" y="103" width="199" height="15" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{medico}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="62431ebd-91b1-4d88-98d0-edc5cd3d58d0" key="staticText-11" x="263" y="85" width="76" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[TIPO CONSULTA:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="cb60e3ea-9651-471d-891d-654216953112" key="textField-12" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="336" y="87" width="217" height="15" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_satic}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="fa768630-3dd5-4646-81b4-10562bba8694" key="staticText-12" x="189" y="121" width="134" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[DETALLE DE RECETA MEDICA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="664e3e11-7bb2-4345-84c6-23f30fed2006" key="staticText-13" x="13" y="134" width="134" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[MEDICACION]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6a1e9d40-5f95-47f3-9898-526ea722a297" key="staticText-14" x="172" y="135" width="70" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[CANTIDAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f79fd247-8cf3-4c47-b3a0-4261cfc25286" key="staticText-15" x="268" y="134" width="134" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[INDICACIONES]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="8f9c3c5a-6e73-4d67-a72e-1c0a803bfbf6" key="line-2" x="0" y="153" width="555" height="1"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="17" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="954739ac-1b8e-450a-ba96-f6162746e8a6" key="textField-13" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="13" y="2" width="152" height="15" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_samed}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="4248e05a-3411-439e-89c8-999526a09d3f" key="textField-14" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="171" y="2" width="77" height="15" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cantidad_sarem}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="11707855-34c7-470a-86f3-c7ecce1a4d1d" key="textField-15" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="266" y="2" width="284" height="15" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{indicacion_sarem}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="100" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="053ae624-3cad-49fb-a1b8-0fbd4e5fcfa2" key="staticText" x="115" y="67" width="99" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[EMITIDO POR:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a572c77c-2ab1-4916-b8d7-3ed5cddfaa64" key="staticText" x="323" y="67" width="99" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[FIRMA DEL MEDICO:]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="599afb36-4ac8-4c95-8a16-76437cc44a2e" x="322" y="66" width="100" height="1"/>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,626 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="templates/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"                
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+<style>
+    .column-text{
+       text-align:center;
+    }
+    
+</style>
+
+    <ui:define name="tituloPagina">Vacaciones</ui:define>
+
+    <ui:define name="opciones">
+        <h:form prependId="false" name="formvacaciones" autoUpdate="true" enctype="multipart/form-data">
+            <p:menu style="width: 96%;margin-top: 10px">
+                <p:submenu label="Permisos y Vacaciones">  
+                    <p:menuitem  value="Solicitudes" icon="ui-documento"  update=":cuerpo" >                       
+                        <f:setPropertyActionListener value="1"  target="#{controladorVacaciones.strOpcion}"/>
+                        <p:resetInput target=":cuerpo" /> 
+                    </p:menuitem> 
+                    <p:menuitem  value="Listado de Solicitudes Realizadas" icon="ui-tabla"  update=":cuerpo" >                       
+                        <f:setPropertyActionListener value="2"  target="#{controladorVacaciones.strOpcion}"/>
+                        <p:resetInput target=":cuerpo" /> 
+                    </p:menuitem>   
+                    <p:menuitem  value="Listado de Solicitudes Recibidas" icon="ui-tabla"  update=":cuerpo" >                       
+                        <f:setPropertyActionListener value="4"  target="#{controladorVacaciones.strOpcion}"/>
+                        <p:resetInput target=":cuerpo" /> 
+                    </p:menuitem>  
+                    
+                    <p:menuitem  value="Resumen de Permisos / Vacaciones " icon="ui-tabla"  update=":cuerpo" >                       
+                        <f:setPropertyActionListener value="5"  target="#{controladorVacaciones.strOpcion}"/>
+                        <p:resetInput target=":cuerpo" /> 
+                    </p:menuitem>  
+                  <!--<p:menuitem value="Subir Archivo" icon="ui-foto" onclick="dia_archivo_permiso.show()"/>-->                      
+                </p:submenu>
+            </p:menu>
+        </h:form>
+                    <h:form prependId="false" name="formVacacionesBiometrico" autoUpdate="true" enctype="multipart/form-data">
+            
+                <p:menu style="width: 96%;margin-top: 10px">
+                <p:submenu label="Biométricos y Marcaciones">  
+                    <p:menuitem  value="Marcacion Manual" icon="ui-documento"  update=":cuerpo" >                       
+                        <f:setPropertyActionListener value="6"  target="#{controladorVacaciones.strOpcion}"/>
+                        <p:resetInput target=":cuerpo" /> 
+                    </p:menuitem> 
+                   <!--   <p:menuitem  value="Listado de Marcaciones Diaria" icon="ui-tabla"  update=":cuerpo" >                       
+                        <f:setPropertyActionListener value="7"  target="#{controladorVacaciones.strOpcion}"/>
+                        <p:resetInput target=":cuerpo" /> 
+                    </p:menuitem>   -->
+                    
+                    <!-- <p:menuitem  value="Resumen de Permisos / Vacaciones " icon="ui-tabla"  update=":cuerpo" >                       
+                        <f:setPropertyActionListener value="5"  target="#{controladorVacaciones.strOpcion}"/>
+                        <p:resetInput target=":cuerpo" /> 
+                    </p:menuitem>  -->
+                  <!--<p:menuitem value="Subir Archivo" icon="ui-foto" onclick="dia_archivo_permiso.show()"/>-->                      
+                </p:submenu>
+            </p:menu>
+                        
+        </h:form>
+
+    </ui:define>
+    
+<!--      
+       <ui:define name="contenido">
+        <p:growl id="groMensajes" autoUpdate="true" showDetail="true" />
+        <p:dialog appendToBody="true"  closable="true"  showEffect="fade" 
+                  hideEffect="fade" widgetVar="dia_archivo_permiso" header="Cambiar Foto de Perfil" modal="true" dynamic="true" width="800" height="180">
+            Debe seleccionar un archvo tipo imagen, tamaño máximo del archivo <strong>500KB</strong>
+            <h:form>
+                <p:fileUpload multiple="false" style="overflow: auto;padding-top: 10px" mode="advanced" dragDropSupport="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" 
+                              cancelLabel="Cancelar" uploadLabel="Aceptar" label="Seleccionar Imagen" showButtons="true" 
+                              invalidFileMessage="El archivo seleccionado no es una imagen válida" 
+                              invalidSizeMessage="El archivo seleccionado supera le tamaño máximo"
+                              sizeLimit="300000" fileUploadListener="#{controladorVacaciones.subirFoto}" oncomplete="dia_archivo_permiso.hide()" />                    
+            </h:form>
+        </p:dialog>
+        </ui:define>
+-->    
+    
+
+    <ui:define name="contenido">
+
+        <p:growl id="groMensajes" autoUpdate="true" showDetail="true" />
+
+        <h:panelGroup id="cuerpo">
+
+            <h:form id="formVacaciones" prependId="false" rendered="#{controladorVacaciones.strOpcion == 1}" enctype="multipart/form-data" >
+
+                <p:fieldset legend="Solicitud">
+
+                  <!--<h:outputText value="Días Pendientes : #{controladorVacaciones.objDiasVacacionesActiva[6]}" style="font-weight: bold;font-size: 16px;"/>--> 
+                   
+                   <!-- dias pendientes tomados de la tabla -->
+                   <h:outputText value="Tiempo Disponible Con Cargo a Vacación : #{controladorVacaciones.str_dias_pendientes}" style="font-weight: bold;font-size: 16px;"/>
+                   
+                    <p:separator/>
+                    
+                    <h:panelGrid columns="4">
+                    
+                     <h:outputText value="Motivo : *" style="font-weight: bold"/>
+                        <p:selectOneMenu  value="#{controladorVacaciones.solicitudVacaciones.ideAsmot.ideAsmot}" required="true" requiredMessage="Debe seleccionar un Motivo">
+                            
+                            <f:selectItem itemLabel="Seleccionar Motivo..."  />  
+                            <f:selectItems  value="#{controladorVacaciones.listaMotivos}" var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+                            <p:ajax event="change" listener="#{controladorVacaciones.seleccionaMotivo}"
+                             update="idDescripcionMotivo,opcionDiasHoras,calHasta,opcionDiasHoras,calDesde,txtDias,txtHoras,calHDesde,calHHasta"/>
+                        </p:selectOneMenu>
+
+
+                         <h:outputText value="Descripción motivo : " style="font-weight: bold" />
+                         <h:outputText id="idDescripcionMotivo" value="#{controladorVacaciones.descripcionMotivo}" style="font-weight: bold"/>
+                            
+   
+                         <h:outputText value="Jefe Inmediato : *" style="font-weight: bold"/>
+                        <p:selectOneMenu value="#{controladorVacaciones.solicitudVacaciones.genIdeGeedp2.ideGeedp}" required="true" requiredMessage="Debe seleccionar su Jefe Inmediato">
+                            <f:selectItem itemLabel="Seleccionar Jefe Inmediato..."  />  
+
+
+                            <f:selectItems  value="#{controladorVacaciones.listaJefesInmediatos}" var="combo" itemLabel="#{combo[1]}" itemValue="#{combo[0]}" />
+                        </p:selectOneMenu> 
+                    
+<h:outputText value="          " style="font-weight: bold" />
+<h:outputText value="          " style="font-weight: bold" />                    
+                             <h:outputText value="#Días (Si) / #Horas (No)  : " style="font-weight: bold"/>
+                        <p:selectBooleanButton id="opcionDiasHoras" value="#{controladorVacaciones.enabledDias}"  disabled="#{!controladorVacaciones.enabledDiasHoras}"
+                        	onLabel="Si" offLabel="No" onIcon="ui-icon-check" offIcon="ui-icon-close">
+                            <p:ajax event="change" listener="#{controladorVacaciones.cambiaDiasHoras}" update="calDesde,txtDias,calHasta,calHDesde,calHHasta,txtHoras" />  
+                        </p:selectBooleanButton>  
+                    
+                        <h:outputText value="Fecha Solicitud : *" style="font-weight: bold"/>
+                        <p:calendar  disabled="true" value="#{controladorVacaciones.solicitudVacaciones.fechaSolicitudAspvh}" pattern="dd/MM/yyyy"/>
+                                               
+                                  
+               
+
+                        <h:outputText id="idLabelFechaDesde" value="Fecha Desde : *" style="font-weight: bold" />
+                        <p:calendar id="calDesde" value="#{controladorVacaciones.solicitudVacaciones.fechaDesdeAspvh}" pattern="dd/MM/yyyy" required="true" requiredMessage="Debe ingresar la Fecha Desde">
+                            <p:ajax event="dateSelect" listener="#{controladorVacaciones.calcularDias}" update="txtDias,calHasta"/>
+                            <p:ajax event="change" listener="#{controladorVacaciones.calcularDias}" update="txtDias,calHasta,txtHoras"/>
+                        </p:calendar>
+                        <h:outputText id="idFechaHasta" value="Fecha Hasta : *"  style="font-weight: bold"/>  
+                            <p:calendar id="calHasta" disabled="#{!controladorVacaciones.enabledHasta}" value="#{controladorVacaciones.solicitudVacaciones.fechaHastaAspvh}" pattern="dd/MM/yyyy" required="true" requiredMessage="Debe ingresar la Fecha Hasta">
+                                <p:ajax event="dateSelect" listener="#{controladorVacaciones.calcularDias}" update="txtDias,calHasta,txtHoras"/>
+                                <p:ajax event="change" listener="#{controladorVacaciones.calcularDias}" update="txtDias,calHasta,txtHoras"/>
+                            </p:calendar>
+                        
+                            <h:outputText id="lblNumDias" value="Número de Días : *"  style="font-weight: bold" />
+                            <p:inputText id="txtDias" size="5"  disabled="true" 
+                            value="#{controladorVacaciones.solicitudVacaciones.nroDiasAspvh}" required="true" requiredMessage="No se puede calcular el número de días"/>
+                       
+                       
+                                   <h:outputText value=" " style="font-weight: bold"/>
+                              <h:outputText value=" " style="font-weight: bold"/>
+
+                	         <h:outputText id="idLabelHorDes" value="Hora Desde : *" style="font-weight: bold" />
+	                        <p:calendar disabled="#{controladorVacaciones.enabledDias}"   
+	                        id="calHDesde" value="#{controladorVacaciones.solicitudVacaciones.horaDesdeAspvh}" pattern="HH:mm"  timeOnly="true"   requiredMessage="Debe ingresar la Hora Desde">
+	                            <f:ajax event="dateSelect" listener="#{controladorVacaciones.calcularHoras}" update="txtHoras"/>
+	                            <f:ajax event="change" listener="#{controladorVacaciones.calcularHoras}" update="txtHoras"/>
+	                        </p:calendar>
+                     
+    	                     <h:outputText id="idLabelHorHas" value="Hora Hasta : *" style="font-weight: bold" />  
+       	                    <p:calendar id="calHHasta" 
+       	                    disabled="#{controladorVacaciones.enabledDias}"
+       	                    value="#{controladorVacaciones.solicitudVacaciones.horaHastaAspvh}" pattern="HH:mm"  timeOnly="true"  requiredMessage="Debe ingresar la Hora Hasta">
+                               <p:ajax event="dateSelect" listener="#{controladorVacaciones.calcularHoras}" update="txtHoras"/>
+                               <p:ajax event="change" listener="#{controladorVacaciones.calcularHoras}" update="txtHoras"/>
+           	                </p:calendar>
+                        
+	                        <h:outputText id="idLabelNumHor" value="Número de Horas : *" style="font-weight: bold" />
+                            <p:inputText id="txtHoras" disabled="true"  size="5"  value="#{controladorVacaciones.solicitudVacaciones.nroHorasAspvh}" requiredMessage="No se puede calcular el número de horas"/>
+						                            
+		
+
+
+                        <f:facet name="footer">
+                            <h:panelGrid columns="2">
+                                <h:outputText value="Detalle : *" style="font-weight: bold" />
+                                <p:inputTextarea  cols="60" rows="4" value="#{controladorVacaciones.solicitudVacaciones.detalleAspvh}"
+                                required="true" requiredMessage="Debe ingresar un Detalle"/>
+                                <f:facet name="footer">
+                                 <p:commandButton partialSubmit="true" process="formVacaciones" update="formVacaciones"  value="Guardar"  icon="ui-guardar" 
+                                 actionListener="#{controladorVacaciones.guardarSolicitud}" ajax="false"
+                                 oncomplete="if (false) {window.open('#{controladorVacaciones.strPathReporte}');}"/>
+                                </f:facet>
+                            </h:panelGrid>
+                        </f:facet>
+
+
+                    </h:panelGrid>     
+                </p:fieldset>
+                <p:fieldset legend="Justificación">
+                    <p:separator/>
+                    <h:panelGrid columns="2">
+                       <h:outputText value="Archivo adjunto:" style="font-weight: bold"/>
+                    
+			                <p:fileUpload id="fupArchivo1" value="#{controladorVacaciones.adjunto}"
+                                          sizeLimit="3596288"
+                                          invalidSizeMessage="Tamaño máximo del archivo: 3 MB"
+                                          mode="simple"
+                                          skinSimple="true"
+                                          allowTypes="/(\.|\/)(doc|docx|xls|xlsx|pdf|gif|jpe?g|png)$/"
+                                          label="Buscar" />                    
+
+                          <h:outputText value="Detalle Justificación *" style="font-weight: bold" />
+                          <p:inputTextarea  cols="60" rows="4" value="#{controladorVacaciones.solicitudJustificacion.detalleAspej}"
+                              requiredMessage="Debe ingresar un Detalle"/>
+
+					  <!--  <h:outputText id="idLabelFecha" value="Fecha Justificacion : *" style="font-weight: bold" />  
+   	                     <p:calendar id="calJustificacion" 
+      	                    value="#{controladorVacaciones.solicitudJustificacion.fechaAspej}">
+                            </p:calendar>-->
+					</h:panelGrid>
+                    
+                </p:fieldset>
+                
+                
+               <p:fieldset styleClass="field_set" style="color:red;" legend="INFORMACION IMPORTANTE" >
+                    <p:separator/>						
+                    <h:panelGrid columns="1" style="width: 80.55%;text-align:center;font-weight: bold;">
+                     <h:outputLabel value="R E C U E R D E" style="align-text:center; color:red;" />
+                    
+                    <h:outputText style="font-weight: bold"
+									value="Se recuerda a todos los funcionarios que el registro de permisos / vacaciones  debe ser obligatoriamente registrado en el Sistema ERP " />
+						
+				</h:panelGrid>
+                    
+                </p:fieldset>
+                
+            </h:form>    
+
+            <h:panelGrid width="100%" rendered="#{controladorVacaciones.strOpcion == 2}">
+                <p:dataTable value="#{controladorVacaciones.listaSolicitudes}" var="tabla" autoUpdate="true" rows="20" paginator="true" paginatorAlwaysVisible="false" id="tab">
+                    <f:facet name="header">
+                        Listado de Solicitudes Realizadas
+                    </f:facet>
+                    <p:column style="width:2%;align-text:center;">  
+                        <p:rowToggler />  
+                    </p:column>  
+
+                    <p:rowExpansion>
+
+                    </p:rowExpansion> 
+
+
+                    <p:column style="text-align:center;" headerText="CÓDIGO">
+                        <h:outputText value="#{tabla.ideAspvh}"/>
+                    </p:column>
+
+
+                    <p:column style="text-align:center;"  headerText="FECHA SOLICITUD">
+                        <h:outputText value="#{tabla.fechaSolicitudAspvh}">
+                            <f:convertDateTime type="date" dateStyle="short"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column style="text-align:center;" headerText="MOTIVO">
+                        <h:outputText value="#{tabla.ideAsmot.detalleAsmot}"/>
+                     
+                    </p:column>
+                    <p:column style="text-align:right;" headerText="FECHAS DESDE - HASTA">
+                        <h:outputText value="#{tabla.fechaDesdeAspvh}">
+                            <f:convertDateTime type="date" dateStyle="short"/>
+                        </h:outputText>
+                        
+                        <h:outputText value="   -   "/>
+                        <h:outputText value="#{tabla.fechaHastaAspvh}" >
+                       <f:convertDateTime type="date" dateStyle="short"/>
+                        </h:outputText>
+
+                    </p:column>
+                    <p:column style="text-align:center;" headerText="Nro. DÍAS">
+                        <h:outputText value=" #{tabla.nroDiasAspvh}"/>
+                    </p:column>
+                    
+                      <p:column style="text-align:center;" headerText="# HORAS">
+                        <h:outputText value=" #{tabla.nroHorasAspvh}"/>
+                    </p:column>
+                    
+                    <p:column  style="text-align:center;" headerText="DETALLE">
+                        <h:outputText value=" #{tabla.detalleAspvh}"/>
+                    </p:column>
+                              
+ 					<p:column style="text-align:center;" headerText="Jefe Inmediato">
+                     <p:selectBooleanCheckbox value="#{tabla.aprobadoAspvh}" disabled="true" />
+                     </p:column>
+                                                
+ 					  
+                      <!--  <p:column headerText="Archivo adjunto">
+                         <h:outputText value=" #{tabla.archivoAdjuntoAspvh}"/>
+                    	<h:form>
+	                    <p:commandLink action="#{controladorVacaciones.downloadArchivo(tabla)}"
+               				ajax="false"
+               				value="Descargar"/>
+               			</h:form>    
+                    </p:column>-->
+
+
+                       
+                              
+                              
+                    <!--<p:column style="text-align:center;" headerText="Desc Fines Semana">
+                     <h:outputText value=" #{tabla.nroFinesSemanaAspvh}"/>
+                     </p:column>-->
+                              
+                              
+                              
+                     <!--<p:column style="text-align:center;" headerText="Estado Jefe Inme">
+                        <h:outputText value=" #{tabla.aprobadoAspvh}"/> 
+                     <p:selectBooleanCheckbox value="#{tabla.aprobadoAspvh}" action="#{controladorVacaciones.estadoJefeSolicitud}"/>
+               
+                    </p:column>-->
+                    
+                    
+                   <p:column style="text-align:center;" headerText="Estado TTHH">
+                     <p:selectBooleanCheckbox value="#{tabla.aprobadoTthhAspvh}" disabled="true" />
+                     </p:column>
+                     
+
+	
+ 				     <p:column style="text-align:center;backgroundcolor:red;" headerText="Anulado">
+                     <p:selectBooleanCheckbox value="#{tabla.anuladoAspvh}" disabled="true" />
+                     </p:column>
+                  
+
+
+
+                      <!--  <p:column headerText="Archivo adjunto">
+                         <h:outputText value=" #{tabla.archivoAdjuntoAspvh}"/>
+                    	<h:form>
+	                    <p:commandLink action="#{controladorVacaciones.downloadArchivo(tabla)}"
+               				ajax="false"
+               				value="Descargar"/>
+               			</h:form>    
+                    </p:column>-->
+                    
+                </p:dataTable>
+            </h:panelGrid>
+
+           
+            <h:panelGrid width="100%" rendered="#{controladorVacaciones.strOpcion == 4}">
+                <p:dataTable value="#{controladorVacaciones.listaSolicitudesRecibidas}" var="tabla" rows="20" paginator="true" paginatorAlwaysVisible="false">
+                    <f:facet name="header">
+                        Listado de Solicitudes Recibidas
+                    </f:facet>
+                    <p:column style="width:2%">  
+                        <p:rowToggler />  
+                    </p:column>  
+
+                    <p:rowExpansion>
+
+                    </p:rowExpansion> 
+
+					<p:column style="text-align:center;" headerText="CÓDIGO">
+                    <h:outputText value="#{tabla.ideAspvh}"/>
+                    </p:column>
+						
+                    <p:column style="text-align:right;" headerText="FECHA SOLICITUD">
+                        <h:outputText value="#{tabla.fechaSolicitudAspvh}">
+                            <f:convertDateTime type="date" dateStyle="short"/>
+                        </h:outputText>
+                    </p:column>
+                    
+                    <p:column  style="text-align:center;" headerText="MOTIVO">
+                        <h:outputText value="#{tabla.ideAsmot.detalleAsmot}"/>
+                     
+                    </p:column>
+              
+              
+                 
+                          <p:column style="text-align:center;" headerText="APELLIDO - NOMBRE">
+                        <h:outputText value="#{tabla.ideGtemp.apellidoPaternoGtemp}">
+                            <f:convertDateTime type="date" dateStyle="short"/>
+                        </h:outputText>
+                        
+                        <h:outputText value="      "/>
+                        <h:outputText value="#{tabla.ideGtemp.primerNombreGtemp}" >
+                       <f:convertDateTime type="date" dateStyle="short"/>
+                        </h:outputText>
+
+                    </p:column>
+              
+              
+              
+                    <p:column style="text-align:right;" headerText="FECHAS DESDE - HASTA">
+                        <h:outputText value="#{tabla.fechaDesdeAspvh}">
+                            <f:convertDateTime type="date" dateStyle="short"/>
+                        </h:outputText>
+                        
+                        <h:outputText value="   -   "/>
+                        
+                        <h:outputText value="#{tabla.fechaHastaAspvh}">
+                            <f:convertDateTime type="date" dateStyle="short"/>
+                        </h:outputText>
+
+                    </p:column>
+                    <p:column style="text-align:center;" headerText="# DÍAS">
+                        <h:outputText value=" #{tabla.nroDiasAspvh}"/>
+                    </p:column>
+                    <!-- 
+                     <p:column headerText="HORA DESDE - HASTA">
+                        <h:outputText value=" #{tabla.horaDesdeAspvh}"/>
+
+                        <h:outputText value="  "/>
+                        <h:outputText value=" #{tabla.horaHastaAspvh}"/>
+                       </p:column>
+                     -->
+                    
+                      <p:column style="text-align:center;" headerText="# HORAS">
+                        <h:outputText value=" #{tabla.nroHorasAspvh}"/>
+                    </p:column>
+                    
+                    
+                    <p:column style="text-align:center;" headerText="DETALLE">
+                        <h:outputText value=" #{tabla.detalleAspvh}"/>
+                    </p:column>
+                    
+                    <!--<p:column style="text-align:center;" headerText="Estado Jefe Inme">
+                        <h:outputText value=" #{tabla.aprobadoAspvh}"/> 
+                     <p:selectBooleanCheckbox value="#{tabla.aprobadoAspvh}"/>
+                    </p:column>-->
+                    
+                    
+               		<p:column style="text-align:center;" headerText="Jefe Inmediato">
+                    <p:selectBooleanCheckbox value="#{tabla.aprobadoAspvh}" disabled="true" />
+                     </p:column>
+                    
+                     <p:column style="text-align:center;" headerText="Estado TTHH">
+                     <!--<h:outputText value=" #{tabla.aprobadoTthhAspvh}"/>-->
+                     <p:selectBooleanCheckbox value="#{tabla.aprobadoTthhAspvh}" disabled="true" />
+                     </p:column>
+                   
+                     
+                     <p:column style="text-align:center;backgroundcolor:red;" headerText="Anulado">
+                     <p:selectBooleanCheckbox value="#{tabla.anuladoAspvh}" disabled="true" />
+                     </p:column>
+                   
+                   <!--     <p:column headerText="ARCHIVO ADJUNTO">-->
+                        <!--  <h:outputText value=" #{tabla.archivoAdjuntoAspvh}"/>-->
+                    	 <!--  <h:form>
+	                    <p:commandLink action="#{controladorVacaciones.downloadArchivo(tabla)}"
+               				ajax="false"
+               				value="Descargar"/>
+               			</h:form>    
+                    </p:column>
+                    -->
+                </p:dataTable>
+            </h:panelGrid>
+
+            <p:accordionPanel id="accDatos" multiple="true" cache="true" rendered="#{controladorVacaciones.strOpcion == 5}">
+                <p:tab title="INGRESO DEL EMPLEADO">
+
+          <!--    <h:panelGrid width="100%" rendered="#{controladorVacaciones.strOpcion == 5}">-->
+            
+                
+                    <h:outputText value="Fecha Ingreso :   "/>
+                    <h:outputText value="#{controladorVacaciones.fecha_ingreso}" style="font-weight: bold;font-size: 14px;"/>
+             
+              </p:tab>
+<!--        <p:fieldset legend="RESUMEN DE VACACIONES ">
+                    <p:separator/>
+                   -->
+                   
+                   
+<!--                 <p:panelGrid columns="4">
+                    <f:facet name="header">
+                        Resumen de Vacaciones
+                    </f:facet>
+ -->
+  
+ <p:tab title="RESUMEN DE PERMISOS / VACACIONES">
+<p:panelGrid columns="4">
+                    <h:outputText value="Días Acumulados :"/>
+                    <h:outputText value="#{controladorVacaciones.sumatotal_vacaciones}" style="font-weight: bold;font-size: 14px;"/>
+                    <h:outputText value="Nro. Fines de Semana :"/> 
+                    <h:outputText value="#{controladorVacaciones.numeroInicioFinesSemana}" style="font-weight: bold;font-size: 14px;"/>
+                    <h:outputText value="Días Descontados :"/>
+                    <h:outputText value="#{controladorVacaciones.numeroDiasTomados}" style="font-weight: bold;font-size: 14px;"/>
+                    <h:outputText value="Descuento Fines semana :"/>
+                    <h:outputText value="#{controladorVacaciones.numeroInicioFinesSemanaSolicitados}" style="font-weight: bold;font-size: 14px;"/>
+                    <h:outputText value="Nro. Total Vacaciones :"/>
+                    <h:outputText value="#{controladorVacaciones.dias_pendientes}" style="font-weight: bold;font-size: 14px;"/>
+                    <h:outputText value="Nro. Fines de Semana Pendientes :"/>
+                    <h:outputText value="#{controladorVacaciones.numeroInicioFinesSemanaPendientes}" style="font-weight: bold;font-size: 14px;"/>
+
+                  </p:panelGrid>
+
+                    <p:separator/>           
+					<p:panelGrid columns="2" style="display:#{controladorVacaciones.ver_dias_extra}">
+                    <h:outputText value="Días Extra :"/>
+                    <h:outputText value="#{controladorVacaciones.dias_final_extra}" style="font-weight: bold;font-size: 14px;"/>
+                  </p:panelGrid>
+
+
+
+                    <p:separator/>           
+                  
+<p:panelGrid columns="#{controladorVacaciones.numCol}">
+					<h:outputText value="PERIODO ANTERIOR: "/>
+                    <h:outputText value="#{controladorVacaciones.part1}" style="font-weight: bold;font-size: 14px;"/>
+                    <h:outputText value="Nro. Total Vacaciones :"/>
+                    <h:outputText value="#{controladorVacaciones.part2}" style="font-weight: bold;font-size: 14px;color:red"/>
+                  </p:panelGrid>             
+                  
+                </p:tab>
+                <!--  <p:separator/>
+				 </p:fieldset>-->
+
+<p:tab title="TABLA DE PERMISOS / VACACIONES">
+      <p:fieldset legend="TABLA DE VACACIONES" style="color:blue;">
+                    <p:separator/>
+
+
+                <p:dataTable value="#{controladorVacaciones.matriz}" var="tabla1" >
+                    <p:column headerText="PERÍODO">
+                        <!--<h:outputText value="#{controladorVacaciones.lisPeriodosEmpleado}">-->
+                        <h:outputText value="#{tabla1[0]}">
+                           <!-- <f:convertDateTime type="date" dateStyle="short"/> -->
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="NRO DE DÍAS VACACIÓN">
+                        <h:outputText value=" #{tabla1[1]}"/>
+                    </p:column>
+                    <p:column headerText="NRO DE DÍAS TOMADOS">
+                        <h:outputText value=" #{tabla1[2]}"/>
+                    </p:column>
+                    <p:column headerText="NRO DE PENDIENTES">
+                        <h:outputText value=" #{tabla1[3]}"/>
+                    </p:column>
+                    <p:column headerText="NRO EXTRA DIAS">
+                        <h:outputText value=" #{tabla1[4]}"/>
+                    </p:column>
+                    <!-- <p:column headerText="FECHA_INGRESO">
+                       <h:outputText value=" #{controladorVacaciones.date}"/> 
+                        <h:outputText value=" #{tabla1[4]}"/>
+                    </p:column>
+                  <p:column headerText="NRO. TOTAL VACACIONES">
+                        <h:outputText value=" #{tabla[5]}"/>
+                    </p:column>
+                    <p:column headerText="DÍAS PENDIENTES">
+                        <h:outputText value=" #{tabla[6]}"/>
+                    </p:column>  --> 
+                </p:dataTable>
+				 </p:fieldset>
+
+<!--             </h:panelGrid> -->
+</p:tab>
+</p:accordionPanel>
+
+
+            <h:form id="formVacacionesBiometrico" prependId="false" rendered="#{controladorVacaciones.strOpcion == 6}" enctype="multipart/form-data" >
+
+                <p:fieldset legend="Registro de Marcaciones Manual">
+                         <h:panelGrid columns="4">
+  							<h:outputText style="font-weight: bold" value="Fecha y Hora de Marcación :"/>
+							<p:inputText id="ideMarcacion" size="30" value="#{controladorVacaciones.fechaEvento}" disabled="true"/> 
+                      <f:facet name="footer">
+								<p:commandButton partialSubmit="true" process="formVacacionesBiometrico"
+									update="formVacacionesBiometrico,ideMarcacion" value="Marcar" icon="ui-guardar" disabled="#{controladorVacaciones.estadoMarcacion}"
+									actionListener="#{controladorVacaciones.guardarMarcacion}" ajax="false" />
+								
+                            </f:facet>
+                    </h:panelGrid>
+                </p:fieldset>
+                
+            </h:form>    
+
+                    <p:separator/>
+      <br />
+                    <p:separator/>
+
+      
+	
+	  
+   <h:panelGrid width="100%" rendered="#{controladorVacaciones.strOpcion == 6}">
+                <p:dataTable value="#{controladorVacaciones.listaMarcaciones}" var="tabla" autoUpdate="true" rows="20" paginator="true" paginatorAlwaysVisible="false" id="tab7">
+                    <f:facet name="header">
+                        Listado de Marcaciones Teletrabajo Realizadas
+                    </f:facet>
+                    <p:column style="width:2%;align-text:center;">  
+                        <p:rowToggler />  
+                    </p:column>  
+
+                    <p:rowExpansion>
+
+                    </p:rowExpansion> 
+
+
+                    <p:column style="text-align:center;" headerText="CÓDIGO">
+                        <h:outputText value="#{tabla.idePersonaCobim}"/>
+                    </p:column>
+
+
+                    <p:column style="text-align:center;"  headerText="FECHA SOLICITUD">
+                        <h:outputText value="#{tabla.fechaEventoCobim}">
+                            <f:convertDateTime type="date" dateStyle="short"/>
+                        </h:outputText>
+                    </p:column>
+
+                    
+                    
+                     <p:column style="text-align:center;"  headerText="HORA">
+                        <h:outputText value="#{tabla.fechaEventoCobim}">
+                            <f:convertDateTime type="time" timeZone="#{controladorVacaciones.retornaValor}" dateStyle="full"/>
+                        </h:outputText>
+                    </p:column>
+                              
+
+
+                </p:dataTable>
+                
+            </h:panelGrid>
+		  
+
+
+            
+        </h:panelGroup>
+    </ui:define>
+</ui:composition>
+

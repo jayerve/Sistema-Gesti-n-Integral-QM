@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_poa_reforma_fuente_ingreso" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="86204aec-e63f-4eb1-9f97-aa5b0292b336">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:\\eclipse_ERP\\eclipse-workspace\\sampu\\WebContent\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="pnro_resolucion" class="java.lang.String"/>
+	<parameter name="ide_geani" class="java.lang.Integer"/>
+	<parameter name="ide_gemes" class="java.lang.Integer"/>
+	<parameter name="jefe_presupuesto" class="java.lang.String"/>
+	<parameter name="coordinador_finaciero" class="java.lang.String"/>
+	<parameter name="pie_coordinador_finaciero" class="java.lang.String"/>
+	<parameter name="pie_especialista_pres" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT ide_prrem, fecha_reforma_prrem, codigo_clasificador_prcla,substring(descripcion_clasificador_prcla from 1 for 100) as descripcion_clasificador_prcla,
+                    detalle_prfuf as fuente,
+                    (coalesce(valor_inicial_pranu,0)+coalesce(val_reforma_d,0)-coalesce(val_reforma_h,0)) as valor_inicial_pranu,
+                    val_reforma_d_prrem, val_reforma_h_prrem, ((coalesce(valor_inicial_pranu,0)+coalesce(val_reforma_d,0)-coalesce(val_reforma_h,0))+val_reforma_d_prrem-val_reforma_h_prrem) as codificado,
+                    detalle_prrem
+
+                    FROM pre_reforma_mes prm
+                    join pre_anual pa on pa.ide_pranu=prm.ide_pranu
+                    join pre_clasificador pc on pc.ide_prcla=pa.ide_prcla
+                    join pre_fuente_financiamiento pff on pff.ide_prfuf=pa.ide_prfuf
+                    left join (select ide_pranu, sum(coalesce(val_reforma_d_prrem,0)) as val_reforma_d,
+                        sum(coalesce(val_reforma_h_prrem,0)) as val_reforma_h from pre_reforma_mes where  ide_gemes<$P{ide_gemes} group by ide_pranu) rh on rh.ide_pranu=prm.ide_pranu
+                    where ide_geani=$P{ide_geani} and ide_gemes=$P{ide_gemes}
+                    order by codigo_clasificador_prcla]]>
+	</queryString>
+	<field name="ide_prrem" class="java.lang.Long"/>
+	<field name="fecha_reforma_prrem" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_reforma_prrem]]></fieldDescription>
+	</field>
+	<field name="codigo_clasificador_prcla" class="java.lang.String">
+		<fieldDescription><![CDATA[codigo_clasificador_prcla]]></fieldDescription>
+	</field>
+	<field name="descripcion_clasificador_prcla" class="java.lang.String">
+		<fieldDescription><![CDATA[descripcion_clasificador_prcla]]></fieldDescription>
+	</field>
+	<field name="fuente" class="java.lang.String"/>
+	<field name="valor_inicial_pranu" class="java.math.BigDecimal"/>
+	<field name="val_reforma_d_prrem" class="java.math.BigDecimal"/>
+	<field name="val_reforma_h_prrem" class="java.math.BigDecimal"/>
+	<field name="codificado" class="java.math.BigDecimal"/>
+	<field name="detalle_prrem" class="java.lang.String"/>
+	<variable name="val_positivo" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{val_reforma_d_prrem}]]></variableExpression>
+	</variable>
+	<variable name="val_negativo" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{val_reforma_h_prrem}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="58" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="e07c312e-6ae2-46ff-8c35-ff115a52222a" x="0" y="0" width="802" height="58"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_horizontal.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="46" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="a39ccf06-e4bd-4d3c-82bf-63a21bd38f61" x="0" y="6" width="802" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_prrem}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="ebd2aa96-7c2f-4fd1-a07c-2237a5fe393c" x="0" y="25" width="802" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" FECHA REFORMA: "+$F{fecha_reforma_prrem}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="34" splitType="Stretch">
+			<line>
+				<reportElement uuid="838a2d85-bf83-4852-b6d5-2daf035ca15c" x="0" y="31" width="802" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="e162608f-10bd-492c-9353-e333c2d862d6" x="16" y="1" width="142" height="27"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PARTIDA PRESUPUESTARIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fd68497b-3969-4c7e-b47f-c7ef19cd842c" x="349" y="1" width="105" height="27"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CODIFICADO SIN REFORMA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ee5342d3-aee1-4a20-8a20-7ceac9631562" x="466" y="1" width="115" height="27"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR REFORMA (+)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1eaa17d5-09c0-41ee-9dbc-3032c2d3ef26" x="699" y="1" width="99" height="27"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PRESUPUESTO CON REFORMA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="68fe53f9-a12b-49bb-96d4-5522ed9148f7" x="250" y="1" width="72" height="27"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FUENTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0abe2455-eab1-4b70-b77d-3dc5d1d6c37a" x="581" y="1" width="115" height="27"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR REFORMA (-)]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="17" splitType="Stretch">
+			<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="49c5979e-0973-4ec2-9cb0-ee37874e302a" x="343" y="1" width="115" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_inicial_pranu}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="d9279721-ef98-48cc-95f7-49fca27a69cc" x="464" y="1" width="115" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{val_reforma_d_prrem}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="ea222e09-8199-4f43-b849-770943504dbb" x="583" y="1" width="112" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{val_reforma_h_prrem}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="8a320782-9341-4644-b45b-ba703d22f524" x="698" y="1" width="97" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codificado}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="5e9a263d-1cef-449d-b47e-5eca9e25e9e9" x="0" y="0" width="802" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="af56e17d-00d0-42fa-81fa-e0ab55552b42" stretchType="RelativeToBandHeight" x="0" y="1" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement uuid="035e383b-a06d-4d77-9346-11dde809a511" stretchType="RelativeToBandHeight" x="226" y="1" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement uuid="bf6666a4-1c2e-4140-b30d-f338f1255df0" stretchType="RelativeToBandHeight" x="342" y="1" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement uuid="3ea2c66d-cbf4-4e73-aeb2-f8aeef1f6a57" stretchType="RelativeToBandHeight" x="461" y="1" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement uuid="818527c2-d9e7-48b5-b632-8646d621a739" stretchType="RelativeToBandHeight" x="581" y="1" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement uuid="cf18810e-d2b0-4b36-94d9-48ebf3894b39" stretchType="RelativeToBandHeight" x="697" y="1" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement uuid="69d2fecd-7d50-455a-a553-25f62186f9fe" stretchType="RelativeToBandHeight" x="801" y="1" width="1" height="16"/>
+			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="85f7cbd5-1513-4527-bc33-5189b8c1c885" x="1" y="1" width="224" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo_clasificador_prcla}+"   "+$F{descripcion_clasificador_prcla}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="99927691-be9e-40fc-bbe0-73e1b8ce870e" x="228" y="1" width="110" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fuente}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="a74adc82-bd15-47c3-ab2b-e2f27974e50b" x="675" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="5c0e1b59-fd1b-41e3-8467-b8c9f638aefa" x="755" y="0" width="40" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="150" splitType="Stretch">
+			<line>
+				<reportElement uuid="96d99d88-0a7d-4623-b4e3-d84dcc87de12" x="0" y="0" width="802" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="babba144-d45b-44b3-88c1-795ed20563d8" x="488" y="132" width="216" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pie_coordinador_finaciero}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="454f935c-10f6-4835-82ea-6e60dce5dc61" x="488" y="101" width="216" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[APROBADO POR]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="eb6f564d-5659-4e87-8516-5a7b3b749394" x="90" y="131" width="222" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pie_especialista_pres}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7fad94d8-9dcc-420a-a901-f9839b7c7ce5" x="90" y="116" width="222" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{jefe_presupuesto}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="2c4a3ac4-313e-4aa5-978d-5216152a5c13" x="119" y="99" width="162" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="5e59c426-3a82-4ebf-b5b2-0626bb072d93" x="517" y="100" width="162" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="8ff50272-3054-44f0-a01d-f56cc04841b0" x="90" y="101" width="222" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[ELABORADO POR]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="5846aac7-2f2c-4b8b-91d2-948f5e67bfe9" x="488" y="116" width="216" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{coordinador_finaciero}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="d228873b-b9e3-4b18-9712-1b6760d50f82" x="463" y="1" width="116" height="17"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{val_positivo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="38080ebd-8808-4ebe-8eb0-db62d27e8ecd" x="580" y="1" width="116" height="17"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{val_negativo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

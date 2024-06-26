@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rep_asistentes_capacitacion" language="groovy" pageWidth="802" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ff24a21a-3ac8-4ca8-88e1-739cfb6678f1">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="435"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="IDE_CRDEE" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT ide_crase,ide_crdee,apellido_nombre_crase,correo_crase FROM crc_asistente_evento
+where ide_crdee=$P{IDE_CRDEE} ORDER BY apellido_nombre_crase]]>
+	</queryString>
+	<field name="IDE_CRASE" class="java.math.BigDecimal"/>
+	<field name="IDE_CRDEE" class="java.math.BigDecimal"/>
+	<field name="APELLIDO_NOMBRE_CRASE" class="java.lang.String"/>
+	<field name="CORREO_CRASE" class="java.lang.String"/>
+	<variable name="IDE_CRASE_1" class="java.lang.Integer" resetType="Page" calculation="Count">
+		<variableExpression><![CDATA[$F{IDE_CRASE}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="14" splitType="Stretch">
+			<textField isStretchWithOverflow="true" evaluationTime="Page" isBlankWhenNull="true">
+				<reportElement uuid="f0ad02c4-4a2e-4f6f-9b07-b7a8b199c6eb" x="711" y="0" width="91" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{IDE_CRASE_1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c65eae0a-8b93-4c14-b367-4f866a9a2089" x="1" y="0" width="711" height="14"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL DE PARTICIPANTES]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="12" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="47dded91-a244-48bb-a2fa-2ad77f9d6796" x="0" y="0" width="511" height="12"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PARTICIPANTES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7a8acae9-c61e-4d2e-a51d-a7d3ffa4feef" x="511" y="0" width="291" height="12"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CORREO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="10" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="6a93f5be-3189-4f9e-9524-146bd2d379c6" stretchType="RelativeToBandHeight" x="0" y="0" width="511" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{APELLIDO_NOMBRE_CRASE}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="de4fa8d7-1cdc-4b0f-8fe3-042732febab5" stretchType="RelativeToBandHeight" x="511" y="0" width="291" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CORREO_CRASE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

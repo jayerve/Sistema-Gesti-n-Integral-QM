@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_mensual_horarios" language="groovy" pageWidth="425" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="385" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="852c4d6a-0081-4cb4-999b-90b0ee43d843">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="style1">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{ide_astur}==2]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{ide_astur}==3]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{ide_astur}==6]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#0000FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{ide_astur}==4]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{ide_astur}==7]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{ide_astur}==11]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{ide_astur}==12]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#FF00FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{ide_astur}==5]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#00FFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{ide_astur}==19]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#FFFFFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{ide_astur}==8]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#808080"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{ide_astur}==26]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#FFFF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{ide_astur}==1]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#000000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{ide_astur}==27]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#3399FF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{ide_astur}==29]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#00FF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{ide_astur}==28]]></conditionExpression>
+			<style mode="Opaque" forecolor="#FFFFFF" backcolor="#CCCCFF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{ide_astur}==32]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#C0C0C0"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{ide_astur}==33]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#FFC800"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{ide_astur}==34]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#FFAFAF"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{ide_astur}==35]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#FF00FF"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="IDE_ASTUR" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT astur.ide_astur,astur.nom_astur,astur.descripcion_astur,gge.inicial_gtgre,gge.ide_gtgre,gge.detalle_gtgre
+       		 FROM asi_turnos  astur
+       		 left join asi_turnos_horario tur on tur.ide_astur=astur.ide_astur
+       		 left join gth_grupo_empleado gge on gge.ide_gtgre=astur.ide_gtgre
+       		where astur.ide_astur  in($P!{IDE_ASTUR})
+       		 group by gge.ide_gtgre,astur.ide_astur,astur.nom_astur,astur.descripcion_astur,gge.inicial_gtgre,gge.detalle_gtgre
+       		 order by gge.ide_gtgre asc]]>
+	</queryString>
+	<field name="ide_astur" class="java.lang.Integer"/>
+	<field name="nom_astur" class="java.lang.String">
+		<fieldDescription><![CDATA[--Define el nombre del turno]]></fieldDescription>
+	</field>
+	<field name="descripcion_astur" class="java.lang.String"/>
+	<field name="inicial_gtgre" class="java.lang.String"/>
+	<field name="ide_gtgre" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_gtgre]]></fieldDescription>
+	</field>
+	<field name="detalle_gtgre" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_gtgre]]></fieldDescription>
+	</field>
+	<variable name="variable1" class="java.lang.String">
+		<variableExpression><![CDATA[$F{detalle_gtgre}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="11" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="7d5c32ca-585d-4e8e-b5d4-fd512ec46935" x="0" y="0" width="165" height="11"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DIAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="78472233-edd4-47de-83d8-199ddf77a9e5" x="165" y="0" width="60" height="11"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[IDENTIFICADOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8d920ca2-5ede-4801-b6d2-1d642bd59a8f" x="225" y="0" width="160" height="11"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HORARIO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="10" splitType="Stretch">
+			<elementGroup/>
+			<elementGroup/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="de272ca4-b252-4399-b538-09e0aeb81aa3" positionType="Float" x="0" y="0" width="165" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nom_astur}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="3fcc1391-7029-4c4b-88f7-191395677ed7" x="225" y="0" width="160" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion_astur}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="9a75199a-fbd9-4a6e-bae5-dbd92c0df99c" style="style1" x="165" y="0" width="60" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ide_astur}==2?"D":$F{ide_astur}==3?"D":$F{ide_astur}==6?"D":$F{ide_astur}==9?"D":$F{ide_astur}==4?"T":$F{ide_astur}==7?"T":$F{ide_astur}==11?"T":$F{ide_astur}==12?"T":$F{ide_astur}==5?"N":$F{ide_astur}==8?"N":$F{ide_astur}==27?"D":$F{ide_astur}==29?"N":$F{ide_astur}==28?"D":$F{ide_astur}==32?"D":$F{ide_astur}==33?"DOB":$F{ide_astur}==34?"D":$F{ide_astur}==35?"D":$F{ide_astur}==19?"LIBRE":""]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

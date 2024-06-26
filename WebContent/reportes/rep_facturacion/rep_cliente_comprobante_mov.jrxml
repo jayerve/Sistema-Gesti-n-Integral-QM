@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_cliente_comprobante_mov" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4f88d28a-8afc-4abc-95b3-23e811e4bb26">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:\\eclipse-jee-kepler-SR2-win32\\Proyectos\\sampu\\WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="p_cliente_ruc" class="java.lang.String"/>
+	<parameter name="p_fecha_emision" class="java.lang.String"/>
+	<parameter name="p_fecha_i" class="java.util.Date"/>
+	<parameter name="p_fecha_f" class="java.util.Date"/>
+	<parameter name="coordinador_finaciero" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT coalesce(razon_social_recli,nombre_comercial_recli) as cliente, representante_legal_recli,direccion_recld
+                 FROM rec_clientes cli
+                 left join rec_cliente_direccion cdir on cdir.ide_recli=cli.ide_recli
+                 where nro_establecimiento_recli=1 and ruc_comercial_recli= $P{p_cliente_ruc} limit 1]]>
+	</queryString>
+	<field name="cliente" class="java.lang.String"/>
+	<field name="representante_legal_recli" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del resepentante legal del cliente o empresa.]]></fieldDescription>
+	</field>
+	<field name="direccion_recld" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del tipo de asistencia, ejemplo: Continuo, Ocasional.]]></fieldDescription>
+	</field>
+	<title>
+		<band height="82" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="8a6edd0f-0181-4320-814f-0da82fec8fb9" mode="Transparent" x="0" y="0" width="554" height="82"/>
+			</rectangle>
+			<subreport>
+				<reportElement uuid="f482c810-b464-4181-a969-7b5006ceb234" x="0" y="0" width="555" height="82"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+"/reportes/rep_sistema/rep_cabecera_simple.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="106" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="d8da22e2-2268-4a23-98b8-8a5c9cddbfe4" mode="Transparent" x="0" y="0" width="554" height="106"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="cc889cc8-6619-4fb5-a5e0-c5a2dcdb84c3" x="1" y="32" width="178" height="20"/>
+				<textElement textAlignment="Left">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RAZÓN SOCIAL / CONTRIBUYENTE:]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="45dc9ee3-d7dd-4784-b1ce-d1efec733711" x="185" y="32" width="360" height="32"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cliente}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="1914a5c9-0b8e-4afe-8c8e-24d9811dc482" x="0" y="27" width="555" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="e144760c-1e1e-437c-ba14-18fbde51d5da" x="407" y="85" width="36" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RUC:]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="b20f6265-ad7d-485b-a6a9-162db6dca3a1" x="443" y="85" width="96" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_cliente_ruc}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="18ec510f-6298-47f1-a1fb-a5df46a9c73d" x="145" y="64" width="394" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{direccion_recld}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="9f7c489b-b952-4983-ae25-9d1bd5649371" x="1" y="64" width="73" height="20"/>
+				<textElement textAlignment="Left">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DIRECCIÓN:]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="f6ba9929-c6b6-4506-973e-89096c72a65c" x="145" y="85" width="258" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{representante_legal_recli}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6188d0e0-8143-4492-995b-643bc2570f1a" x="1" y="0" width="553" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true" isUnderline="false" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{titulo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="52ed81c0-d236-4d5a-b770-3a2637d6e0d2" x="1" y="85" width="144" height="20"/>
+				<textElement textAlignment="Left">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REPRESENTANTE LEGAL:]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="31" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="d8497233-a936-491c-b92e-67093e05c3a2" mode="Transparent" x="0" y="0" width="554" height="30"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="f58a5e36-9190-4e8e-81ff-7382f3b27908" x="8" y="0" width="537" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DETALLE DE COMPROBANTES]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="44" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="f354ee75-1023-49d8-bc40-9ae705d68713" x="0" y="3" width="554" height="38" isRemoveLineWhenBlank="true"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_cliente_ruc">
+					<subreportParameterExpression><![CDATA[$P{p_cliente_ruc}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_fecha_f">
+					<subreportParameterExpression><![CDATA[$P{p_fecha_f}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_fecha_i">
+					<subreportParameterExpression><![CDATA[$P{p_fecha_i}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_facturacion/rep_cliente_comprobante_movGRUPO.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<summary>
+		<band height="180" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="28ec5b9b-87be-4e1a-aec2-50f902cc7489" mode="Transparent" x="0" y="0" width="555" height="180"/>
+			</rectangle>
+			<textField>
+				<reportElement uuid="92059c4d-44a8-4874-a5a9-7da9e27af65d" x="169" y="161" width="208" height="19"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ELABORADO POR TESORERIA"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="2b8b3f6d-e781-4c11-8462-55d163408996" x="161" y="123" width="224" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="3e68ef77-3597-4115-8a97-9bf1df0723f2" x="169" y="141" width="208" height="19"/>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COORDINADOR FINANCIERO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="59ce2524-1631-4881-81e9-80286fc248b1" x="18" y="64" width="143" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LUGAR Y FECHA DE EMISIÓN]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="08c6f15d-e9a7-4525-961f-859a52749669" x="8" y="78" width="171" height="16"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_fecha_emision}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="d77ecc26-1ee1-4e09-bbd5-e3bb92909523" x="5" y="78" width="174" height="1"/>
+			</line>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="78b3fc7e-1ea5-4849-86dd-8fe8172cba02" x="169" y="125" width="208" height="16"/>
+				<textElement textAlignment="Center">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{coordinador_finaciero}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

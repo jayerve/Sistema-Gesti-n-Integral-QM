@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_activo" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9129a725-4a8e-4d2c-a0ef-5a5af0a25769">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="ide_usua" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select ide_afact,detalle_afact,serie_afact, cantidad_afact,valor_unitario_afact,egreso_bodega_afact,valor_neto_afact,valor_compra_afact from afi_activo where ide_afact =16]]>
+	</queryString>
+	<field name="ide_afact" class="java.lang.Long">
+		<fieldDescription><![CDATA[Define la clave primaria de la tabla afi_activo.]]></fieldDescription>
+	</field>
+	<field name="detalle_afact" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_afact]]></fieldDescription>
+	</field>
+	<field name="serie_afact" class="java.lang.String">
+		<fieldDescription><![CDATA[serie_afact]]></fieldDescription>
+	</field>
+	<field name="cantidad_afact" class="java.lang.Long">
+		<fieldDescription><![CDATA[cantidad_afact]]></fieldDescription>
+	</field>
+	<field name="valor_unitario_afact" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[valor_unitario_afact]]></fieldDescription>
+	</field>
+	<field name="egreso_bodega_afact" class="java.lang.String">
+		<fieldDescription><![CDATA[egreso_bodega_afact]]></fieldDescription>
+	</field>
+	<field name="valor_neto_afact" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[valor_neto_afact]]></fieldDescription>
+	</field>
+	<field name="valor_compra_afact" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[valor_compra_afact]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="021560c0-9ba6-4912-9e51-309f7d7f615c" x="0" y="0" width="572" height="79"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{ide_usua}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="1" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="101" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement uuid="ab84a8ce-a3e0-49a4-9589-f4352e33ba47" mode="Transparent" x="0" y="6" width="572" height="89"/>
+			</rectangle>
+			<line>
+				<reportElement uuid="0dce19b6-680a-479b-bc96-10dc933d05df" x="0" y="68" width="572" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="3634a410-0743-4159-a178-3f2de9c468dc" x="11" y="72" width="31" height="20"/>
+				<textElement/>
+				<text><![CDATA[Serie]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f655be2a-d299-4b89-ada7-229358073677" x="65" y="72" width="33" height="20"/>
+				<textElement/>
+				<text><![CDATA[Cant.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="87abb101-c3be-4c90-95e3-727c349a98dc" x="133" y="72" width="46" height="20"/>
+				<textElement/>
+				<text><![CDATA[Detalle]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5fbf2255-463d-4494-9780-ed60e672556c" x="243" y="73" width="57" height="20"/>
+				<textElement/>
+				<text><![CDATA[V.Unitario]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9f9891ea-f70d-4acb-81d3-d6e3549ccf60" x="330" y="72" width="88" height="20"/>
+				<textElement/>
+				<text><![CDATA[Egreso.Bodega]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="514b5b7f-b0a5-48ad-9966-1fbc9a6cf377" x="433" y="72" width="38" height="20"/>
+				<textElement/>
+				<text><![CDATA[V.Neto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4a748715-ef24-4e53-b410-8d46f14774d6" x="493" y="72" width="63" height="20"/>
+				<textElement/>
+				<text><![CDATA[V.Compra]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="40" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement uuid="82bac620-cdbb-4281-8d0d-b550e5a2f0c4" x="0" y="4" width="572" height="32"/>
+			</rectangle>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a3385f4e-dfb8-4a85-98c0-81ae6f325118" x="133" y="12" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{detalle_afact}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="b2c8ba95-c35f-477d-b474-c3f2258af7ea" x="243" y="12" width="59" height="20"/>
+				<textElement/>
+				<text><![CDATA[valor_unitario_afact]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="430cc327-d415-48f2-a080-5cfc70007cb4" x="503" y="12" width="53" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{valor_compra_afact}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="26b72103-baad-4043-b5b2-c397ffde7699" x="0" y="12" width="55" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{serie_afact}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="02728649-17b3-4716-b59d-98655fcc832a" x="65" y="12" width="58" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cantidad_afact}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a5945d58-4861-44a5-85f6-1a9b51ed3934" x="433" y="12" width="46" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{valor_neto_afact}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="59d15e20-e321-46d5-a69b-0c51b99fb652" x="330" y="12" width="77" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{egreso_bodega_afact}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

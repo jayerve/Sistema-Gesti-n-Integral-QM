@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rep_examenes" language="groovy" pageWidth="184" pageHeight="283" whenNoDataType="AllSectionsNoDetail" columnWidth="144" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e6924409-8745-446a-8564-0744c9991d2a">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["D:\\workspace\\biess\\WebContent\\reportes\\rep_gestion\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_safim" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[new java.lang.Integer(21)]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select  ide_safie,ide_safim,a.ide_saexa,b.detalle_saexa
+from sao_ficha_examenes a,sao_examenes b
+where a.ide_saexa = b.ide_saexa
+and ide_safim=$P{ide_safim}
+order by b.detalle_saexa]]>
+	</queryString>
+	<field name="IDE_SAFIE" class="java.math.BigDecimal"/>
+	<field name="IDE_SAFIM" class="java.math.BigDecimal"/>
+	<field name="IDE_SAEXA" class="java.math.BigDecimal"/>
+	<field name="DETALLE_SAEXA" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="24" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="ab1d7816-94f3-4dc3-a024-d98e42b51f9b" key="staticText" x="5" y="4" width="115" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[EXAMENES]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="22" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="b87ec7a3-370f-41b1-ab5c-c4425b5c734f" key="staticText" x="7" y="1" width="66" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[DETALLE]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement uuid="dd13f51d-dc16-4f14-ac84-1922f61b2502" key="textField" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="144" height="15" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DETALLE_SAEXA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

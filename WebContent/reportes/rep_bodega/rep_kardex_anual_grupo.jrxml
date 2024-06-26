@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_kardex_individual_anual" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="5" bottomMargin="5" uuid="f2039012-673d-43a4-8ac7-378ca9838a39">
+	<property name="ireport.zoom" value="1.7715610000000017"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_geani" class="java.lang.Long"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:/eclipse_ERP/eclipse-workspace/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="con_ide_bocam" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[WITH param AS (
+    SELECT
+    $P{ide_geani} as ide_geani,
+    $P{con_ide_bocam} as con_ide_bocam
+), inventario_agrupado AS (
+    SELECT
+    ide_geani, ide_bocam, SUM(cantidad_saldo_boinv) as cantidad
+    FROM bodt_bodega_inventario
+    GROUP BY ide_geani, ide_bocam
+), inventario AS (
+    SELECT
+    ide_geani, bodt_catalogo_material.con_ide_bocam, padre.descripcion_bocam AS padre_descripcion, inventario_agrupado.ide_bocam,  bodt_catalogo_material.cat_codigo_bocam, bodt_catalogo_material.descripcion_bocam, cantidad
+    FROM inventario_agrupado
+    LEFT JOIN bodt_catalogo_material ON bodt_catalogo_material.ide_bocam = inventario_agrupado.ide_bocam
+    LEFT JOIN bodt_catalogo_material AS padre ON padre.ide_bocam = bodt_catalogo_material.con_ide_bocam
+    WHERE bodt_catalogo_material.con_ide_bocam = (SELECT con_ide_bocam FROM param)
+    ORDER BY descripcion_bocam
+)
+SELECT * FROM inventario]]>
+	</queryString>
+	<field name="ide_geani" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_anio, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="con_ide_bocam" class="java.lang.Long"/>
+	<field name="padre_descripcion" class="java.lang.String"/>
+	<field name="ide_bocam" class="java.lang.Long">
+		<fieldDescription><![CDATA[Primary de bodt_catalogo_material con el cual se va a unir a todos los otros modulos]]></fieldDescription>
+	</field>
+	<field name="cat_codigo_bocam" class="java.lang.String"/>
+	<field name="descripcion_bocam" class="java.lang.String"/>
+	<field name="cantidad" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement uuid="9f15f820-4bdf-46dd-87a0-5093651e5f7d" x="0" y="0" width="802" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cat_codigo_bocam} + " " + $F{padre_descripcion}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="76" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="bdbce276-ac5a-4099-ae63-0abea0599939" x="0" y="0" width="802" height="75"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_geani">
+					<subreportParameterExpression><![CDATA[$P{ide_geani}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_bocam">
+					<subreportParameterExpression><![CDATA[$F{ide_bocam}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_bodega/rep_kardex_individual_anual_valor_existencia.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="5" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="5" splitType="Stretch"/>
+	</summary>
+</jasperReport>

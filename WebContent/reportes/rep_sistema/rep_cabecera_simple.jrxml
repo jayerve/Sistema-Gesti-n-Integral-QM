@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_cabecera_simple" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="0" bottomMargin="0" uuid="1db0eac9-51a2-4883-86a3-aa5c1e4fb0da">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:/eclipse_ERP/eclipse-workspace/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<title>
+		<band height="82" splitType="Stretch">
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement uuid="d5c00b06-65f2-4781-b061-08710acdf763" x="-5" y="12" width="162" height="59"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/upload/logos/logo.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement uuid="b03ad2ed-24c9-406d-905d-094829270bfa" x="161" y="12" width="367" height="43"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["EMPRESA PUBLICA METROPOLITANA DE GESTION INTEGRAL DE RESIDUOS SOLIDOS EMGIRS EP"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="eaa2cf77-89f5-4bb7-9ba6-320cbed77de5" x="116" y="55" width="325" height="19"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="12" isBold="true" pdfFontName="Times-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["COORDINACIÓN FINANCIERA"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+</jasperReport>

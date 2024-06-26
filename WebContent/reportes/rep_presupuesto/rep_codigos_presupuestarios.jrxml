@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_codigos_presupuestarios" pageWidth="800" pageHeight="595" orientation="Landscape" whenNoDataType="BlankPage" columnWidth="800" leftMargin="0" rightMargin="0" topMargin="20" bottomMargin="20" uuid="e417e812-fc9d-4d5d-81e0-d26a47801e5c">
+	<property name="ireport.zoom" value="3.0052592036063137"/>
+	<property name="ireport.x" value="873"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_prcer" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="pago_fondos" class="java.lang.Boolean">
+		<defaultValueExpression><![CDATA[false]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select distinct gpp.ide_gepap, codigo_partida_gepap, detalle_gepap,DETALLE_GTTEM as regimen, case when detalle_gepap like '%NJS%' then 'NOMBRAMIENTO DE LIBRE DESIGNACION Y REMOCION' else 'NOMBRAMIENTO PROVISIONAL OCASIONAL' end as modalidad,
+                DETALLE_GEARE as area,
+                coalesce(titulo_cargo_gepgc,'S/D') as titulo_cargo,coalesce(DETALLE_GEGRO,'S/D') as grupo_ocupacional,coalesce(DETALLE_GECAF,'S/D') as cargo_funcional,coalesce(rmu_gegro,0) as rmu_gegro,
+                cast(extract(year from fecha_prcer)||'-'||extract(month from fecha_prcer)||'-01' as date) as fecha_activacion_gepgc,cast(extract(year from now())||'-12-31' as date) as fecha_fin,
+                cast((select formula_nrder from nrh_detalle_rubro where ide_nrrub=276 and ide_nrder=953) as numeric(8,2)) as sbu,
+                case when (cast(extract(year from now())||'-12-31' as date) - cast(extract(year from fecha_prcer)||'-'||extract(month from fecha_prcer)||'-01' as date))>360 then 360
+                     else (12 - (extract(month from fecha_prcer)-1))*30 end  as dias
+
+                    from pre_certificacion_partida pcp
+                    join pre_certificacion cert on cert.ide_prcer=pcp.ide_prcer
+                    join gen_partida_presupuestaria gpp on pcp.IDE_GEPAP=gpp.IDE_GEPAP
+                    join gen_partida_grupo_cargo ggc on ggc.ide_gepap=gpp.ide_gepap
+                    join GEN_GRUPO_OCUPACIONAL ggo on ggo.IDE_GEGRO=ggc.IDE_GEGRO
+                    join GTH_TIPO_EMPLEADO gte on gte.IDE_GTTEM=ggc.IDE_GTTEM
+                    join (SELECT b.IDE_GEARE,b.DETALLE_GEARE FROM GEN_DEPARTAMENTO_SUCURSAL a
+                        inner join GEN_AREA b on a.IDE_GEARE=b.IDE_GEARE
+                        GROUP BY b.IDE_GEARE,b.DETALLE_GEARE
+                        ORDER BY b.DETALLE_GEARE) gds on gds.IDE_GEARE=ggc.IDE_GEARE
+                    join (select a.IDE_GECAF,a.DETALLE_GECAF from GEN_CARGO_FUNCIONAL a, GEN_GRUPO_CARGO b where a.IDE_GECAF = b.IDE_GECAF) gcf on gcf.IDE_GECAF=ggc.IDE_GECAF
+                    where activo_gepap=true and pcp.ide_prcer=$P{ide_prcer}
+                    order by 1]]>
+	</queryString>
+	<field name="ide_gepap" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave foranea que proviene de la tabla gen_partida_presupuestaria.]]></fieldDescription>
+	</field>
+	<field name="codigo_partida_gepap" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el codigo de la partida presupuestaria como se encuentra dentro del catalogo presupuestario de la institucion.]]></fieldDescription>
+	</field>
+	<field name="detalle_gepap" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre de la partida presupuestaria.]]></fieldDescription>
+	</field>
+	<field name="regimen" class="java.lang.String"/>
+	<field name="modalidad" class="java.lang.String"/>
+	<field name="area" class="java.lang.String"/>
+	<field name="titulo_cargo" class="java.lang.String"/>
+	<field name="grupo_ocupacional" class="java.lang.String"/>
+	<field name="cargo_funcional" class="java.lang.String"/>
+	<field name="rmu_gegro" class="java.lang.Long"/>
+	<field name="fecha_activacion_gepgc" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha de activacion de una partida, cuando una partida fue inactivada y se activo para uso en una nueva contratación.]]></fieldDescription>
+	</field>
+	<field name="fecha_fin" class="java.sql.Date"/>
+	<field name="sbu" class="java.math.BigDecimal"/>
+	<field name="dias" class="java.lang.Double"/>
+	<variable name="rmu_dia" class="java.lang.Double">
+		<variableExpression><![CDATA[$F{rmu_gegro}.doubleValue() / 30]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="13er" class="java.lang.Double">
+		<variableExpression><![CDATA[($F{rmu_gegro}.doubleValue()/12) / 30]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="14to" class="java.lang.Double">
+		<variableExpression><![CDATA[$F{sbu}.doubleValue() / 12]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="patronal" class="java.lang.Double">
+		<variableExpression><![CDATA[($F{rmu_gegro}.doubleValue()*9.65/100) / 30]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="fondos" class="java.lang.Double">
+		<variableExpression><![CDATA[($F{ide_gepap} ==21 ||  $F{ide_gepap} ==33 ||  $F{ide_gepap} ==34 )? 0: ($F{rmu_gegro}.doubleValue()*8.33/100) / 30]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="total" class="java.lang.Double">
+		<variableExpression><![CDATA[(($V{rmu_dia}+$V{13er}+($V{14to} / 30)+$V{patronal})*$F{dias}+(!$P{pago_fondos}? $V{fondos}*$F{dias}:$V{fondos}*($F{dias}-30)))]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="vTotal" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$V{total}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="vrmudia" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$V{rmu_dia}*$F{dias}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="v13er" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$V{13er}*$F{dias}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="v14to" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[($V{14to} / 30)*$F{dias}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="vpatronal" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[new BigDecimal($V{patronal} * $F{dias}).setScale(2, BigDecimal.ROUND_HALF_DOWN)]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="vfondos" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[!$P{pago_fondos}? $V{fondos}*$F{dias}:$V{fondos}*($F{dias}-30)]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<pageHeader>
+		<band height="61" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="b2601dcb-c4b4-402b-adec-c2f239b5627b" x="2" y="25" width="796" height="35"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="7db5330f-4f4e-438c-9fca-c419a1bd2f0b" x="216" y="26" width="121" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DENOMINACION]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="31a82ced-67be-4d1d-a4a5-00327a21a5fc" x="337" y="26" width="63" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GRUPO OCUPACIONAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1cef6aef-c2a6-4a4f-a774-7652865b6fc5" x="44" y="26" width="41" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REGIMEN LABORAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0792984a-dc68-44e6-856b-24303df81f19" x="4" y="26" width="40" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CODIGO PARTIDA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d76d432e-bd36-4f61-97eb-ead25139b66a" x="85" y="26" width="60" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MODALIDAD LABORAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="171542f2-9d8a-49b6-96fd-e57f69829b10" x="145" y="26" width="71" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SUBPROCESO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a2ff52e8-91f0-44c3-aee8-38008194e592" x="400" y="27" width="44" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA INICIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8a6430c6-69a9-4bea-9620-536d6888d614" x="444" y="27" width="44" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA FIN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a59330d0-af69-45ea-b46d-a281e2bcc7e5" x="488" y="27" width="44" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RMU]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ab4dfb9f-9f36-40f4-bcc2-910e78642af1" x="533" y="27" width="44" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[51.01.05]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="974d5826-6db6-479b-b7c1-b8a581a9c242" x="533" y="42" width="44" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RMU]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="772b71a3-eed2-43a5-a469-5b4bf9db6a19" x="577" y="42" width="44" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[13er]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="38c281a9-ae47-4cf2-a4e5-97c0ba5b6988" x="577" y="27" width="44" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[51.02.03]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="af007cdc-63da-4ed6-8c84-22e6c4b904e4" x="621" y="42" width="44" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[14to]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="206ae10c-0aea-4adf-9908-34a3f14f2ad4" x="621" y="27" width="44" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[51.02.04]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0bceff9d-6e0e-4e2a-acc1-f407f702897a" x="665" y="42" width="44" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PATRONAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="85c1457b-31e9-4372-902d-772383dc67a2" x="665" y="27" width="44" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[51.06.01]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8ed8c48a-a129-4e94-a4e6-ba4847f5ed89" x="709" y="27" width="44" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[51.06.02]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b1a6ce18-b5a9-472e-9ff1-f81b609aa8fa" x="709" y="42" width="44" height="18"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FONDOS DE RESERVA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6f1d35db-144f-4203-86e7-45652a464b42" x="753" y="27" width="44" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2364f35d-cbb4-4723-bcaf-7b7f3f8e92ae" x="5" y="3" width="793" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PROYECCION DE ITEMS DE LA MASA SALARIAL Y BENEFICIOS DE LEY]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="40" splitType="Stretch">
+			<textField>
+				<reportElement uuid="fa445641-4a59-4e30-8816-c47a0b6945a4" x="4" y="0" width="40" height="40"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo_partida_gepap}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="c0df7ab0-97dd-4fb3-a3cb-0d942c1685ca" x="216" y="0" width="121" height="40"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{titulo_cargo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="749ac07b-6771-4aee-a427-76b878566614" x="337" y="0" width="63" height="40"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{grupo_ocupacional}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b97f2485-f7cb-43fa-86da-1f60551f7acc" x="44" y="0" width="41" height="40"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{regimen}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="21812e94-4a0f-4d95-9b37-fb80bf76522a" x="85" y="0" width="60" height="40"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{modalidad}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0bc6695e-7bb6-48ec-b8d1-db33accd92dd" x="145" y="0" width="71" height="40"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{area}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy">
+				<reportElement uuid="94acbd81-cfac-40eb-85cc-382de6fe6795" x="400" y="0" width="44" height="40"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_activacion_gepgc}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy">
+				<reportElement uuid="5162426d-f4c8-43ee-a592-2f2a4f80ab26" x="444" y="0" width="44" height="40"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_fin}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00">
+				<reportElement uuid="a3b2124b-96ea-4026-a773-7ee604665c57" x="488" y="0" width="44" height="40"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rmu_gegro}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00">
+				<reportElement uuid="4fdeab03-bd05-49b8-8cc8-b53ceb24e1ec" x="533" y="0" width="44" height="40"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{rmu_dia}*$F{dias}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="1eec76eb-faa8-4198-8ab7-405186c2f590" x="532" y="0" width="1" height="40"/>
+			</line>
+			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00">
+				<reportElement uuid="5d281b21-36b2-434d-90dd-3e0cdd58b062" x="577" y="0" width="44" height="40"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{13er}*$F{dias}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00">
+				<reportElement uuid="6d664328-7ae2-4524-a417-bdc96d1a9f80" x="621" y="0" width="44" height="40"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{14to} / 30)*$F{dias}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00">
+				<reportElement uuid="965eaea1-7237-4764-b1ab-9ee7c3238a9c" x="665" y="0" width="44" height="40"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new BigDecimal($V{patronal} * $F{dias}).setScale(2, BigDecimal.ROUND_HALF_DOWN)]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00">
+				<reportElement uuid="08366000-bdca-4b28-bb33-dfce194bb6bf" x="709" y="0" width="43" height="40"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[!$P{pago_fondos}? $V{fondos}*$F{dias}:$V{fondos}*($F{dias}-30)]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00">
+				<reportElement uuid="b1a9256d-eac7-4257-940e-0beba3a3863a" x="752" y="0" width="46" height="40"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="e7d23c37-dd91-4c6f-a40a-31a082c41e90" x="2" y="0" width="1" height="40"/>
+			</line>
+			<line>
+				<reportElement uuid="67b67795-9ead-4e8e-9acd-42eb49c3a257" x="798" y="0" width="1" height="40"/>
+			</line>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="2">
+			<line>
+				<reportElement uuid="63edaedc-58fe-411a-917f-f44eb6443f50" x="2" y="0" width="797" height="1"/>
+			</line>
+		</band>
+	</pageFooter>
+	<lastPageFooter>
+		<band height="42">
+			<line>
+				<reportElement uuid="63edaedc-58fe-411a-917f-f44eb6443f50" x="2" y="0" width="797" height="1"/>
+			</line>
+			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00">
+				<reportElement uuid="c4324cc5-4dba-436c-af36-7567582f7000" x="752" y="0" width="48" height="40"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{vTotal}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a811e206-38a5-4ce8-9ecd-9223437ac900" x="482" y="1" width="40" height="40"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["TOTALES:"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" evaluationTime="Report" pattern="¤ #,##0.00">
+				<reportElement uuid="4ea48317-699c-483f-993e-a8bf722183eb" x="522" y="0" width="55" height="40"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{vrmudia}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00">
+				<reportElement uuid="97adde03-88de-43dc-a630-af4e4915b221" x="665" y="0" width="44" height="40"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{vpatronal}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00">
+				<reportElement uuid="4baaf8c8-765f-4420-8b72-1969cdbf612d" x="621" y="0" width="44" height="40"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{v14to}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00">
+				<reportElement uuid="22909e2b-5b81-4e2e-bc46-397124f24cb0" x="709" y="0" width="43" height="40"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{vfondos}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="¤ #,##0.00">
+				<reportElement uuid="092bf663-fe9c-4714-a376-751f20a27f3d" x="577" y="0" width="44" height="40"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{v13er}]]></textFieldExpression>
+			</textField>
+		</band>
+	</lastPageFooter>
+</jasperReport>

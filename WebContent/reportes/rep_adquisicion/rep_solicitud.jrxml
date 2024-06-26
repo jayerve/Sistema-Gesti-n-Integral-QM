@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_poa" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="86204aec-e63f-4eb1-9f97-aa5b0292b336">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="37"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:\\Proyecto\\sampu\\WebContent\\reportes\\rep_sistema\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="ide_geani" class="java.lang.Integer"/>
+	<parameter name="ide_adsoc" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select a.ide_adsoc,fecha_solicitud_adsoc,detalle_adsoc,detalle_adtie,detalle_retip,
+nombres_apellidos,empleado_solicitante,
+cantidad_addes,descripcion_addes,caracteristicas_addes,(case when garantia_addes =true then 'SI' else 'NO' end) as garantia,
+(case when soporte_tecnico_addes =true then 'SI' else 'NO' end) as soporte_tecnico, (case when capacitacion_addes =true then 'SI' else 'NO' end) as capacitacion
+from adq_solicitud_compra a
+left join adq_tiempo_entrega b on a.ide_adtie = b.ide_adtie
+left join rec_tipo c on a.ide_retip = c.ide_retip
+left join ( SELECT EPAR.IDE_GEEDP, EMP.DOCUMENTO_IDENTIDAD_GTEMP,
+EMP.APELLIDO_PATERNO_GTEMP || ' ' || EMP.APELLIDO_MATERNO_GTEMP || ' ' ||EMP.PRIMER_NOMBRE_GTEMP || ' ' || EMP.SEGUNDO_NOMBRE_GTEMP
+AS NOMBRES_APELLIDOS, SUCU.NOM_SUCU, AREA.DETALLE_GEARE, DEPA.DETALLE_GEDEP FROM GEN_EMPLEADOS_DEPARTAMENTO_PAR EPAR
+LEFT JOIN GTH_EMPLEADO EMP ON EMP.IDE_GTEMP=EPAR.IDE_GTEMP LEFT JOIN SIS_SUCURSAL SUCU ON SUCU.IDE_SUCU=EPAR.IDE_SUCU
+LEFT JOIN GEN_DEPARTAMENTO DEPA ON DEPA.IDE_GEDEP=EPAR.IDE_GEDEP LEFT JOIN GEN_AREA AREA ON AREA.IDE_GEARE=EPAR.IDE_GEARE
+) d on a.ide_geedp = d.ide_geedp
+left join ( SELECT ide_gtemp,
+EMP.APELLIDO_PATERNO_GTEMP || ' ' || EMP.APELLIDO_MATERNO_GTEMP || ' ' ||EMP.PRIMER_NOMBRE_GTEMP || ' ' || EMP.SEGUNDO_NOMBRE_GTEMP
+AS empleado_solicitante FROM GTH_EMPLEADO EMP
+) e on a.ide_gtemp = e.ide_gtemp
+left join adq_detalle_solicitud h on a.ide_adsoc = h.ide_adsoc
+where a.ide_adsoc=$P{ide_adsoc}]]>
+	</queryString>
+	<field name="ide_adsoc" class="java.lang.Long">
+		<fieldDescription><![CDATA[Define la clave primaria de la tabla adq_solicitud_compra]]></fieldDescription>
+	</field>
+	<field name="fecha_solicitud_adsoc" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_solicitud_adsoc]]></fieldDescription>
+	</field>
+	<field name="detalle_adsoc" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_adsoc]]></fieldDescription>
+	</field>
+	<field name="detalle_adtie" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_adtie]]></fieldDescription>
+	</field>
+	<field name="detalle_retip" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del tipo de cobro, ejemplo: Efectivo, Tarjeta bancaria, Visa, Mastercar, Trasferencia bancaria, etc.]]></fieldDescription>
+	</field>
+	<field name="nombres_apellidos" class="java.lang.String"/>
+	<field name="empleado_solicitante" class="java.lang.String"/>
+	<field name="cantidad_addes" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[cantidad_addes]]></fieldDescription>
+	</field>
+	<field name="descripcion_addes" class="java.lang.String">
+		<fieldDescription><![CDATA[descripcion_addes]]></fieldDescription>
+	</field>
+	<field name="caracteristicas_addes" class="java.lang.String">
+		<fieldDescription><![CDATA[caracteristicas_addes]]></fieldDescription>
+	</field>
+	<field name="garantia" class="java.lang.String"/>
+	<field name="soporte_tecnico" class="java.lang.String"/>
+	<field name="capacitacion" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="58" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="e07c312e-6ae2-46ff-8c35-ff115a52222a" x="0" y="0" width="555" height="58"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="115" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="81f66f7b-8fac-475d-a536-1be32e18bc69" mode="Transparent" x="0" y="3" width="555" height="109"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="dd2f4486-8b16-4da7-ae8c-ce6d429e356b" x="5" y="10" width="48" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0d93afe5-36a3-47d4-9010-5aa18503e92e" x="4" y="94" width="59" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CANTIDAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f1424fc1-d614-4848-aeb2-e1b2ff0b7abc" x="60" y="94" width="88" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DESCRIPCION]]></text>
+			</staticText>
+			<textField pattern="EEEEE dd MMMMM yyyy" isBlankWhenNull="true">
+				<reportElement uuid="1ae9f782-b7b0-4184-b772-eb643d88a545" x="97" y="10" width="237" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{fecha_solicitud_adsoc}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="d7781630-f2b0-4a5c-8006-7d9a003b481a" x="208" y="94" width="100" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CARACTERISTICAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9b1e4edb-a994-4109-a759-f65f541b56f3" x="476" y="94" width="30" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[GAR.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="220ccdbc-4918-405c-b561-3601885a2a07" x="530" y="94" width="25" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CAP.]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="564a10d7-5b81-4903-9423-3c2824fdeb2c" x="0" y="71" width="555" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="992d6515-ec4c-4ba9-ab9c-bb311bc6caad" x="4" y="30" width="90" height="41"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[JUSTIFICACION DE LA ADQUISICION:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="9f4092f9-7a08-48ab-8b06-97e38a7c9849" x="97" y="30" width="448" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_adsoc}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="a47749ac-32ec-4e49-9a09-44968df0bede" x="216" y="74" width="151" height="15"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[PARAMETRO SOLICITADO]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="867c1e0b-4274-43bd-8aa6-1b04b7ba17c6" x="0" y="91" width="555" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="12811a6a-c0ad-4f8a-bddb-3f9cfd2513c8" x="504" y="94" width="28" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SOP.]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<line>
+				<reportElement uuid="03ceda71-7405-4671-ae70-50b8eb5d6faf" x="0" y="2" width="555" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="b6baecad-4738-472a-8235-a157a01d3944" x="0" y="22" width="555" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="04d4ab43-25ad-4cd3-be58-a4582e1dec80" x="0" y="3" width="1" height="19"/>
+			</line>
+			<line>
+				<reportElement uuid="c21eb055-f2c8-45d3-b698-f6c90fde1e8a" x="555" y="2" width="1" height="20"/>
+			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="f6963b43-b445-4d6a-ab60-bb807229620e" x="2" y="7" width="51" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cantidad_addes}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b9f557cf-894f-4ff1-baad-3a259b2a45bd" x="208" y="7" width="268" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{caracteristicas_addes}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="08df45e8-af07-4789-bbde-7fb670ed0fca" x="60" y="7" width="146" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion_addes}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="ca8979dc-9a2e-4e4c-a610-c4018ee64cca" x="532" y="7" width="23" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{capacitacion}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="ac899ea4-8066-42d0-a848-25f2dccae93d" x="506" y="7" width="23" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{soporte_tecnico}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="301e5653-50ba-4b9e-9163-b4c581ab0c09" x="478" y="7" width="23" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{garantia}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="127" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="64524e81-9085-489a-a56f-22e5f52c1547" x="0" y="65" width="555" height="25"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Nota: Una vez que se tenga completa la documentaciòn, se la debe ingresar en la Gerencia de Desarrollo Organizacional y el responsable debe dar seguimiento al tranmitre.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ca9dc50a-846c-48a3-b93a-21af3385fae1" x="0" y="90" width="555" height="30"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[EL QUE SE CUMPLA CON CADA UNO DE LOS REQUISITOS PERMITIRA QUE EL TRAMITE FLUYA SIN NINGUN OPROBLEMA Y SE CULMINE CON EXITO.]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="10970ccf-310b-479b-9b38-036a18218425" x="55" y="47" width="221" height="20"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Solicitado por: "+$F{empleado_solicitante}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="d4933f40-eb74-435d-939f-9f29d018331e" x="307" y="47" width="221" height="20"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Aprobado por: "+$F{nombres_apellidos}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="48981b9c-2c62-4ad8-8b5b-477a1659df73" x="48" y="44" width="231" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="a656c917-b22b-4315-a76f-52e4cf7fa0e8" x="300" y="43" width="231" height="1"/>
+			</line>
+			<textField evaluationTime="Report">
+				<reportElement uuid="780fc722-28fe-4fb1-bc16-a18a17be33f7" x="516" y="106" width="40" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="043d28ff-1373-44a2-a7e0-34864c8b57e4" x="436" y="106" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="60" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="a5458458-0c26-440a-9af2-72da208988a3" x="0" y="2" width="555" height="58"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_geani">
+					<subreportParameterExpression><![CDATA[$P{ide_geani}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_adsoc">
+					<subreportParameterExpression><![CDATA[$P{ide_adsoc}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="usuario">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_adquisicion/rep_poa_solicitud.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</summary>
+</jasperReport>

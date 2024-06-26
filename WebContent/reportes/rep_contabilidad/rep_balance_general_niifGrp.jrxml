@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_balance_general_niifGrp" pageWidth="560" pageHeight="842" whenNoDataType="BlankPage" columnWidth="560" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e417e812-fc9d-4d5d-81e0-d26a47801e5c">
+	<property name="ireport.zoom" value="1.6105100000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_cocan" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_inicial" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_final" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:/eclipse-jee-kepler-SR2-win32/Proyectos/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT cn1.ide_cocan, descripcion_cocan FROM cont_catalogo_niif cn1 where cn1.con_ide_cocan=$P{ide_cocan} order by 1;]]>
+	</queryString>
+	<field name="ide_cocan" class="java.lang.Integer"/>
+	<field name="descripcion_cocan" class="java.lang.String"/>
+	<variable name="valor_total" class="java.math.BigDecimal" calculation="Sum"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="38">
+			<subreport>
+				<reportElement uuid="27e6b6fe-ee69-41fc-b68b-037fb342b1cc" x="0" y="0" width="555" height="38"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="descripcion">
+					<subreportParameterExpression><![CDATA[$F{descripcion_cocan}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_cocan">
+					<subreportParameterExpression><![CDATA[$F{ide_cocan}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<returnValue subreportVariable="valor_total" toVariable="valor_total" calculation="Sum"/>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_contabilidad/rep_balance_general_niifDet.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>

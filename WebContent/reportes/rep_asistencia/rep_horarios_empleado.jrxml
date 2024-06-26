@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_horarios_empleado" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="852c4d6a-0081-4cb4-999b-90b0ee43d843">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:/eclipse-jee-kepler-SR2-win32/Proyectos/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="IDE_GEANI" class="java.lang.Integer"/>
+	<parameter name="IDE_GEMES" class="java.lang.Integer"/>
+	<parameter name="ide_usua" class="java.lang.Integer"/>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select distinct (epar.ide_gtemp),SUCU.NOM_SUCU ,DEPA.DETALLE_GEDEP,
+ EMP.APELLIDO_PATERNO_GTEMP,EMP.APELLIDO_MATERNO_GTEMP,EMP.PRIMER_NOMBRE_GTEMP,EMP.SEGUNDO_NOMBRE_GTEMP
+				 from  GEN_EMPLEADOS_DEPARTAMENTO_PAR EPAR
+				  LEFT JOIN GTH_EMPLEADO EMP ON EMP.IDE_GTEMP=EPAR.IDE_GTEMP
+				  LEFT JOIN SIS_SUCURSAL SUCU ON SUCU.IDE_SUCU=EPAR.IDE_SUCU
+				  LEFT JOIN GEN_DEPARTAMENTO DEPA ON DEPA.IDE_GEDEP=EPAR.IDE_GEDEP
+				  LEFT JOIN GEN_AREA AREA ON AREA.IDE_GEARE=EPAR.IDE_GEARE
+				 WHERE  EPAR.ACTIVO_GEEDP=TRUE --and emp.activo_gtemp=true
+				 GROUP BY  epar.ide_gtemp,SUCU.NOM_SUCU ,DEPA.DETALLE_GEDEP , EMP.APELLIDO_PATERNO_GTEMP,EMP.APELLIDO_MATERNO_GTEMP,EMP.PRIMER_NOMBRE_GTEMP,EMP.SEGUNDO_NOMBRE_GTEMP
+				 ORDER BY EMP.APELLIDO_PATERNO_GTEMP ASC ,EMP.APELLIDO_MATERNO_GTEMP ASC ,EMP.PRIMER_NOMBRE_GTEMP ASC,EMP.SEGUNDO_NOMBRE_GTEMP ASC;]]>
+	</queryString>
+	<field name="ide_gtemp" class="java.lang.Integer"/>
+	<field name="nom_sucu" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre de la sucursal.]]></fieldDescription>
+	</field>
+	<field name="detalle_gedep" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del departamento, ejemplo: DIRECTORIO, TECNOLOGIA, INFRAESTRUCTURA, etc.]]></fieldDescription>
+	</field>
+	<field name="apellido_paterno_gtemp" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el apellido paterno del empleado.]]></fieldDescription>
+	</field>
+	<field name="apellido_materno_gtemp" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el apellido materno del empleado.]]></fieldDescription>
+	</field>
+	<field name="primer_nombre_gtemp" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el prmer nombre del empleado.]]></fieldDescription>
+	</field>
+	<field name="segundo_nombre_gtemp" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el segundo nombre del empleado.]]></fieldDescription>
+	</field>
+	<variable name="variable1" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="38" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="8492db00-f334-4baa-a56a-ba0381102e23" x="0" y="0" width="555" height="37"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch">
+			<elementGroup/>
+			<elementGroup/>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="13" splitType="Stretch">
+			<textField evaluationTime="Report">
+				<reportElement uuid="2c8d7721-0c75-4b1f-801f-afd91ca0fc23" x="515" y="0" width="40" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0dc8a81c-6675-4160-b7fa-c4805c6fdc58" x="435" y="0" width="80" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="242" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="c9ddce33-74a6-4386-977c-9ea292f811b4" positionType="Float" isPrintRepeatedValues="false" x="0" y="60" width="555" height="46"/>
+				<subreportParameter name="IDE_GEMES">
+					<subreportParameterExpression><![CDATA[$P{IDE_GEMES}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IDE_GEANI">
+					<subreportParameterExpression><![CDATA[$P{IDE_GEANI}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_asistencia/detalleHorarios/sub_reporte_matriz_empleado_horario_mensual.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement uuid="3ade0f86-c48d-43ba-9be8-1e5d7498b50f" positionType="Float" isPrintRepeatedValues="false" x="0" y="118" width="555" height="46"/>
+				<subreportParameter name="IDE_GEMES">
+					<subreportParameterExpression><![CDATA[$P{IDE_GEMES}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IDE_GEANI">
+					<subreportParameterExpression><![CDATA[$P{IDE_GEANI}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_asistencia/detalleHorarios/sub_reporte_matriz_empleado_sin_horario.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement uuid="ce987db4-500e-46a6-8d75-0c2f6377645f" positionType="Float" isPrintRepeatedValues="false" x="0" y="186" width="555" height="46"/>
+				<subreportParameter name="IDE_GEMES">
+					<subreportParameterExpression><![CDATA[$P{IDE_GEMES}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IDE_GEANI">
+					<subreportParameterExpression><![CDATA[$P{IDE_GEANI}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_asistencia/detalleHorarios/sub_reporte_matriz_empleado_doble_horario.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement uuid="044805ac-7a18-4926-a7fa-941845b6c51c" positionType="Float" isPrintRepeatedValues="false" x="0" y="0" width="555" height="46"/>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_asistencia/detalleHorarios/sub_reporte_matriz_empleado_horario.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</summary>
+</jasperReport>

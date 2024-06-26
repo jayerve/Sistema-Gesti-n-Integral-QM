@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_posiciograma" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="bc799b03-a8ad-4567-b2b2-93286a3dd202">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="fecha_inicio" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_fin" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["D:\\workspace\\biess\\WebContent\\reportes\\rep_gestion\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_gegro" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_gecaf" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+a.ide_geedp,a.ide_gtemp,a.ide_saevp,a.detalle_saevp,a.fecha_evaluacion_saevp,
+c.nombre_empleado,c.documento,d.sucursal,e.area,f.departamento,g.ide_gegro,g.gocupacional,h.ide_gecaf,h.cargo,j.partida
+FROM SAO_EVALUACION_POSICIOGRAMA a
+LEFT JOIN(
+SELECT ide_geedp,ide_gtemp,ide_sucu,ide_geare,ide_gedep,ide_gegro,ide_gecaf,ide_gepgc FROM gen_empleados_departamento_par
+)b on b.ide_geedp=a.ide_geedp
+LEFT JOIN(
+SELECT ide_gtemp,apellido_paterno_gtemp || ' '||apellido_materno_gtemp||' '||primer_nombre_gtemp||' '||
+segundo_nombre_gtemp as nombre_empleado,documento_identidad_gtemp as documento FROM gth_empleado
+)c on c.ide_gtemp=b.ide_gtemp
+left join(
+SELECT ide_sucu,nom_sucu as sucursal FROM sis_sucursal
+)d on d.ide_sucu=b.ide_sucu
+left join(
+SELECT ide_geare,detalle_geare as area FROM gen_area
+)e on e.ide_geare=b.ide_geare
+left join(
+SELECT ide_gedep,detalle_gedep as departamento FROM gen_departamento
+)f on f.ide_gedep=b.ide_gedep
+LEFT JOIN(
+SELECT ide_gegro,detalle_gegro as gocupacional FROM gen_grupo_ocupacional
+)g ON g.ide_gegro=b.ide_gegro
+LEFT JOIN(
+SELECT ide_gecaf,detalle_gecaf as cargo FROM gen_cargo_funcional
+)h ON h.ide_gecaf=b.ide_gecaf
+LEFT JOIN(
+SELECT ide_gepgc,ide_gepap FROM gen_partida_grupo_cargo
+)i ON i.ide_gepgc=b.ide_gepgc
+LEFT JOIN(
+SELECT ide_gepap,codigo_partida_gepap as partida FROM gen_partida_presupuestaria
+)j ON j.ide_gepap=i.ide_gepap
+WHERE a.fecha_evaluacion_saevp between TO_DATE($P{fecha_inicio},'yyyy-mm-dd') AND TO_DATE($P{fecha_fin},'yyyy-mm-dd') and g.ide_gegro in ($P!{ide_gegro})  and h.ide_gecaf in ($P!{ide_gecaf})
+order by c.nombre_empleado,b.ide_geedp,a.ide_saevp,a.fecha_evaluacion_saevp]]>
+	</queryString>
+	<field name="IDE_GEEDP" class="java.math.BigDecimal"/>
+	<field name="IDE_GTEMP" class="java.math.BigDecimal"/>
+	<field name="IDE_SAEVP" class="java.lang.Long"/>
+	<field name="DETALLE_SAEVP" class="java.lang.String"/>
+	<field name="FECHA_EVALUACION_SAEVP" class="java.sql.Timestamp"/>
+	<field name="NOMBRE_EMPLEADO" class="java.lang.String"/>
+	<field name="DOCUMENTO" class="java.lang.String"/>
+	<field name="SUCURSAL" class="java.lang.String"/>
+	<field name="AREA" class="java.lang.String"/>
+	<field name="DEPARTAMENTO" class="java.lang.String"/>
+	<field name="IDE_GEGRO" class="java.math.BigDecimal"/>
+	<field name="GOCUPACIONAL" class="java.lang.String"/>
+	<field name="IDE_GECAF" class="java.math.BigDecimal"/>
+	<field name="CARGO" class="java.lang.String"/>
+	<field name="PARTIDA" class="java.lang.String"/>
+	<group name="IDE_GEEDP">
+		<groupExpression><![CDATA[$F{IDE_GEEDP}]]></groupExpression>
+		<groupHeader>
+			<band height="71">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="78dfc260-a8e1-473d-84b8-8a462b192973" x="102" y="14" width="517" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{NOMBRE_EMPLEADO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="baeeb37e-01e8-4bd6-9dd9-1e3f1f1f22e1" x="682" y="14" width="121" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DOCUMENTO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="2a70ecd2-9325-432e-b1fd-d7d1365e301d" x="102" y="28" width="300" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{SUCURSAL}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="20d9a028-c425-443b-a25f-c3746ee27073" x="102" y="42" width="300" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{AREA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="d1047ceb-ddf9-4820-b07b-fbb31e694c8a" x="102" y="56" width="300" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DEPARTAMENTO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="a2ee243f-3288-4d43-876e-1335ce0dc287" x="503" y="28" width="300" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{GOCUPACIONAL}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="2e796a06-a741-4536-978f-25fd3f6c0d59" x="502" y="42" width="300" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{CARGO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="adfab370-e22c-49fe-aaba-255c362ac393" x="503" y="56" width="300" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{PARTIDA}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="fc1b1786-5733-4846-8cd4-1985c2aeb8e1" x="0" y="14" width="102" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[EMPLEADO:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="f75cabd1-2604-40f4-a048-fde5ef514eba" x="619" y="14" width="64" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[DOCUMENTO:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="fad3dce6-9641-4bd9-9cb0-1b650bfe143e" x="0" y="28" width="102" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[SUCURSAL:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="9ed32c72-eb39-4fe3-85fd-fa133fb6ddfe" x="0" y="42" width="102" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[AREA:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="3c982a78-1bc2-42c6-a0a0-d27de4781509" x="0" y="56" width="102" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[DEPARTAMENTO:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="5f42c7e7-1c44-4a6c-bf12-55ba032669be" x="401" y="28" width="102" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[GRUPO OCUPACIONAL:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="b3bf2a41-afb3-41c8-a79c-fa29b1e86b2a" x="401" y="42" width="102" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CARGO:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="aff3efde-77cc-4a85-804c-055379718432" x="401" y="56" width="102" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[PARTIDA:]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="IDE_SAEVP">
+		<groupExpression><![CDATA[$F{IDE_SAEVP}]]></groupExpression>
+		<groupHeader>
+			<band height="35">
+				<subreport>
+					<reportElement uuid="acced25c-59f1-45c4-a7b9-229f11f29169" x="0" y="15" width="803" height="20" isRemoveLineWhenBlank="true"/>
+					<subreportParameter name="ide_saevp">
+						<subreportParameterExpression><![CDATA[$F{IDE_SAEVP}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_salud/sub_rep_evaluacion_posiciograma.jasper"]]></subreportExpression>
+				</subreport>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="abc49eee-a41f-42ec-ad7f-3380c3a8c373" x="317" y="0" width="485" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DETALLE_SAEVP}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+					<reportElement uuid="8ec2503a-8b99-4c92-9e3f-7835d052332e" x="104" y="0" width="94" height="15"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{FECHA_EVALUACION_SAEVP}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="590654fc-636a-4ef9-affb-f8f86bb01607" x="198" y="0" width="119" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[OBSERVACION:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="c49b6c5c-dd1b-4b0b-864c-a0d8e1161d90" x="2" y="0" width="102" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[FECHA EVALUACIÓN:]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<title>
+		<band height="62" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="5f5e40f0-02d8-4417-986f-ba6e46373ae3" x="-2" y="3" width="804" height="24"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema_biess/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="10" splitType="Stretch">
+			<textField>
+				<reportElement uuid="69995dd3-b03a-4be8-a6cf-677f4c374c62" x="682" y="0" width="80" height="10"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="dcdf88cc-ef42-47d5-b691-8d6297f084e6" x="762" y="0" width="40" height="10"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

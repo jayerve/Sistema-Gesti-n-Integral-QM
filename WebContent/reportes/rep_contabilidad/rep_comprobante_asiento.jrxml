@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_comprobante_asiento" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4f88d28a-8afc-4abc-95b3-23e811e4bb26">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Table Dataset 1" uuid="2eca6681-4e68-42e8-bf4d-1749889572f0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<parameter name="ide_usua" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="p_valor_pagar" class="java.lang.String"/>
+	<parameter name="P_contador_general" class="java.lang.String"/>
+	<parameter name="p_ide_comov" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select a.ide_comov,b.ide_codem,mov_fecha_comov,nro_comprobante_comov,c.nombre_tepro,c.ruc_tepro,haber_codem,detalle_comov,valor,
+                    cue_codigo_cocac,cue_descripcion_cocac,debe_codem,haber_codem,devengado_prmen,ide_gelua,codigo_clasificador_prcla
+                    from cont_movimiento a
+                    left join cont_detalle_movimiento b on a.ide_comov = b.ide_comov
+                    left join tes_proveedor c on b.ide_tepro = c.ide_tepro
+                    left join tes_tipo_concepto d on b.ide_tetic = d.ide_tetic
+                    left join (select ide_comov,sum(haber_codem) as valor from cont_detalle_movimiento where transferencia_codem = true group by ide_comov) e on a.ide_comov = e.ide_comov
+                    left join (select a.ide_prcla,b.ide_codem,codigo_clasificador_prcla,descripcion_clasificador_prcla, devengado_prmen
+                    from pre_anual a, pre_mensual b,pre_clasificador c where a.ide_pranu = b.ide_pranu and a.ide_prcla = c.ide_prcla ) f on b.ide_codem = f.ide_codem
+                    left join cont_catalogo_cuenta g on b.ide_cocac = g.ide_cocac
+                    where a.ide_comov = $P{p_ide_comov}
+                    order by ide_gelua]]>
+	</queryString>
+	<field name="ide_comov" class="java.lang.Long"/>
+	<field name="ide_codem" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla cont_detalle_movimiento]]></fieldDescription>
+	</field>
+	<field name="mov_fecha_comov" class="java.sql.Date">
+		<fieldDescription><![CDATA[mov_fecha_comov]]></fieldDescription>
+	</field>
+	<field name="nro_comprobante_comov" class="java.lang.String">
+		<fieldDescription><![CDATA[este campo contiene el numero de comprobante de ingreso, comprobante de egreso]]></fieldDescription>
+	</field>
+	<field name="nombre_tepro" class="java.lang.String"/>
+	<field name="ruc_tepro" class="java.lang.String"/>
+	<field name="haber_codem" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[haber_codem]]></fieldDescription>
+	</field>
+	<field name="detalle_comov" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_asiento_comov]]></fieldDescription>
+	</field>
+	<field name="valor" class="java.math.BigDecimal"/>
+	<field name="cue_codigo_cocac" class="java.lang.String">
+		<fieldDescription><![CDATA[cue_codigo_cocac]]></fieldDescription>
+	</field>
+	<field name="cue_descripcion_cocac" class="java.lang.String">
+		<fieldDescription><![CDATA[cue_descripcion_cocac]]></fieldDescription>
+	</field>
+	<field name="debe_codem" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[debe_codem]]></fieldDescription>
+	</field>
+	<field name="devengado_prmen" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[este campo lleva el devengado tanto para ingresos como para gastos]]></fieldDescription>
+	</field>
+	<field name="ide_gelua" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_lugar_aplica valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="codigo_clasificador_prcla" class="java.lang.String">
+		<fieldDescription><![CDATA[codigo_clasificador_prcla]]></fieldDescription>
+	</field>
+	<variable name="v_debe_total" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{debe_codem}]]></variableExpression>
+	</variable>
+	<variable name="v_haber_total" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{haber_codem}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="3a3418cc-c14f-4f1f-be87-df8e6afa8ebd" x="0" y="0" width="555" height="79"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{ide_usua}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="102" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="d8da22e2-2268-4a23-98b8-8a5c9cddbfe4" mode="Transparent" x="0" y="0" width="555" height="102"/>
+			</rectangle>
+			<textField>
+				<reportElement uuid="52a4ef2b-9cf8-4452-bd90-034b6cd50fbc" x="168" y="5" width="135" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["NRO: "+$F{nro_comprobante_comov}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5ce69318-8059-4159-a692-adb4c35df7c1" x="5" y="4" width="157" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COMPROBANTE DE PAGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3bb131dd-2410-4b71-89c2-9fc30bc44c53" x="303" y="5" width="84" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
+			<textField pattern="dd MMMMM yyyy">
+				<reportElement uuid="34bccf04-0ed2-4a30-b8fd-b32fb7d83259" x="398" y="5" width="100" height="20"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mov_fecha_comov}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3191d673-6301-4dd4-aa92-2998e66bf164" x="18" y="32" width="204" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BANCO CENTRAL DEL ECUADOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cc889cc8-6619-4fb5-a5e0-c5a2dcdb84c3" x="332" y="32" width="74" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TCP]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="45dc9ee3-d7dd-4784-b1ce-d1efec733711" x="422" y="32" width="100" height="20"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ide_comov}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="59ceda67-048b-4457-998e-08df0dafcd24" x="18" y="52" width="74" height="29"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[PAGUESE A LA ORDEN DE:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="789f4c14-b4d5-4e4e-9b90-3625adc2b48a" x="96" y="52" width="326" height="29"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_comov}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="089c92ab-3249-4566-a76d-f7158768a4ca" x="424" y="52" width="41" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[POR $]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="235570a4-9137-4e19-9789-7e30bae55607" x="466" y="52" width="86" height="20"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="29eb04ef-5639-4261-9372-a7873a97a026" x="18" y="81" width="109" height="21"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[VALOR EN LETRAS:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="6764aa80-9002-4c18-8f1a-e390f1bac773" x="133" y="81" width="419" height="21"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_valor_pagar}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="1914a5c9-0b8e-4afe-8c8e-24d9811dc482" x="0" y="27" width="555" height="1"/>
+			</line>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="22" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="d8497233-a936-491c-b92e-67093e05c3a2" mode="Transparent" x="0" y="0" width="555" height="22"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="f58a5e36-9190-4e8e-81ff-7382f3b27908" x="5" y="5" width="49" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CÓDIGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2970295b-ff82-4f6b-b9af-f18114bcf916" x="96" y="5" width="73" height="17"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONCEPTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8e2d597a-c0a6-48b3-bd23-1c52aafc0deb" x="275" y="5" width="82" height="17"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEBE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="90e27cae-c040-4fb1-b995-6b4422a68987" x="369" y="5" width="49" height="17"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HABER]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5ca15dbd-f53d-495b-b4c8-c7a7bc84b8f7" x="440" y="5" width="49" height="17"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PARTIDA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b463d04f-bd86-484a-990b-1fba80b19b3e" x="475" y="5" width="73" height="17"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEVEG.]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="">
+				<reportElement uuid="6aa22f12-b3b1-405c-b03f-d91a77012cf3" x="5" y="0" width="91" height="15"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cue_codigo_cocac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="b9b46cb3-edf6-4757-9cce-110b803f3210" x="96" y="0" width="207" height="15"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cue_descripcion_cocac}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="6a2d7c5d-1117-43ca-91dd-fe9d647e5534" x="303" y="0" width="59" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{debe_codem}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="b126c161-8b42-41d1-90df-0de6857da5ad" x="363" y="0" width="59" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{haber_codem}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="19e3418f-e969-4b6b-b258-9cedf523ef24" x="424" y="0" width="65" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo_clasificador_prcla}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="60335da1-6ec1-442f-a8e4-0c87b96acc34" x="489" y="0" width="59" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{devengado_prmen}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="20309793-b910-4a9e-b9e7-7290f2a80787" x="554" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="9f6ea661-30e7-4c58-b86d-b2e905d3819a" x="-1" y="0" width="1" height="15"/>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="122" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="82561625-f4a1-4f3a-8165-5ae432a31830" mode="Transparent" x="0" y="0" width="555" height="20"/>
+			</rectangle>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="b556ae9d-e6e2-42a2-8126-2ed7da70444a" x="303" y="3" width="59" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{v_debe_total}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="40651495-63cb-4d80-be2f-95a8a96c1c84" x="363" y="3" width="59" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{v_haber_total}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="abb0884f-7f00-4dc0-a9c9-c4e73b132dbf" x="119" y="3" width="49" height="17"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="92059c4d-44a8-4874-a5a9-7da9e27af65d" x="132" y="79" width="285" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$P{P_contador_general}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="2b8b3f6d-e781-4c11-8462-55d163408996" x="122" y="75" width="300" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="3e68ef77-3597-4115-8a97-9bf1df0723f2" x="133" y="99" width="284" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONTABILIDAD]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

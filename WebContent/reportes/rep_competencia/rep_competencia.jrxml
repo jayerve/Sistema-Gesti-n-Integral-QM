@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_competencia" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="02e5ee0d-7e78-4deb-b223-97d7467415eb">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["D:\\workspace\\biess\\WebContent\\reportes\\rep_gestion\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="ide_gegro" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_gecaf" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select a.ide_gegca,a.ide_gegro,a.ide_gecaf,a.ide_gedep,detalle_gegro,detalle_gecaf,
+titulo_cargo_gegca,mision_gegca,de_acuerdoa_gegca,con_finde_gegca,
+b.ide_cmfac,cmp_ide_cmfac,detalle_padre,detalle_hijo,detalle_cmdec,detalle_geare,detalle_gedep
+from (
+select a.ide_gegca,a.ide_gegro,a.ide_gecaf,a.ide_gedep,detalle_gegro,detalle_gecaf,
+titulo_cargo_gegca,mision_gegca,de_acuerdoa_gegca,con_finde_gegca,detalle_geare,detalle_gedep
+from gen_grupo_cargo_area a,gen_grupo_ocupacional b, gen_cargo_funcional c, (
+select ide_gedep,detalle_geare,detalle_gedep
+from gen_departamento a, gen_area b where a.ide_geare = b.ide_geare
+
+) d
+where a.ide_gegro= b.ide_gegro and a.ide_gecaf= c.ide_gecaf
+and a.ide_gedep = d.ide_gedep
+order by a.ide_gegro, a.ide_gecaf
+) a,
+(
+select a.ide_cmdec,a.ide_cmfac,a.ide_gegca,detalle_cmdec,cmp_ide_cmfac,detalle_padre,detalle_hijo
+from cmp_detalle_competencia a, (
+select ide_cmfac,cmp_ide_cmfac,detalle_padre,detalle_hijo
+from (
+select a.ide_cmfac,
+(case when a.cmp_ide_cmfac is null then a.ide_cmfac else  a.cmp_ide_cmfac end) as  cmp_ide_cmfac ,b.detalle_cmfac as detalle_padre,a.detalle_cmfac as detalle_hijo
+from cmp_factor_competencia a
+left join (
+select a.ide_cmfac,a.cmp_ide_cmfac,detalle_cmfac
+from cmp_factor_competencia a
+) b on a.cmp_ide_cmfac = b.ide_cmfac
+where not  a.ide_cmfac in (
+select distinct cmp_ide_cmfac from cmp_factor_competencia where not cmp_ide_cmfac is null
+)
+)
+order by cmp_ide_cmfac
+) b where a.ide_cmfac = b.ide_cmfac
+) b
+where a.ide_gegca = b.ide_gegca
+and a.ide_gegro in ($P!{ide_gegro})
+and a.ide_gecaf in ($P!{ide_gecaf})]]>
+	</queryString>
+	<field name="IDE_GEGCA" class="java.math.BigDecimal"/>
+	<field name="IDE_GEGRO" class="java.math.BigDecimal"/>
+	<field name="IDE_GECAF" class="java.math.BigDecimal"/>
+	<field name="IDE_GEDEP" class="java.math.BigDecimal"/>
+	<field name="DETALLE_GEGRO" class="java.lang.String"/>
+	<field name="DETALLE_GECAF" class="java.lang.String"/>
+	<field name="TITULO_CARGO_GEGCA" class="java.lang.String"/>
+	<field name="MISION_GEGCA" class="java.lang.String"/>
+	<field name="DE_ACUERDOA_GEGCA" class="java.lang.String"/>
+	<field name="CON_FINDE_GEGCA" class="java.lang.String"/>
+	<field name="IDE_CMFAC" class="java.math.BigDecimal"/>
+	<field name="CMP_IDE_CMFAC" class="java.math.BigDecimal"/>
+	<field name="DETALLE_PADRE" class="java.lang.String"/>
+	<field name="DETALLE_HIJO" class="java.lang.String"/>
+	<field name="DETALLE_CMDEC" class="java.lang.String"/>
+	<field name="DETALLE_GEARE" class="java.lang.String"/>
+	<field name="DETALLE_GEDEP" class="java.lang.String"/>
+	<group name="GRUPO_OCUPACIONAL">
+		<groupExpression><![CDATA[$F{IDE_GEGCA}]]></groupExpression>
+		<groupHeader>
+			<band height="241" splitType="Stretch">
+				<line>
+					<reportElement uuid="b3ca36b7-a036-4a6d-be3b-b29142d16972" key="line-2" x="0" y="239" width="555" height="1"/>
+				</line>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="5f9cdc3c-2c7c-439d-8a46-51481d546079" key="textField-8" positionType="Float" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="9" y="1" width="536" height="22" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Bottom">
+						<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{TITULO_CARGO_GEGCA}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="c6196cc5-d954-4a97-bc43-36a193c25062" key="staticText-5" x="27" y="27" width="136" height="20"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[GRUPO OCUAPCIONAL:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="603e123b-1ba8-4aca-89fe-15a52ae5f9bc" key="staticText-6" x="27" y="44" width="136" height="20"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[CARGO FUNCIONAL:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="bedbb833-b495-49cb-aeeb-812f84ed00de" key="staticText-7" x="27" y="61" width="136" height="20"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[AREA / GERENCIA:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="1e3b92d9-2041-4838-86e3-1a379178062a" key="staticText-8" x="27" y="78" width="136" height="20"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[DEPARTAMENTO / DIVISION;]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="8b6c29fd-9fab-463e-8319-b9af576d3686" key="staticText-9" x="27" y="101" width="136" height="20"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[MISION:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="04a8fed2-ce7d-4095-8262-5078bc83792d" key="staticText-10" x="26" y="147" width="136" height="20"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[DE A CUERDO A:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="cc8c18af-c665-464d-84f7-08b42fc58e37" key="staticText-11" x="26" y="196" width="136" height="20"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[CON EL FIN DE:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="4af0fe8b-fa34-4f1b-8bff-8118cc2a324d" key="textField-9" positionType="Float" stretchType="RelativeToBandHeight" x="156" y="28" width="380" height="15" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DETALLE_GEGRO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="de0b889c-f462-4b00-a910-c8b43bf1de89" key="textField-10" positionType="Float" stretchType="RelativeToBandHeight" x="156" y="45" width="380" height="15" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DETALLE_GECAF}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="ae460ba8-76eb-4183-afd7-8ad8d02ffded" key="textField-11" positionType="Float" stretchType="RelativeToBandHeight" x="156" y="63" width="380" height="15" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DETALLE_GEARE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="0a4ea398-e9f6-4272-8ba6-d4f8ee84b094" key="textField-12" positionType="Float" stretchType="RelativeToBandHeight" x="156" y="81" width="380" height="15" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DETALLE_GEDEP}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="5372048e-fcdd-47d9-ad83-e8ada4846c11" key="textField-13" positionType="Float" stretchType="RelativeToBandHeight" x="157" y="104" width="397" height="42" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Justified" verticalAlignment="Top">
+						<font size="7" isBold="false" isItalic="false" pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{MISION_GEGCA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="eef8b5e1-9898-4ab5-a394-7ba06d246e95" key="textField-14" positionType="Float" stretchType="RelativeToBandHeight" x="157" y="148" width="396" height="42" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Justified" verticalAlignment="Top">
+						<font size="7" isBold="false" isItalic="false" pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DE_ACUERDOA_GEGCA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="eda3b902-87fd-4fe7-ab6a-ee528aa0df98" key="textField-15" positionType="Float" stretchType="RelativeToBandHeight" x="157" y="194" width="397" height="42" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Justified" verticalAlignment="Top">
+						<font size="7" isBold="false" isItalic="false" pdfFontName="Helvetica"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{CON_FINDE_GEGCA}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement uuid="2965cb30-4b01-4f49-b173-483eaeed6410" key="line-2" x="0" y="1" width="555" height="1"/>
+				</line>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band splitType="Stretch"/>
+		</groupFooter>
+	</group>
+	<group name="Factor">
+		<groupExpression><![CDATA[$F{CMP_IDE_CMFAC}]]></groupExpression>
+		<groupHeader>
+			<band height="14" splitType="Stretch">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="43c24ad1-5887-4b62-a703-a61cfa29c3c1" key="textField-16" positionType="Float" stretchType="RelativeToBandHeight" x="4" y="2" width="380" height="12" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DETALLE_PADRE}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band splitType="Stretch"/>
+		</groupFooter>
+	</group>
+	<group name="detalle_factor">
+		<groupExpression><![CDATA[$F{IDE_CMFAC}]]></groupExpression>
+		<groupHeader>
+			<band height="15" splitType="Stretch">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="ac94065e-3df5-4971-8d60-2b82c030b52c" key="textField-17" positionType="Float" stretchType="RelativeToBandHeight" x="20" y="3" width="380" height="12" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Top">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DETALLE_HIJO}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band splitType="Stretch"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="53" splitType="Stretch">
+			<subreport isUsingCache="true">
+				<reportElement uuid="167ce7ff-b8d8-4afe-b102-0067875765d7" key="subreport" x="0" y="1" width="555" height="52"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema_biess/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="13" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="3082e249-7045-485a-a7d5-74a95821b0bd" key="textField" positionType="Float" stretchType="RelativeToBandHeight" x="39" y="0" width="514" height="13" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["~  "+$F{DETALLE_CMDEC}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_afi_cod_barras_lote" pageWidth="141" pageHeight="70" whenNoDataType="BlankPage" columnWidth="141" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e417e812-fc9d-4d5d-81e0-d26a47801e5c">
+	<property name="ireport.zoom" value="4.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:/eclipse-jee-kepler-SR2-win32/Proyectos/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_afdoc" class="java.lang.Integer"/>
+	<parameter name="anio" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT ide_afact FROM afi_doc_detalle_activo WHERE ide_afdoc IN ($P{ide_afdoc})]]>
+	</queryString>
+	<field name="ide_afact" class="java.lang.Long">
+		<fieldDescription><![CDATA[Define la clave primaria de la tabla afi_activo.]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="57" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="de53c3cd-7607-4123-8d16-02c112cc1f1f" x="0" y="0" width="141" height="57"/>
+				<subreportParameter name="anio">
+					<subreportParameterExpression><![CDATA[$P{anio}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="pide_barras">
+					<subreportParameterExpression><![CDATA[$F{ide_afact}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_activos/rep_afi_cod_barras_constatacion.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>

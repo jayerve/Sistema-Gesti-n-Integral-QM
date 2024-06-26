@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rep_abono" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="b6456d63-a787-4787-9550-50c056647f3c">
+	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.x" value="12"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="IDE_NRANT" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+ABO.IDE_NRANA,
+ABO.FECHA_PAGO_NRANA,
+ABO.FECHA_DEPOSITO_NRANA,
+ABO.DOC_DEPOSITO_NRANA,
+ABO.VALOR_ABONO_NRANA,
+ABO.ACTIVO_NRANA,
+INS.DETALLE_GEINS
+
+FROM NRH_ANTICIPO_ABONO ABO
+INNER JOIN GEN_INSTITUCION INS ON INS.IDE_GEINS=ABO.IDE_GEINS
+WHERE ABO.IDE_NRANT = $P{IDE_NRANT}
+ORDER BY ABO.ACTIVO_NRANA ASC]]>
+	</queryString>
+	<field name="IDE_NRANA" class="java.math.BigDecimal"/>
+	<field name="FECHA_PAGO_NRANA" class="java.sql.Timestamp"/>
+	<field name="FECHA_DEPOSITO_NRANA" class="java.sql.Timestamp"/>
+	<field name="DOC_DEPOSITO_NRANA" class="java.lang.String"/>
+	<field name="VALOR_ABONO_NRANA" class="java.math.BigDecimal"/>
+	<field name="ACTIVO_NRANA" class="java.math.BigDecimal"/>
+	<field name="DETALLE_GEINS" class="java.lang.String"/>
+	<variable name="VALOR_ABONO_NRANA1" class="java.math.BigDecimal" resetType="Group" resetGroup="activo" calculation="Sum">
+		<variableExpression><![CDATA[$F{VALOR_ABONO_NRANA}]]></variableExpression>
+	</variable>
+	<variable name="VALOR_ABONO_NRANA2" class="java.math.BigDecimal" resetType="Group" resetGroup="activo" calculation="Sum">
+		<variableExpression><![CDATA[$F{VALOR_ABONO_NRANA}]]></variableExpression>
+	</variable>
+	<variable name="contador" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{IDE_NRANA}]]></variableExpression>
+		<initialValueExpression><![CDATA[1]]></initialValueExpression>
+	</variable>
+	<group name="activo">
+		<groupExpression><![CDATA[$F{ACTIVO_NRANA}]]></groupExpression>
+		<groupHeader>
+			<band height="24">
+				<textField>
+					<reportElement uuid="4f5beb55-2522-40de-8811-8a82b1511b9a" x="0" y="0" width="555" height="12"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{ACTIVO_NRANA}==1?"ABONO":"SIN ABONO"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="63a2af79-e310-4bca-8071-399f58ee53f4" x="340" y="12" width="127" height="12"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[DOC.DEPOSITO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="9c51a01d-b42d-414d-aa88-199d5eff47bd" x="467" y="12" width="88" height="12"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[VALOR ABONO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="1e41faf7-4dfe-4606-8fad-c9e8dec9ae30" x="240" y="12" width="100" height="12"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[FECHA DEPOSITO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="632d9b1c-c0eb-4609-9d0b-a37b2736bba2" x="132" y="12" width="108" height="12"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[FECHA PAGO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="b98a481e-342b-4035-8eeb-c8d2a81ea3a3" x="55" y="12" width="77" height="12"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[INSTITUCION]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="19f310b4-e57f-40cb-80f1-49d236557c18" x="0" y="12" width="55" height="12"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[NUM.ABONO]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="70d7be85-5f73-413f-a88b-0806a2e56b2f" positionType="Float" stretchType="RelativeToBandHeight" x="467" y="0" width="88" height="12" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="18"/>
+					<textElement>
+						<font size="6" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{ACTIVO_NRANA}==null?" ":
+$F{ACTIVO_NRANA}==1?"TOTAL PAGADO: "+" "+$V{VALOR_ABONO_NRANA1}:
+"TOTAL POR PAGAR: "+" "+$V{VALOR_ABONO_NRANA1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="f9ecc780-2bc7-4cf4-a0a9-5a08d1459cf5" positionType="Float" stretchType="RelativeToBandHeight" x="240" y="0" width="100" height="12" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FECHA_DEPOSITO_NRANA}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="7fcb23fa-86fd-4d6e-afae-b27584d60925" positionType="Float" stretchType="RelativeToBandHeight" x="340" y="0" width="127" height="12" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DOC_DEPOSITO_NRANA}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="5041ae0e-5415-4811-aa39-5fbab02eee0a" positionType="Float" stretchType="RelativeToBandHeight" x="467" y="0" width="88" height="12" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<box rightPadding="5">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{VALOR_ABONO_NRANA}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="76b6b4c7-6420-4efc-b6e6-7a9c759b12fd" positionType="Float" stretchType="RelativeToBandHeight" x="55" y="0" width="77" height="12" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DETALLE_GEINS}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="f0c014bb-8a7d-473c-8e7a-7285e6b5df48" positionType="Float" stretchType="RelativeToBandHeight" x="132" y="0" width="108" height="12" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FECHA_PAGO_NRANA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ce68f4b9-f2ef-483e-ac6f-23730b293e24" x="0" y="0" width="55" height="12"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{contador}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

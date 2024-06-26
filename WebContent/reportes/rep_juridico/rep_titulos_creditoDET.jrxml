@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_titulos_creditoDET" pageWidth="554" pageHeight="842" whenNoDataType="BlankPage" columnWidth="554" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e417e812-fc9d-4d5d-81e0-d26a47801e5c">
+	<property name="ireport.zoom" value="7.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="p_ide_facon" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT ide_facof, 'FACTURA' as tipoDoc, fac.fecha_transaccion_fafac as fecha_emision,fac.secuencial_fafac as nro_documento, est.detalle_coest as estado, detalle_bogrm as concepto,
+                 valor_facof as valor
+                  FROM fac_detalle_convenio fdc
+                  left join fac_factura fac on fac.ide_fafac=fdc.ide_fafac
+                  left join (select ide_fadaf,autorizacion_sri_bogrm,serie_factura_fadaf, detalle_bogrm
+                    from fac_datos_factura a, bodt_grupo_material b where a.ide_bogrm = b.ide_bogrm) dfac on dfac.ide_fadaf=fac.ide_fadaf
+                  left join cont_estado est on est.ide_coest=fac.ide_coest
+                  where ide_facon = $P{p_ide_facon} and ide_fanod is null
+
+                union all
+
+                SELECT ide_facof, 'NOTA DEBITO' as tipoDoc, nd.fecha_emision_fanod as fecha_emision,(case when nd.ide_coest=16 then nd.nro_nota_debito_elect_fanod else '' end) as nro_documento, est.detalle_coest as estado,
+                'Interés generado Factura '||coalesce(detalle_fenod,'') as concepto,valor_facof as valor
+                  FROM fac_detalle_convenio fdc
+                  left join fac_nota_debito nd on nd.ide_fanod=fdc.ide_fanod
+                  left join cont_estado est on est.ide_coest=nd.ide_coest
+                  where ide_facon = $P{p_ide_facon} and ide_fafac is null]]>
+	</queryString>
+	<field name="ide_facof" class="java.lang.Long"/>
+	<field name="tipodoc" class="java.lang.String"/>
+	<field name="fecha_emision" class="java.sql.Date"/>
+	<field name="nro_documento" class="java.lang.String"/>
+	<field name="estado" class="java.lang.String"/>
+	<field name="concepto" class="java.lang.String"/>
+	<field name="valor" class="java.math.BigDecimal"/>
+	<variable name="valor_titulo" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement uuid="fa445641-4a59-4e30-8816-c47a0b6945a4" x="2" y="0" width="152" height="15"/>
+				<textElement textAlignment="Left">
+					<font fontName="Times New Roman" size="10" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipodoc} + " "+$F{nro_documento}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy-MM-dd">
+				<reportElement uuid="206ccd28-f176-4b7d-81b6-c2d69737a47e" x="381" y="0" width="81" height="15"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipodoc}.contains("DEBITO") ? "" :  $F{fecha_emision}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="ff121ee3-da6c-4b5e-9bd9-6c5c1596f7be" x="464" y="0" width="81" height="15"/>
+				<textElement textAlignment="Right">
+					<font fontName="Times New Roman" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="32667067-e2b9-4c87-8008-1115c6f44123" x="554" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="2c8deda5-1213-4037-9df9-3e49834ff3ae" x="0" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="e82b3dd2-0cdf-4902-99f1-bdf819e83d43" x="155" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="ca6ca4f9-2e36-4294-98ea-32dfc8ec7c18" x="380" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="308b92f6-601d-4590-9775-64ae3c33f3f8" x="463" y="0" width="1" height="15"/>
+			</line>
+			<textField pattern="yyyy-MM-dd">
+				<reportElement uuid="e7b6dc12-003c-4df3-92f6-114a696929e6" x="156" y="0" width="224" height="15"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{concepto}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_liquidacion" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="852c4d6a-0081-4cb4-999b-90b0ee43d843">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="288"/>
+	<parameter name="IDE_GTEMP" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="diasacumulados" class="java.lang.String"/>
+	<parameter name="nrofinesdesemana" class="java.lang.String"/>
+	<parameter name="diasdescontados" class="java.lang.String"/>
+	<parameter name="descuentofinesdesemana" class="java.lang.String"/>
+	<parameter name="totaldiaspendientes" class="java.lang.String"/>
+	<parameter name="nrofinessemanapendientes" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:/eclipse-jee-kepler-SR2-win32/Proyectos/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="ide_asvac" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_coordinador_tthh" class="java.lang.String"/>
+	<parameter name="p_analista_tthh" class="java.lang.String"/>
+	<parameter name="dia_extra" class="java.lang.String"/>
+	<parameter name="banderaCodigo" class="java.lang.String"/>
+	<parameter name="p_especialiista_tthh" class="java.lang.String"/>
+	<parameter name="fecha_ingreso_asvac" class="java.lang.String"/>
+	<parameter name="total" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT vaca.ide_asvac, vaca.ide_gtemp, vaca.fecha_ingreso_asvac, vaca.fecha_finiquito_asvac,
+       vaca.obervacion_asvac, vaca.activo_asvac,vaca.dias_pendientes_asvac, vaca.dias_tomados_asvac,
+       vaca.nro_dias_ajuste_asvac, vaca.nro_dias_ajuste_periodo_asvac,EMP.DOCUMENTO_IDENTIDAD_GTEMP,
+				EMP.APELLIDO_PATERNO_GTEMP || ' ' ||
+				(case when EMP.APELLIDO_MATERNO_GTEMP is null then '' else EMP.APELLIDO_MATERNO_GTEMP end) || ' ' ||
+				EMP.PRIMER_NOMBRE_GTEMP || ' ' ||
+				(case when EMP.SEGUNDO_NOMBRE_GTEMP is null then '' else EMP.SEGUNDO_NOMBRE_GTEMP end) AS NOMBRES_APELLIDOS
+
+  FROM asi_vacacion vaca
+left join gth_empleado emp on emp.ide_gtemp=vaca.ide_gtemp
+WHERE VACA.IDE_GTEMP =$P{IDE_GTEMP} and VACA.IDE_ASVAC =$P{ide_asvac}]]>
+	</queryString>
+	<field name="ide_asvac" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla asi_detalle_vacacion.]]></fieldDescription>
+	</field>
+	<field name="ide_gtemp" class="java.lang.Integer"/>
+	<field name="fecha_ingreso_asvac" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha de ingreso del empleado a la empresa]]></fieldDescription>
+	</field>
+	<field name="fecha_finiquito_asvac" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_finiquito_asvac]]></fieldDescription>
+	</field>
+	<field name="obervacion_asvac" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define las observaciones que pueden tener la cabecera de las vacaciones]]></fieldDescription>
+	</field>
+	<field name="activo_asvac" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[Este campo define si el registro se encuentra activo o no para su transaccionalidad, 1 SI / 0 No]]></fieldDescription>
+	</field>
+	<field name="dias_pendientes_asvac" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Campo guarda el numero de  dias tomados por cada empleado]]></fieldDescription>
+	</field>
+	<field name="dias_tomados_asvac" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[--Campo donde se guarda los datos de las vacaciones tomadas hasta el 31 de marzo por el empleado]]></fieldDescription>
+	</field>
+	<field name="nro_dias_ajuste_asvac" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[--Se guardara la dierencia de dias obtenidos hasta el 30 de abril]]></fieldDescription>
+	</field>
+	<field name="nro_dias_ajuste_periodo_asvac" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[--El numero de dias con que inicio el empleado]]></fieldDescription>
+	</field>
+	<field name="documento_identidad_gtemp" class="java.lang.String"/>
+	<field name="nombres_apellidos" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="37" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="a77449b8-9c09-4efa-8fab-54c9089d95e6" x="0" y="0" width="555" height="37"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="7" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="215" splitType="Stretch">
+			<elementGroup/>
+			<elementGroup>
+				<staticText>
+					<reportElement uuid="167aec6e-b01c-4480-9e94-9de446f0c78b" x="35" y="49" width="51" height="15"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8" isBold="true" isPdfEmbedded="true"/>
+						<paragraph leftIndent="2"/>
+					</textElement>
+					<text><![CDATA[Cédula:]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="a40dc11a-cef9-4377-8f82-3bf9587f2bab" x="402" y="147" width="56" height="15"/>
+					<box rightPadding="5">
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{nrofinesdesemana}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="cc6a346d-8c89-409a-8788-55ff51972f01" x="273" y="147" width="130" height="15"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8" isBold="true" isPdfEmbedded="true"/>
+						<paragraph leftIndent="2"/>
+					</textElement>
+					<text><![CDATA[Fines de Semana Acumulados]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="eb64f3fa-3f5b-4ffc-b4a7-7b4210144f87" x="103" y="162" width="110" height="15"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8" isBold="true" isPdfEmbedded="true"/>
+						<paragraph leftIndent="2"/>
+					</textElement>
+					<text><![CDATA[Dias Descontados]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="5eaca18c-8fcf-429c-ab11-3fc6a6491331" x="133" y="49" width="120" height="15"/>
+					<box>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{documento_identidad_gtemp}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="7ddc739b-3f5d-4f9d-8569-e5e6444ff7d9" x="402" y="162" width="56" height="15"/>
+					<box rightPadding="5">
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{descuentofinesdesemana}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="c4248ad5-adb1-495d-8977-4f8cf3cf14f5" x="213" y="162" width="60" height="15"/>
+					<box rightPadding="5">
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{diasdescontados}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="db5e29cd-2b56-43b7-bb93-15a73eb6a05f" x="213" y="147" width="60" height="15"/>
+					<box rightPadding="5">
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{diasacumulados}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="64a3e43b-b321-419d-a616-5e9a91e5602a" x="35" y="79" width="81" height="15"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8" isBold="true" isPdfEmbedded="true"/>
+						<paragraph leftIndent="2"/>
+					</textElement>
+					<text><![CDATA[Fecha de Ingreso:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yy" isBlankWhenNull="true">
+					<reportElement uuid="e8ea4c74-e832-44e8-861f-7e335c2a9979" x="134" y="79" width="120" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{fecha_ingreso_asvac}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="8676f823-79c1-4012-a6c5-77b895a4820f" x="273" y="162" width="130" height="15"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8" isBold="true" isPdfEmbedded="true"/>
+						<paragraph leftIndent="2"/>
+					</textElement>
+					<text><![CDATA[Fines de Semana Descontados]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="f27e115c-39cf-4da7-9a1f-bbab5126e0ec" x="35" y="64" width="98" height="15"/>
+					<box>
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8" isBold="true" isPdfEmbedded="true"/>
+						<paragraph leftIndent="2"/>
+					</textElement>
+					<text><![CDATA[Apellidos y Nombres: ]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="9bbc70ae-fc20-458d-9376-bc06ba3e64c8" x="402" y="177" width="56" height="15"/>
+					<box rightPadding="5">
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{nrofinessemanapendientes}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="cdeda24e-ee65-4118-b80d-c3e6a3676f51" x="213" y="177" width="60" height="15"/>
+					<box rightPadding="5">
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.25"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.25"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{totaldiaspendientes}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="564b9e4f-ae5b-4609-9729-245268f9aa67" x="273" y="177" width="129" height="15"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8" isBold="true" isPdfEmbedded="true"/>
+						<paragraph leftIndent="2"/>
+					</textElement>
+					<text><![CDATA[Total de Fines de Semana]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="c0379501-a855-4d5c-b79b-502d51ecb335" x="103" y="147" width="110" height="15"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8" isBold="true" isPdfEmbedded="true"/>
+						<paragraph leftIndent="2"/>
+					</textElement>
+					<text><![CDATA[Dias Acumulados]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="da2b83cc-b870-4c1b-a329-40137657b5d7" x="134" y="64" width="272" height="15"/>
+					<box>
+						<topPen lineWidth="0.0"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.0"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nombres_apellidos}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="130348fb-7aad-49b8-b1c4-32cf883dff75" x="103" y="177" width="110" height="15"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="0.25"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.25"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="8" isBold="true" isPdfEmbedded="true"/>
+						<paragraph leftIndent="2"/>
+					</textElement>
+					<text><![CDATA[Vacaciones Por Tomar]]></text>
+				</staticText>
+			</elementGroup>
+			<staticText>
+				<reportElement uuid="5d5f0153-f0a7-4bcb-bd37-171bbb424a9a" x="103" y="127" width="355" height="20"/>
+				<box leftPadding="5">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Resumen ]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b7cda33b-d994-48f3-902c-2109d9a5927d" x="103" y="192" width="355" height="23" isRemoveLineWhenBlank="true"/>
+				<box leftPadding="3">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle" markup="styled">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{banderaCodigo}.equals("true")?"Días legales conforme Art.69 Codigo de Trabajo:  <b>" +$P{dia_extra}+"</b>":null]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="270">
+			<subreport>
+				<reportElement uuid="663e1ada-7d28-4590-9225-8c19eaade677" x="0" y="0" width="555" height="40" isPrintWhenDetailOverflows="true"/>
+				<subreportParameter name="ide_asvac">
+					<subreportParameterExpression><![CDATA[$P{ide_asvac}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="banderaCodigo">
+					<subreportParameterExpression><![CDATA[$P{banderaCodigo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_asistencia/detalleVacacion/sub_reporte_detalle_liquidacion.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement uuid="4cda6bfb-fccc-48a9-859e-f159318df1a4" positionType="Float" x="286" y="40" width="109" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vacaciones Por Gozar]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="fe8693c4-eada-4592-a259-ad1b3a14d5fd" positionType="Float" x="395" y="40" width="67" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{total}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="61c71549-e5f8-49a8-98fd-cc9d1f5b023f" positionType="Float" x="297" y="174" width="165" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_coordinador_tthh}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f5ccc612-3f66-49de-858a-d8fda219a8b5" positionType="Float" x="343" y="160" width="74" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Aprobado Por:]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="87874749-ecbf-43c0-a9d0-c5b76ff2b21c" positionType="Float" x="292" y="155" width="175" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="91917541-ed89-4dd7-8f20-3ea25442bb5d" positionType="Float" x="19" y="155" width="175" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="a74263f9-99cf-48e0-a3eb-6568c47d3ee9" positionType="Float" x="66" y="160" width="74" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Elaborado Por:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="a1d41e6f-779f-4967-8aa1-89e3c4f0acbc" positionType="Float" x="35" y="174" width="136" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_analista_tthh}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="13" splitType="Stretch">
+			<textField evaluationTime="Report">
+				<reportElement uuid="2c8d7721-0c75-4b1f-801f-afd91ca0fc23" x="515" y="0" width="40" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0dc8a81c-6675-4160-b7fa-c4805c6fdc58" x="435" y="0" width="80" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

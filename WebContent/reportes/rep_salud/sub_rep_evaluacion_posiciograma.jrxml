@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rep_evaluacion_posiciograma" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="72f715df-4995-43ad-800d-a2e3dc78d3d3">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="ide_saevp" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT  a.ide_geedp,a.ide_gtemp,a.detalle_saevp,a.fecha_evaluacion_saevp,
+f.nombre_empleado,c.ide_sapos,c.detalle_sapos,d.ide_sacal,d.calificacion_sacal
+FROM SAO_EVALUACION_POSICIOGRAMA a
+LEFT JOIN(
+SELECT ide_sadee,ide_saevp,ide_sapos,ide_sacal,observacion_sadee FROM SAO_DETALLE_EVALUACION
+)b ON b.ide_saevp=a.ide_saevp
+LEFT JOIN(
+SELECT ide_sapos,detalle_sapos FROM SAO_POSICIOGRAMA
+)c ON c.ide_sapos=b.ide_sapos
+LEFT JOIN(
+SELECT ide_sacal,calificacion_sacal FROM sao_calificacion
+)d ON d.ide_sacal=b.ide_sacal
+LEFT JOIN(
+SELECT ide_geedp,ide_gtemp,ide_sucu,ide_geare,ide_gedep,ide_gegro,ide_gecaf,ide_gepgc FROM gen_empleados_departamento_par
+)e on e.ide_geedp=a.ide_geedp
+LEFT JOIN(
+SELECT ide_gtemp,apellido_paterno_gtemp || ' '||apellido_materno_gtemp||' '||primer_nombre_gtemp||' '||
+segundo_nombre_gtemp as nombre_empleado,documento_identidad_gtemp as documento FROM gth_empleado
+)f on f.ide_gtemp=e.ide_gtemp
+WHERE a.ide_saevp=$P{ide_saevp}]]>
+	</queryString>
+	<field name="IDE_GEEDP" class="java.math.BigDecimal"/>
+	<field name="IDE_GTEMP" class="java.math.BigDecimal"/>
+	<field name="DETALLE_SAEVP" class="java.lang.String"/>
+	<field name="FECHA_EVALUACION_SAEVP" class="java.sql.Timestamp"/>
+	<field name="NOMBRE_EMPLEADO" class="java.lang.String"/>
+	<field name="IDE_SAPOS" class="java.math.BigDecimal"/>
+	<field name="DETALLE_SAPOS" class="java.lang.String"/>
+	<field name="IDE_SACAL" class="java.math.BigDecimal"/>
+	<field name="CALIFICACION_SACAL" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="38" splitType="Stretch">
+			<crosstab>
+				<reportElement uuid="34eeeb64-8bcb-4619-814a-d2ac92e359bf" x="0" y="0" width="802" height="38" isRemoveLineWhenBlank="true"/>
+				<rowGroup name="IDE_GEEDP" width="0" headerPosition="Bottom">
+					<bucket class="java.math.BigDecimal">
+						<bucketExpression><![CDATA[$F{IDE_GEEDP}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Transparent">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="DETALLE_SAPOS" height="15">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{DETALLE_SAPOS}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement uuid="044fb4c3-848a-472a-8ed9-3ffd37e7e1bf" style="Crosstab Data Text" x="0" y="0" width="107" height="15" isRemoveLineWhenBlank="true"/>
+								<textElement/>
+								<textFieldExpression><![CDATA[$V{DETALLE_SAPOS}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents/>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<columnGroup name="CALIFICACION_SACAL" height="15">
+					<bucket class="java.math.BigDecimal">
+						<bucketExpression><![CDATA[$F{CALIFICACION_SACAL}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement uuid="cb9e1d7f-b779-4d9b-b0bb-cd83a3ba995b" style="Crosstab Data Text" x="0" y="0" width="107" height="15" isRemoveLineWhenBlank="true"/>
+								<textElement/>
+								<textFieldExpression><![CDATA[$V{CALIFICACION_SACAL}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents/>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="IDE_GEEDPMeasure" class="java.lang.Integer" calculation="Count">
+					<measureExpression><![CDATA[$F{IDE_GEEDP}]]></measureExpression>
+				</measure>
+				<crosstabCell width="107" height="0">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="IDE_GEEDP">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="c3bc57b5-79de-4dd4-b8ce-dd3147ecb28a" style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{IDE_GEEDPMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" columnTotalGroup="DETALLE_SAPOS">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="db0191a6-49c6-40a3-bce5-e5be852445bf" style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{IDE_GEEDPMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="IDE_GEEDP" columnTotalGroup="DETALLE_SAPOS">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="69db6b67-6e69-41a2-8b9e-e5a77033df49" style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{IDE_GEEDPMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" columnTotalGroup="CALIFICACION_SACAL">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="f8b53c9c-4fac-40b9-a857-b42647b0e67b" style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{IDE_GEEDPMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="IDE_GEEDP" columnTotalGroup="CALIFICACION_SACAL">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="66c0d0ec-a238-4942-b062-9ded6a45482d" style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{IDE_GEEDPMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>

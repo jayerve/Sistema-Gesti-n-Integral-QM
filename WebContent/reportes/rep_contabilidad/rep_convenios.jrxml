@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_convenios" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4f88d28a-8afc-4abc-95b3-23e811e4bb26">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="753"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Table Dataset 1" uuid="2eca6681-4e68-42e8-bf4d-1749889572f0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<parameter name="ide_usua" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="ide_coest" class="java.lang.Integer"/>
+	<parameter name="ide_cotie" class="java.lang.Integer"/>
+	<parameter name="ide_geins" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[SELECT convenio.ide_cocon, institucion.ide_geins, estado.ide_coest, tipconvenio.ide_cotie,tipconvenio.detalle_cotie, convenio.con_ide_cocon, institucion.detalle_geins, estado.detalle_coest, tipconvenio.detalle_cotie, convenio.detalle_contrato_cocon,
+convenio.fecha_inicio_cocon,(responsable. primer_nombre_corec||' '|| responsable.segundo_nombre_corec||' '||responsable.apellido_paterno_corec||' '||responsable. apellido_materno_corec
+) as responsable_convenio,
+convenio.fecha_fin_cocon,convenio.num_contrato_cocon, convenio.valor_cocon, convenio.razon_anulado_cocon, convenio.fecha_anulado_cocon,
+tipconvenio.ide_cotie, tipconvenio.detalle_cotie,
+
+CASE WHEN activo_cocon = true THEN 'activo' ELSE 'inactivo' END AS activo_convenio,
+CASE WHEN activo_cotie = true THEN 'activo' ELSE 'inactivo' END AS activo_tipo_convenio,
+CASE WHEN activo_corec = true THEN 'activo' ELSE 'inactivo' END AS activo_responsable_conv,
+CASE WHEN activo_coest = true THEN 'activo' ELSE 'inactivo' END AS activo_estado,
+CASE WHEN activo_geins = true THEN 'activo' ELSE 'inactivo' END AS activo_institucion
+
+FROM cont_convenio AS convenio, cont_tipo_convenio AS tipconvenio, gen_institucion as institucion, cont_estado as estado,cont_responsable_convenio as responsable
+WHERE convenio.ide_cotie = tipconvenio.ide_cotie AND convenio.ide_geins = institucion.ide_geins and convenio.ide_coest = estado.ide_coest
+AND responsable.ide_cocon = convenio.ide_cocon
+AND responsable.activo_corec = true
+AND convenio.activo_cocon = true
+AND estado.activo_coest = true
+AND institucion.activo_geins = true
+AND responsable.activo_corec = true
+AND convenio.ide_coest = $P{ide_coest} AND convenio.ide_cotie =$P{ide_cotie} AND convenio.ide_geins = $P{ide_geins}]]>
+	</queryString>
+	<field name="ide_cocon" class="java.lang.Long">
+		<fieldDescription><![CDATA[ide_cocon]]></fieldDescription>
+	</field>
+	<field name="ide_geins" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_institucion, valor entero generado. Ademas aqui se encuentran las instituciones con las que se realizo el convenio.]]></fieldDescription>
+	</field>
+	<field name="ide_coest" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla cont_estado.]]></fieldDescription>
+	</field>
+	<field name="ide_cotie" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla cont_tipo_convenio.]]></fieldDescription>
+	</field>
+	<field name="detalle_cotie" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del tipo de convenio, ejemplo: Convenio Empresarialm Institucional, Internacioanles, etc.]]></fieldDescription>
+	</field>
+	<field name="con_ide_cocon" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla cont_convenio, es recursiva ya que puede tener un convenio inicial, y partir de este tener renovaciones.]]></fieldDescription>
+	</field>
+	<field name="detalle_geins" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre de la institucion, ejemplo: BANCO CENTRAL DEL ECUADOR, UNIDAD EDUCATIVA MANUELA CAÑIZARES, etc.]]></fieldDescription>
+	</field>
+	<field name="detalle_coest" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_coest]]></fieldDescription>
+	</field>
+	<field name="detalle_contrato_cocon" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define la descripcion del convenio.]]></fieldDescription>
+	</field>
+	<field name="fecha_inicio_cocon" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha de inicio del convenio.]]></fieldDescription>
+	</field>
+	<field name="responsable_convenio" class="java.lang.String"/>
+	<field name="fecha_fin_cocon" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha cuando finaliza el convenio.]]></fieldDescription>
+	</field>
+	<field name="num_contrato_cocon" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el numero del contrato del convenio.]]></fieldDescription>
+	</field>
+	<field name="valor_cocon" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el valor o monto del convenio.]]></fieldDescription>
+	</field>
+	<field name="razon_anulado_cocon" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define la razon de anulacion del convenio, en caso de darse el hecho.]]></fieldDescription>
+	</field>
+	<field name="fecha_anulado_cocon" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha de anulacion del convenio en caso de darse el hecho.]]></fieldDescription>
+	</field>
+	<field name="activo_convenio" class="java.lang.String"/>
+	<field name="activo_tipo_convenio" class="java.lang.String"/>
+	<field name="activo_responsable_conv" class="java.lang.String"/>
+	<field name="activo_estado" class="java.lang.String"/>
+	<field name="activo_institucion" class="java.lang.String"/>
+	<group name="convenio">
+		<groupExpression><![CDATA[$F{ide_cocon}]]></groupExpression>
+		<groupHeader>
+			<band height="97">
+				<staticText>
+					<reportElement uuid="1b60c45a-b023-40f1-a10b-85f95967aa55" x="10" y="7" width="40" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Código:]]></text>
+				</staticText>
+				<line>
+					<reportElement uuid="3e831e29-084a-4fc5-b648-dbaae1066511" x="0" y="3" width="555" height="1"/>
+				</line>
+				<line>
+					<reportElement uuid="0b7c0636-d98c-4043-8e1c-665ba71c94e4" x="0" y="65" width="555" height="1"/>
+				</line>
+				<textField>
+					<reportElement uuid="66c72cd5-751d-4c8d-8d80-6559d99865d1" x="61" y="7" width="20" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{ide_cocon}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="f32cda8f-562f-4622-87c4-d1a405a205a3" x="177" y="7" width="91" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Detalle Convenio:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="86e97755-bc8d-4c3e-b2a6-61c459cc60de" x="274" y="7" width="141" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{detalle_contrato_cocon}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="eaa6d46a-da09-40f1-b0dc-2bee0beabb47" x="427" y="7" width="38" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Activo:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="60168e32-878d-4fa8-a8c7-0e4de97fc071" x="469" y="8" width="37" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{activo_convenio}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="b5c25c8c-bd49-4142-bd1a-3c3294127a5a" x="3" y="72" width="78" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Nro.Contrato.]]></text>
+				</staticText>
+				<line>
+					<reportElement uuid="0919b747-e1eb-456a-8b96-c28c4aeb0ec7" x="0" y="93" width="555" height="1"/>
+				</line>
+				<staticText>
+					<reportElement uuid="ecd2d70a-0518-4615-a757-38def2a1a989" x="77" y="73" width="76" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Valor Contrato.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="e3cfeada-1933-4e0a-ae8c-a9f782c5d107" x="163" y="72" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Fecha Inicio.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="68420062-e9e4-4203-bdbd-18f784ce6d62" x="266" y="72" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Fecha Fin.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="cb8d15e8-0752-443d-a155-e0b2c38de34b" x="369" y="73" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Fecha Anulado.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="d981ac18-37bd-4d1a-801e-6d54703bd67d" x="469" y="73" width="76" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Razón anulado.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="29b5224b-46ac-4720-bf12-dd3eb9672588" x="4" y="34" width="174" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Nombre Resposable del Contrato:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="84dfb092-7f5e-4758-bd16-196f459a1108" x="177" y="34" width="238" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{responsable_convenio}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="50"/>
+		</groupFooter>
+	</group>
+	<group name="estado">
+		<groupExpression><![CDATA[$F{ide_coest}]]></groupExpression>
+		<groupHeader>
+			<band height="89">
+				<textField>
+					<reportElement uuid="5daa293d-9e61-46c3-ba9e-63ca0aaf076c" x="13" y="1" width="48" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{num_contrato_cocon}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="ffec62be-634a-408c-9483-8818091af0aa" x="71" y="0" width="82" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{valor_cocon}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="1772d1c2-3dff-48cb-9dee-d2ce68b71f7b" x="157" y="1" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{fecha_inicio_cocon}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="6f9bec87-6e94-4209-9960-e5ee3287f225" x="260" y="1" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{fecha_fin_cocon}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="5727d2be-7b81-4d97-8db6-d38b89d98d8e" x="369" y="1" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{fecha_anulado_cocon}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="58b00192-d23b-4abc-9db9-9ef217c2774a" x="469" y="1" width="86" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{razon_anulado_cocon}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="0018e9fe-3207-472a-b833-563f510f438e" x="6" y="68" width="40" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Código:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="72b1e801-e0a1-41b7-847e-afada486fe58" x="50" y="68" width="28" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{ide_coest}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="902b09fb-a5fd-401b-aee5-0afaa492fa57" x="253" y="69" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{detalle_coest}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="23b6c696-2f79-402f-88d8-2a13e67a257e" x="153" y="69" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Detalle Estado:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="42c8a7ec-cf49-41a4-b4cb-80c3f662df98" x="424" y="69" width="39" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Activo.]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="5a86e361-00d8-4daf-9e2c-43905a24398f" x="463" y="69" width="44" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{activo_estado}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="50"/>
+		</groupFooter>
+	</group>
+	<group name="institucion">
+		<groupExpression><![CDATA[$F{ide_geins}]]></groupExpression>
+		<groupHeader>
+			<band height="50">
+				<staticText>
+					<reportElement uuid="a3db9ca2-2eee-4a1e-b467-0430d04c90bc" x="6" y="28" width="40" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Código:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="aa8fd54c-7080-4c7f-b2f1-bc9fe96d76cc" x="154" y="27" width="100" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Detalle Institución:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="69e41e42-8c7f-438e-bda2-1a090d997805" x="424" y="27" width="39" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Activo.]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="c7c82c9d-e368-435b-a44c-280a0997c948" x="46" y="28" width="49" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{ide_geins}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="285c8992-b113-419e-87df-09897113ef7f" x="256" y="27" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{detalle_geins}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="d8e3a2bb-c552-4e24-bb49-c784413663cf" x="473" y="27" width="34" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{activo_institucion}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="50"/>
+		</groupFooter>
+	</group>
+	<group name="tipo_convenio">
+		<groupExpression><![CDATA[$F{ide_cotie}]]></groupExpression>
+		<groupHeader>
+			<band height="50">
+				<staticText>
+					<reportElement uuid="58771161-d31c-4ef4-b015-58e339a20cb7" x="5" y="30" width="41" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Código:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="ea0b1236-cd12-4598-94e3-ee19908fad99" x="49" y="30" width="46" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{ide_cotie}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="271426cd-baad-4e82-b5e1-12417e07e24a" x="141" y="30" width="118" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Detalle Tipo Convenio:]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="01cbb33a-bd89-430a-9d03-193d3ed352d0" x="257" y="30" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{detalle_cotie}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="e888fba6-c559-4c51-8576-d2dc6e205f0d" x="415" y="30" width="39" height="20"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Activo.]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="131a8ccb-e49f-4d62-bfa8-950cca32c93f" x="460" y="28" width="46" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{activo_tipo_convenio}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="50"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="3a3418cc-c14f-4f1f-be87-df8e6afa8ebd" x="0" y="0" width="555" height="79"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{ide_usua}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="1" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

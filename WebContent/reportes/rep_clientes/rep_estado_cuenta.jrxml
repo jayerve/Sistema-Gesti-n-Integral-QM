@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_estado_cuenta" language="groovy" pageWidth="595" pageHeight="842" columnWidth="482" leftMargin="63" rightMargin="50" topMargin="50" bottomMargin="0" uuid="7cff85d4-06f0-45eb-a3e3-1dff7de44a9f">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="296"/>
+	<parameter name="p_total_pagar" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_fecha_emision" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_razon_social" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_direccion" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_ruc" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_ciudad" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select secuencial_fafac,coalesce(total_fafac,0)-coalesce(valor_cobro,0) as saldo,
+                 coalesce(interes_generado_fanod,0) as interes,
+                 (coalesce(total_fafac,0)-coalesce(valor_cobro,0)) + coalesce(interes_generado_fanod,0) as total,
+                 fecha_transaccion_fafac,fecha_vencimiento_fafac
+
+                 from rec_clientes cli
+
+                 left join fac_factura fac on fac.ide_recli=cli.ide_recli
+
+                 left join ( select nd.ide_fanod,nd.ide_recli,dnd.ide_fafac,detalle_fenod,interes_generado_fanod,fecha_emision_fanod
+                   from fac_nota_debito nd, fac_detalle_debito dnd
+                   where nd.ide_fanod=dnd.ide_fanod and ide_coest = (select cast(valor_para as integer) from sis_parametros where nom_para ='p_factura_emitido')
+                   ) c on c.ide_fafac=fac.ide_fafac and c.ide_recli=fac.ide_recli
+
+                 left join (select ide_fafac, sum(coalesce(valor_cobro_facob,0)+coalesce(valor_cobro_iva_facob,0)) as valor_cobro from fac_cobro group by ide_fafac) d on d.ide_fafac=fac.ide_fafac
+
+                 where fac.ide_coest in ((select cast(valor_para as integer) from sis_parametros where nom_para ='p_factura_emitido'),24,30)
+                and ruc_comercial_recli = $P{p_ruc}
+                order by fecha_transaccion_fafac]]>
+	</queryString>
+	<field name="secuencial_fafac" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el numero secuencial de la factura.]]></fieldDescription>
+	</field>
+	<field name="saldo" class="java.math.BigDecimal"/>
+	<field name="interes" class="java.math.BigDecimal"/>
+	<field name="total" class="java.math.BigDecimal"/>
+	<field name="fecha_transaccion_fafac" class="java.sql.Date"/>
+	<field name="fecha_vencimiento_fafac" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha de vencimiento de la factura.]]></fieldDescription>
+	</field>
+	<title>
+		<band height="149" splitType="Stretch">
+			<image scaleImage="RealSize">
+				<reportElement uuid="4116195a-8d8b-4225-bba8-2875a4205d48" x="0" y="0" width="482" height="144"/>
+				<imageExpression><![CDATA["C:\\proyecto\\sampu\\web\\upload\\estado_cuenta\\cabecera.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement uuid="81e2e079-fe10-4a66-9bfe-f04632d3938a" x="368" y="108" width="102" height="21"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="14" isBold="true" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_total_pagar} + " USD"]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd MMMMM yyyy">
+				<reportElement uuid="e3a4bfd7-cdcc-481b-a248-3a4a195bf2cb" x="45" y="38" width="154" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_fecha_emision}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="44da813c-57f4-4d3a-b573-f98e9326d012" x="11" y="80" width="311" height="15" forecolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_razon_social}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8c676b7a-f201-42e4-a855-7ba0db7dded9" x="66" y="100" width="224" height="12"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Century Gothic" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_direccion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a18ff62d-d5f2-4248-b354-0feefeeb454d" x="58" y="113" width="117" height="12"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Century Gothic" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_ruc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5db0fcb7-8175-42f9-a216-6ebb2ad16f27" x="55" y="124" width="87" height="12"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="Century Gothic" size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_ciudad}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="42">
+			<image scaleImage="RealSize">
+				<reportElement uuid="36ea296f-1736-42c1-8275-23d83447baff" x="0" y="0" width="482" height="41"/>
+				<imageExpression><![CDATA["C:\\proyecto\\sampu\\web\\upload\\estado_cuenta\\cabecera_detalle.png"]]></imageExpression>
+			</image>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="27" splitType="Stretch">
+			<image scaleImage="RealSize">
+				<reportElement uuid="0c79f70f-8c11-46ad-abcf-22d299df2fdb" x="-1" y="21" width="484" height="5"/>
+				<imageExpression><![CDATA["C:\\proyecto\\sampu\\web\\upload\\estado_cuenta\\detalle_linea.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement uuid="51df4adc-6f25-4954-a548-51735d1918d2" x="0" y="1" width="107" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{secuencial_fafac}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="03cbbde4-239d-47bf-aec0-c6e52e307545" x="107" y="1" width="50" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{saldo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="855a5d21-0445-42f6-9de0-29f804df17f5" x="176" y="1" width="42" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{interes}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0527a172-5896-4407-93ab-1b36b0ac435b" x="218" y="1" width="60" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="dd8f59cb-dd00-4892-bab9-a1de12a05a96" x="302" y="1" width="80" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_transaccion_fafac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy-MM-dd">
+				<reportElement uuid="49e22bdd-af5d-4067-9bc0-4ebc96e2e9a3" x="397" y="1" width="80" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_vencimiento_fafac}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="62" splitType="Stretch">
+			<image scaleImage="RealSize">
+				<reportElement uuid="3648b767-9a4f-409f-9ed6-37e59e956a04" x="0" y="3" width="482" height="37"/>
+				<imageExpression><![CDATA["C:\\proyecto\\sampu\\web\\upload\\estado_cuenta\\footerPie.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement uuid="c6eb23ee-8071-4d3a-b0dd-46898c9bf770" x="1" y="41" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Century Gothic" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["PÁGINA "+$V{PAGE_NUMBER}+" DE"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="1d249bf8-337b-441d-a503-983cbb7fcc44" x="81" y="41" width="40" height="20"/>
+				<textElement>
+					<font fontName="Century Gothic" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+	<summary>
+		<band height="214">
+			<image scaleImage="RealSize">
+				<reportElement uuid="183de629-179c-43eb-b04e-09b824e0736c" x="0" y="18" width="482" height="61"/>
+				<imageExpression><![CDATA["C:\\proyecto\\sampu\\web\\upload\\estado_cuenta\\summary1.png"]]></imageExpression>
+			</image>
+			<image scaleImage="RealSize">
+				<reportElement uuid="20523f40-b424-4556-a086-af54a5353143" x="0" y="82" width="482" height="45"/>
+				<imageExpression><![CDATA["C:\\proyecto\\sampu\\web\\upload\\estado_cuenta\\summary2.png"]]></imageExpression>
+			</image>
+			<image scaleImage="RealSize">
+				<reportElement uuid="0d85f224-dcdd-4dde-9d8e-f0b59c5daefd" x="1" y="130" width="482" height="74"/>
+				<imageExpression><![CDATA["C:\\proyecto\\sampu\\web\\upload\\estado_cuenta\\summary3.png"]]></imageExpression>
+			</image>
+		</band>
+	</summary>
+</jasperReport>

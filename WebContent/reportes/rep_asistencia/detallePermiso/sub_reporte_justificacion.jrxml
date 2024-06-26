@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_reporte_justificacion" language="groovy" pageWidth="570" pageHeight="842" columnWidth="570" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="d962bf6e-684c-41a2-92b0-20bd571c5b22">
+	<property name="ireport.zoom" value="1.3310000000000004"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_aspvh" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT ide_aspej, ide_aspvh, detalle_aspej, fecha_aspej,
+substring(archivo_aspej,18,length(archivo_aspej)) as archivo_aspej,
+       activo_aspej, usuario_ingre, fecha_ingre, usuario_actua, fecha_actua,
+       hora_ingre, hora_actua
+  FROM asi_permiso_justificacion
+where ide_aspvh =$P{ide_aspvh}]]>
+	</queryString>
+	<field name="ide_aspej" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla asi_permiso_justificacion, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_aspvh" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla asi_permisos_vacacion_hext, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="detalle_aspej" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el detalle de la jsutificacion.]]></fieldDescription>
+	</field>
+	<field name="fecha_aspej" class="java.sql.Date">
+		<fieldDescription><![CDATA[Estecampo define la fecha de entrega de la justificacion]]></fieldDescription>
+	</field>
+	<field name="archivo_aspej" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el path del archivo como anexo d ela justificacion.]]></fieldDescription>
+	</field>
+	<field name="activo_aspej" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[Este campo define si el registro se encuentra activo o no para su transaccionalidad, 1 SI / 0 No]]></fieldDescription>
+	</field>
+	<field name="usuario_ingre" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el ultimo usuario que realiza la actualizacion del registro.]]></fieldDescription>
+	</field>
+	<field name="fecha_ingre" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha que se realizo el ingreso por primera ves el registro.]]></fieldDescription>
+	</field>
+	<field name="usuario_actua" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el ultimo usuario que realiza la actualizacion del registro.]]></fieldDescription>
+	</field>
+	<field name="fecha_actua" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la ultima fecha que realiza la actualizacion del registro.]]></fieldDescription>
+	</field>
+	<field name="hora_ingre" class="java.sql.Time">
+		<fieldDescription><![CDATA[Este campo define la ultima hora que el usuario realiza la actualizacion del registro.]]></fieldDescription>
+	</field>
+	<field name="hora_actua" class="java.sql.Time">
+		<fieldDescription><![CDATA[Este campo define la hora que se realizo el ingreso por primera ves el registro.]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="45" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="6bdca11e-c684-4400-aabc-a5e1c30c8bae" x="0" y="15" width="555" height="20" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_aspej}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="1675b4ca-87e5-4803-ba55-908e36722b40" x="104" y="35" width="100" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_aspej}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="651d849e-6369-494d-9fd0-6156b5ee6f2e" x="0" y="35" width="104" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="441f1aa9-85bf-4cf4-8756-64b767f7b867" x="299" y="35" width="256" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{archivo_aspej}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="0f880fd6-8d91-48e3-8354-742818299efa" x="204" y="35" width="95" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ARCHIVO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="be066bf8-1434-4658-9d16-09fac51c5ef5" x="0" y="0" width="555" height="15"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[5. DETALLE CERTIFICADO]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

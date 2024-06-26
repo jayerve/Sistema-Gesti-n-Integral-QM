@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_datos_anticipo" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="852c4d6a-0081-4cb4-999b-90b0ee43d843">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="ACTIVO_NRANT" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IDE_NRANT" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_firma_resp_solicitud_debito" class="java.lang.String"/>
+	<parameter name="IDE_GTEMP" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_cuota_mensual" class="java.lang.String"/>
+	<parameter name="p_valores" class="java.lang.String"/>
+	<parameter name="IDE_NRANI" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_coordinador_tthh" class="java.lang.String"/>
+	<parameter name="p_analista_tthh" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+ANT.IDE_NRANT,
+ EDP.IDE_GEEDP,
+EDP.IDE_GTEMP,
+ANT.MONTO_SOLICITADO_NRANT AS MONTO,
+EDP.RMU_GEEDP AS RMU,
+CAP.NRO_MES_NRCAP AS PLAZO,
+'QUITO' as LUGAR,
+ANT.FECHA_SOLICITUD_NRANT AS FECHA,
+MAN.DETALLE_NRMOA AS MOTIVO,
+ANT.OBSERVACION_NRANT
+
+
+FROM NRH_ANTICIPO ANT
+
+LEFT JOIN NRH_CAPACIDAD_PAGO CAP ON CAP.IDE_NRANT=ANT.IDE_NRANT
+LEFT JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR EDP ON EDP.IDE_GEEDP=ANT.IDE_GEEDP
+LEFT JOIN NRH_MOTIVO_ANTICIPO MAN ON MAN.IDE_NRMOA=ANT.IDE_NRMOA
+left join SIS_SUCURSAL suc on suc.ide_sucu=edp.ide_sucu
+left join GEN_DIVISION_POLITICA dp on dp.ide_gedip=suc.ide_gedip
+WHERE ANT.IDE_NRANT =$P{IDE_NRANT}]]>
+	</queryString>
+	<field name="ide_nrant" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla nrh_anticipo, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_geedp" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_empleados_departamento_par, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_gtemp" class="java.lang.Integer"/>
+	<field name="monto" class="java.math.BigDecimal"/>
+	<field name="rmu" class="java.math.BigDecimal"/>
+	<field name="plazo" class="java.lang.Integer"/>
+	<field name="lugar" class="java.lang.String"/>
+	<field name="fecha" class="java.sql.Date"/>
+	<field name="motivo" class="java.lang.String"/>
+	<field name="observacion_nrant" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el detalle de la resolucion.]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="37" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="7ef617b6-546b-42bf-9d03-8f3a01b334a9" x="0" y="0" width="555" height="37"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="16" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="387e1e3e-1290-4e83-aa56-24deba556e23" x="0" y="0" width="555" height="16"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[1.- DATOS DEL ANTICIPO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="49" splitType="Stretch">
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="18f5608f-2cc8-4d42-a569-02b3d60bab0b" x="82" y="0" width="63" height="10"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isItalic="false"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{monto}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="4cab519d-4f3c-460e-994b-72de6fe23df7" x="459" y="0" width="96" height="10"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="64a3e43b-b321-419d-a616-5e9a91e5602a" x="0" y="0" width="82" height="10"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="false" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[MONTO SOLICITADO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="40590f73-4ee1-4cf7-a711-cf561cc1d94c" x="269" y="0" width="71" height="10"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="false" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[LUGAR Y FECHA:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="715cc9a7-a185-4b58-9200-553ccfe11514" x="210" y="0" width="59" height="10"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isItalic="false"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{plazo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="61f00386-1d87-4d03-b75f-b1e4e6e9e20b" x="145" y="0" width="67" height="10"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="false" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[PLAZO (meses):]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6cc641d8-880e-4a6e-b5a4-03f1cd7ace6a" positionType="Float" x="0" y="10" width="145" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false" isPdfEmbedded="true"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[MOTIVO DEL ANTICIPO:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="7381ce8c-f046-4e95-9a6f-baccb4b4cb5b" positionType="Float" x="145" y="10" width="410" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{motivo}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement uuid="1ed5bf29-323a-4bac-9611-69b5c017d2f8" positionType="Float" x="0" y="20" width="555" height="25" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+				<subreportParameter name="IDE_NRANT">
+					<subreportParameterExpression><![CDATA[$P{IDE_NRANT}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_anticipos/sub_rep_datos_personales.jasper"]]></subreportExpression>
+			</subreport>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="79e66afc-7c3f-41f0-8890-8dd602bc974d" x="331" y="0" width="128" height="10"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{lugar}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="30">
+			<subreport>
+				<reportElement uuid="eeedbbf8-786c-478b-9dd5-f65760c26704" positionType="Float" x="0" y="0" width="555" height="25" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+				<subreportParameter name="IDE_NRANT">
+					<subreportParameterExpression><![CDATA[$P{IDE_NRANT}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_anticipos/sub_rep_garante.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="29">
+			<subreport>
+				<reportElement uuid="d8f885c7-a51e-4669-a992-4789eff1bdd2" positionType="Float" x="0" y="0" width="555" height="25" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+				<subreportParameter name="p_coordinador_tthh">
+					<subreportParameterExpression><![CDATA[$P{p_coordinador_tthh}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ACTIVO_NRANT">
+					<subreportParameterExpression><![CDATA[$P{ACTIVO_NRANT}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="usuario">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IDE_NRANT">
+					<subreportParameterExpression><![CDATA[$P{IDE_NRANT}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_analista_tthh">
+					<subreportParameterExpression><![CDATA[$P{p_analista_tthh}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IDE_NRANI">
+					<subreportParameterExpression><![CDATA[$P{IDE_NRANI}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IDE_GTEMP">
+					<subreportParameterExpression><![CDATA[$P{IDE_GTEMP}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_valores">
+					<subreportParameterExpression><![CDATA[$P{p_valores}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_cuota_mensual">
+					<subreportParameterExpression><![CDATA[$P{p_cuota_mensual}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_firma_resp_solicitud_debito">
+					<subreportParameterExpression><![CDATA[$P{p_firma_resp_solicitud_debito}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_anticipos/rep_autorizacion_debito_anticipos.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="112" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="c6d15c33-1d8a-407d-9d03-a6b70cf31567" x="0" y="0" width="554" height="16"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[6.- COORDINACION FINANCIERA (ANALISIS DE DISPONIBILIDAD DE RECURSOS)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="91ad60f5-5f1d-430e-8053-e2a153440a63" x="80" y="20" width="379" height="13"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="7" isBold="false" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[Revisado la disponibilidad de recursos de la EMGIRS-EP, la Coordinación Financiera certifica que cuenta con:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b8ed37f1-34b3-4e32-a70b-14fd91e6523a" x="109" y="37" width="157" height="13"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="7" isBold="false" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[Cuenta con  recursos económicos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fee8d654-1b15-4400-a21b-e670aa16ce0b" x="308" y="37" width="157" height="13"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="7" isBold="false" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[No cuenta con  recursos económicos]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement uuid="7c62324e-d7a6-4b18-b6c1-87ac04a42d73" x="83" y="33" width="25" height="20"/>
+			</rectangle>
+			<rectangle>
+				<reportElement uuid="85c4f12c-d955-4889-a4bb-eef780c572d8" x="281" y="33" width="25" height="20"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="f0b70dd0-59b0-4562-be6f-fc6fa55e8e84" positionType="Float" x="180" y="92" width="179" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[COORDINADOR FINANCIERO]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="977187b3-72b1-40df-a441-2815bdfdd75b" positionType="Float" x="210" y="91" width="120" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="977187b3-72b1-40df-a441-2815bdfdd75b" positionType="Float" x="0" y="111" width="555" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="7b52a07a-e569-4f1c-99ae-f8891a445807" x="0" y="16" width="1" height="96"/>
+			</line>
+			<line>
+				<reportElement uuid="7b52a07a-e569-4f1c-99ae-f8891a445807" x="554" y="15" width="1" height="96"/>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

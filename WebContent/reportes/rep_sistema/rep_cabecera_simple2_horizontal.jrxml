@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="0" bottomMargin="0" uuid="1db0eac9-51a2-4883-86a3-aa5c1e4fb0da">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="53"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:/eclipse_ERP/eclipse-workspace/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_usua" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from SIS_EMPRESA empresa,SIS_SUCURSAL sucursal
+left join SIS_USUARIO_SUCURSAL usuario_sucursal on USUARIO_SUCURSAL.IDE_SUCU=SUCURSAL.IDE_SUCU
+left join SIS_USUARIO usuario on USUARIO.IDE_USUA=USUARIO_SUCURSAL.IDE_USUA
+where SUCURSAL.IDE_EMPR=$P{ide_empr}
+and SUCURSAL.IDE_SUCU=$P{ide_sucu}
+and USUARIO_SUCURSAL.IDE_USUA=$P{ide_usua}]]>
+	</queryString>
+	<field name="ide_empr" class="java.lang.Integer"/>
+	<field name="nom_empr" class="java.lang.String">
+		<fieldDescription><![CDATA[nom_empr]]></fieldDescription>
+	</field>
+	<field name="contacto_empr" class="java.lang.String">
+		<fieldDescription><![CDATA[contacto_empr]]></fieldDescription>
+	</field>
+	<field name="representante_empr" class="java.lang.String">
+		<fieldDescription><![CDATA[representante_empr]]></fieldDescription>
+	</field>
+	<field name="nom_corto_empr" class="java.lang.String">
+		<fieldDescription><![CDATA[nom_corto_empr]]></fieldDescription>
+	</field>
+	<field name="mail_empr" class="java.lang.String">
+		<fieldDescription><![CDATA[mail_empr]]></fieldDescription>
+	</field>
+	<field name="pagina_empr" class="java.lang.String">
+		<fieldDescription><![CDATA[pagina_empr]]></fieldDescription>
+	</field>
+	<field name="identificacion_empr" class="java.lang.String">
+		<fieldDescription><![CDATA[identificacion_empr]]></fieldDescription>
+	</field>
+	<field name="direccion_empr" class="java.lang.String">
+		<fieldDescription><![CDATA[direccion_empr]]></fieldDescription>
+	</field>
+	<field name="telefono_empr" class="java.lang.String">
+		<fieldDescription><![CDATA[telefono_empr]]></fieldDescription>
+	</field>
+	<field name="logo_empr" class="java.lang.String">
+		<fieldDescription><![CDATA[logo_empr]]></fieldDescription>
+	</field>
+	<field name="usuario_ingre" class="java.lang.String"/>
+	<field name="fecha_ingre" class="java.sql.Date"/>
+	<field name="usuario_actua" class="java.lang.String"/>
+	<field name="fecha_actua" class="java.sql.Date"/>
+	<field name="hora_ingre" class="java.sql.Time"/>
+	<field name="hora_actua" class="java.sql.Time"/>
+	<field name="ide_sucu" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_sucu]]></fieldDescription>
+	</field>
+	<field name="ide_gedip" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_gedip]]></fieldDescription>
+	</field>
+	<field name="ide_sbofi" class="java.lang.Integer"/>
+	<field name="nom_sucu" class="java.lang.String">
+		<fieldDescription><![CDATA[nom_sucu]]></fieldDescription>
+	</field>
+	<field name="telefonos_sucu" class="java.lang.String">
+		<fieldDescription><![CDATA[telefonos_sucu]]></fieldDescription>
+	</field>
+	<field name="direccion_sucu" class="java.lang.String">
+		<fieldDescription><![CDATA[direccion_sucu]]></fieldDescription>
+	</field>
+	<field name="contacto_sucu" class="java.lang.String">
+		<fieldDescription><![CDATA[contacto_sucu]]></fieldDescription>
+	</field>
+	<field name="activo_sucu" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[Este campo define si el registro se encuentra activo o no para su transaccionalidad, 1 SI / 0 No]]></fieldDescription>
+	</field>
+	<field name="ide_ussu" class="java.lang.Integer"/>
+	<field name="sis_ide_sucu" class="java.lang.Integer"/>
+	<field name="ide_usua" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_usua]]></fieldDescription>
+	</field>
+	<field name="ide_perf" class="java.lang.Integer"/>
+	<field name="ide_gtemp" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gth_empleado, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="nom_usua" class="java.lang.String">
+		<fieldDescription><![CDATA[nom_usua]]></fieldDescription>
+	</field>
+	<field name="nick_usua" class="java.lang.String">
+		<fieldDescription><![CDATA[nick_usua]]></fieldDescription>
+	</field>
+	<field name="mail_usua" class="java.lang.String">
+		<fieldDescription><![CDATA[mail_usua]]></fieldDescription>
+	</field>
+	<field name="fecha_reg_usua" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_reg_usua]]></fieldDescription>
+	</field>
+	<field name="fecha_caduc_usua" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_caduc_usua]]></fieldDescription>
+	</field>
+	<field name="activo_usua" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[Este campo define si el anticipo tiene o no abono.]]></fieldDescription>
+	</field>
+	<field name="tema_usua" class="java.lang.String">
+		<fieldDescription><![CDATA[tema_usua]]></fieldDescription>
+	</field>
+	<field name="bloqueado_usua" class="java.lang.Boolean"/>
+	<field name="cambia_clave_usua" class="java.lang.Boolean"/>
+	<title>
+		<band height="80" splitType="Stretch">
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement uuid="d5c00b06-65f2-4781-b061-08710acdf763" x="0" y="11" width="117" height="44"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+$F{logo_empr}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement uuid="00503b86-f390-4a05-aded-2a2c7baa396d" x="0" y="53" width="117" height="10"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="false" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{direccion_empr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f741c9dd-ddd3-413b-8a5c-6dda48632717" x="0" y="63" width="117" height="10"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="false" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Teléfono: "+$F{telefono_empr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="50b64175-d8ce-45f9-913c-8d1dbe5e25f1" x="117" y="11" width="589" height="62"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true" pdfFontName="Times-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{titulo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a84f382d-c899-48fb-8389-a4dfbcc867fc" x="737" y="11" width="65" height="13"/>
+				<textElement>
+					<font size="8" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nick_usua}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="323643ec-ffd5-428f-8e4b-5d779ae00194" x="706" y="11" width="31" height="13"/>
+				<textElement>
+					<font size="8" isBold="false" pdfFontName="Times-Roman"/>
+				</textElement>
+				<text><![CDATA[Usuario:]]></text>
+			</staticText>
+		</band>
+	</title>
+</jasperReport>

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_pagare" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0361d88c-697a-4be3-9ca9-af54be246ef7">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="311"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["D:\\workspace\\biess\\WebContent\\reportes\\rep_gestion\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="IDE_NRANT" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_monto_letras" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT a.IDE_NRANT,c.IDE_GTEMP,c.EMPLEADO,c.DOCUMENTO,
+a.FECHA_APROBACION_NRANT AS FECHA_APROBACION,
+a.FECHA_VENCIMIENTO_NRANT AS FECHA_VENCIMIENTO,
+a.MONTO_APROBADO_NRANT,
+g.NOM_SUCU,
+e.DIRECCION_EMPLEADO,
+d.GARANTE,
+d.DOCUMENTO_GARANTE,
+d.DIRECCION_GARANTE
+FROM NRH_ANTICIPO a
+LEFT JOIN (
+select b.ide_geedp,EMPLEADO,DOCUMENTO,ide_sucu,a.ide_gtemp
+from (
+SELECT IDE_GTEMP,APELLIDO_PATERNO_GTEMP ||' '|| APELLIDO_MATERNO_GTEMP ||' '|| PRIMER_NOMBRE_GTEMP||' '|| SEGUNDO_NOMBRE_GTEMP AS EMPLEADO,DOCUMENTO_IDENTIDAD_GTEMP AS DOCUMENTO FROM GTH_EMPLEADO
+) a, (
+SELECT IDE_GEEDP,IDE_GTEMP,IDE_SUCU FROM GEN_EMPLEADOS_DEPARTAMENTO_PAR
+) b
+where b.IDE_GTEMP=a.IDE_GTEMP
+)c ON c.ide_geedp=a.ide_geedp
+LEFT JOIN (
+SELECT IDE_NRGAR,IDE_nrant,IDE_GEEDP, APELLIDO_PATERNOG_NRGAR||' '|| APELLIDO_MATERNOG_NRGAR ||' '|| PRIMER_NOMBREG_NRGAR ||' '|| SEGUNDO_NOMBREG_NRGAR AS GARANTE,
+DOCUMENTO_IDENTIDADG_NRGAR AS DOCUMENTO_GARANTE,lugar_trabajo_nrgar as DIRECCION_GARANTE FROM NRH_GARANTE WHERE ACTIVO_NRGAR =true
+)d ON a.ide_nrant=d.ide_nrant
+LEFT JOIN (
+SELECT ide_gtdir,ide_gtemp,detalle_gtdir DIRECCION_EMPLEADO FROM gth_direccion where ide_gtdir in (
+SELECT max(ide_gtdir) FROM GTH_DIRECCION where activo_gtdir=true
+group by ide_gtemp)
+)e ON e.IDE_GTEMP=c.IDE_GTEMP
+LEFT JOIN (
+SELECT IDE_SUCU,NOM_SUCU FROM SIS_SUCURSAL
+)g ON g.IDE_SUCU=c.IDE_SUCU
+WHERE  a.IDE_NRANT=$P{IDE_NRANT}]]>
+	</queryString>
+	<field name="ide_nrant" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla nrh_anticipo, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_gtemp" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gth_empleado, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="empleado" class="java.lang.String"/>
+	<field name="documento" class="java.lang.String"/>
+	<field name="fecha_aprobacion" class="java.sql.Date"/>
+	<field name="fecha_vencimiento" class="java.sql.Date"/>
+	<field name="monto_aprobado_nrant" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el monto aprobado para el anticipo de acuerdo a la capacidad de pago.]]></fieldDescription>
+	</field>
+	<field name="nom_sucu" class="java.lang.String">
+		<fieldDescription><![CDATA[nom_sucu]]></fieldDescription>
+	</field>
+	<field name="direccion_empleado" class="java.lang.String"/>
+	<field name="garante" class="java.lang.String"/>
+	<field name="documento_garante" class="java.lang.String"/>
+	<field name="direccion_garante" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="19" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="82f68ffd-703d-496c-a3b8-4887d31425ec" x="0" y="0" width="555" height="19"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="511" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="dd &apos;de&apos; MMMMM &apos;del&apos; yyyy" isBlankWhenNull="true">
+				<reportElement uuid="3b30f744-75b3-40af-88a4-3012ef21ace2" x="111" y="14" width="252" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_vencimiento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="cd08502f-663e-4265-b679-633819ca5505" x="0" y="28" width="44" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Importe:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="511b5f2d-5353-4860-b663-c46e94accb4b" x="0" y="14" width="112" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Fecha de Vencimiento:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="0f0c2383-6cbd-4ae9-8df9-d115b0bab1cc" x="84" y="0" width="45" height="15"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nom_sucu}+", "]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="14952107-4707-4325-adb7-0f9c5e11f3a9" x="44" y="28" width="100" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{monto_aprobado_nrant}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="EEEEE dd MMMMM yyyy" isBlankWhenNull="true">
+				<reportElement uuid="be5c437d-006c-4619-bb72-4f2b3eeaf107" x="129" y="0" width="239" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_aprobacion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="01c8f651-e345-4c98-a967-3f4250b626ee" x="0" y="0" width="77" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Lugar y Fecha:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0da99eff-6308-4c5b-820e-0c1812114611" x="0" y="210" width="555" height="42"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle"/>
+				<text><![CDATA[El acreedor se  encuentra autorizado de manera incondicional e irrevocable para que si lo decide, cualquier bien, depósito o inversión de la naturaleza que fuere de nuestra propiedad y que se encuentre en su poder, en caso de mora, sea utilizado para abonar a las obligaciones pendientes. ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="263f9793-f68c-4b36-a215-18137fc405ac" x="0" y="419" width="555" height="49"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle"/>
+				<text><![CDATA[Renuncio(amos) domicilio y en todo lo relativo a este pagaré, quedo(amos) sometido(s) a la jurisdicción coactiva determinada en Ley de creación del Banco Ecuatoriano de Seguridad Social de esta ciudad o del lugar en que se me(nos) reconvenga, a elección del demandante, obligándome(nos) irrevocable al fiel cumplimiento de lo aquí estipulado.]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="bfcc7252-7160-4e08-a17f-fbd958b67e37" x="0" y="56" width="555" height="62"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["Debo(emos) y pagaré(mos) incondicionalmente a la orden de BANCO ECUATORIANO DE SEGURIDAD SOCIAL en esta ciudad o en el lugar donde se me(nos) reconvenga, la cantidad "+$P{p_monto_letras}+" DOLARES DE LOS ESTADOS UNIDOS DE AMERICA obligándome(nos) incondicionalmente a pagar dicho valor en los vencimientos sucesivos de acuerdo a la tabla de descuentos adjunta."]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="a3755382-bb50-486e-b32e-4bef6d0c1df3" x="0" y="468" width="555" height="35"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle"/>
+				<text><![CDATA[Exímese al acreedor de este Pagaré a la Orden, de su presentación para el pago al suscriptor del mismo, así como de realizar avisos de vencimiento o de protesto por falta de pago. Sin protesto.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f1f47bcd-6cf2-44f5-ba6c-71a189936d30" x="0" y="251" width="555" height="64"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle"/>
+				<text><![CDATA[En el evento de incurrir en mora en el pago de la obligaciones antes mencionadas o parte de ellas, reconozco (emos) expresamente el derecho del acreedor, para la aceleración o anticipación del pago de los dividendos que no estuvieren vencidas, quedando el acreedor facultado para declarar de plazo vencido todas la obligaciones cuyo vencimiento se hubiere anticipado.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="84c889f7-d5fa-4975-a886-62c79d5dcef2" x="0" y="354" width="555" height="66"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle"/>
+				<text><![CDATA[Todas las palabras y expresiones  hechas en singular en el presente documento, serán entendidas en plural, cuando por ser varios los deudores o garantes su sentido así lo requiera. De la misma manera, si el deudor o el garante es una persona jurídica, las declaraciones, se entienden hechas por su Representante Legal, a nombre de ella, y éste se obliga personal y solidariamente con la persona jurídica por la que se suscribe este documento.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5377fe7b-ddd5-48b3-b468-edd5baa71fb6" x="0" y="314" width="555" height="41"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle"/>
+				<text><![CDATA[Me(nos) obligo(amos) para el cumplimiento de todo lo estipulado en el presente documento con todos mis bienes presentes y futuros, propios y gananciales de la sociedad conyugal o sociedad de bienes.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="dece5eba-b055-40cb-a9f4-db8c25d94e06" x="0" y="117" width="555" height="94"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle"/>
+				<text><![CDATA[Adicionalmente, en caso de mora, en el pago de cualquiera de los dividendos antes señalados o de parte de alguna de ellas, pagaré(mos) desde su vencimiento, hasta su total cancelación sobre los valores del principal no pagados, la máxima tasa de interés de mora que haya dispuesto el Banco Central del Ecuador u órgano competente y que se halle vigente a la respectiva fecha de vencimiento. Además, pagaré(mos) todos los gastos judiciales, extrajudiciales y honorarios profesionales que ocasione la suscripción de este pagare y su cobro, bastando para determinar el monto de tales gastos, la sola aseveración del acreedor.]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="32" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="d30ef477-1afc-4d0d-a419-87e13f91df17" x="-3" y="0" width="558" height="32"/>
+				<subreportParameter name="IDE_NRANT">
+					<subreportParameterExpression><![CDATA[$F{ide_nrant}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="IDE_GTEMP">
+					<subreportParameterExpression><![CDATA[$F{ide_gtemp}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+			</subreport>
+		</band>
+	</summary>
+</jasperReport>

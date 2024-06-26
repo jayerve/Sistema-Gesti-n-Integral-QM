@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_orden_cobro_contactos" pageWidth="554" pageHeight="842" whenNoDataType="BlankPage" columnWidth="554" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e417e812-fc9d-4d5d-81e0-d26a47801e5c">
+	<property name="ireport.zoom" value="5.0"/>
+	<property name="ireport.x" value="1401"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="p_cliente_ruc" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT coalesce(nombre_contacto_reclt,'') as nombre_contacto_reclt,coalesce(cargo_contacto_reclt,'') as cargo_contacto_reclt,coalesce(email_reclt,'') as email_reclt,
+                    coalesce(telefono_reclt,'') as telefono_reclt,coalesce(domicilio_reclt,'') as domicilio_reclt
+                  FROM rec_cliente_telefono ct
+                  join rec_clientes cli on cli.ide_recli=ct.ide_recli
+                where coalesce(activo_reclt,false)=true and ruc_comercial_recli = $P{p_cliente_ruc}]]>
+	</queryString>
+	<field name="nombre_contacto_reclt" class="java.lang.String">
+		<fieldDescription><![CDATA[--Nombre del Contacto]]></fieldDescription>
+	</field>
+	<field name="cargo_contacto_reclt" class="java.lang.String">
+		<fieldDescription><![CDATA[--Cargo de Contacto]]></fieldDescription>
+	</field>
+	<field name="email_reclt" class="java.lang.String"/>
+	<field name="telefono_reclt" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del tipo de asistencia, ejemplo: Continuo, Ocasional.]]></fieldDescription>
+	</field>
+	<field name="domicilio_reclt" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="27" splitType="Stretch">
+			<textField>
+				<reportElement uuid="fa445641-4a59-4e30-8816-c47a0b6945a4" x="0" y="0" width="142" height="27"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font fontName="Times New Roman" size="10" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_contacto_reclt}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="206ccd28-f176-4b7d-81b6-c2d69737a47e" x="376" y="0" width="60" height="27"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font fontName="Times New Roman" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{telefono_reclt}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="ff121ee3-da6c-4b5e-9bd9-6c5c1596f7be" x="436" y="0" width="118" height="27"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font fontName="Times New Roman" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{domicilio_reclt}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="e7b6dc12-003c-4df3-92f6-114a696929e6" x="238" y="0" width="138" height="27"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font fontName="Times New Roman" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{email_reclt}.toLowerCase()]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="ba07856d-f937-476c-bb4f-1a1a6c9d0469" x="142" y="0" width="96" height="27"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font fontName="Times New Roman" pdfFontName="Times-Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cargo_contacto_reclt}.toUpperCase()]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

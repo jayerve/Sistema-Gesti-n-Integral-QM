@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_kardex_individual_anual" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f2039012-673d-43a4-8ac7-378ca9838a39">
+	<property name="ireport.zoom" value="1.7715610000000017"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_geani" class="java.lang.Long"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:/eclipse_ERP/eclipse-workspace/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_usua" class="java.lang.Integer"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Reporte General Kardex Anual"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[WITH param AS (
+    SELECT
+    $P{ide_geani} as ide_geani
+), inventario_agrupado AS (
+    SELECT
+    ide_geani, ide_bocam, SUM(cantidad_saldo_boinv) as cantidad
+    FROM bodt_bodega_inventario
+    GROUP BY ide_geani, ide_bocam
+), inventario AS (
+    SELECT
+    ide_geani, padre.con_ide_bocam as padre_con_ide_bocam, padre.cat_codigo_bocam AS padre_cat_codigo_bocam,padre.descripcion_bocam as padre_descripcion, bodt_catalogo_material.con_ide_bocam, inventario_agrupado.ide_bocam,  bodt_catalogo_material.cat_codigo_bocam, bodt_catalogo_material.descripcion_bocam, cantidad
+    FROM inventario_agrupado
+    LEFT JOIN bodt_catalogo_material ON bodt_catalogo_material.ide_bocam = inventario_agrupado.ide_bocam
+    LEFT JOIN bodt_catalogo_material AS padre ON padre.ide_bocam = bodt_catalogo_material.con_ide_bocam
+    ORDER BY padre.con_ide_bocam
+)
+SELECT ide_geani, padre_con_ide_bocam, padre_cat_codigo_bocam, padre_descripcion, con_ide_bocam, SUM(cantidad)
+FROM inventario
+WHERE padre_con_ide_bocam = 2
+GROUP BY ide_geani, padre_con_ide_bocam,padre_cat_codigo_bocam, padre_descripcion, con_ide_bocam
+--HAVING SUM(cantidad)>0
+ORDER BY con_ide_bocam]]>
+	</queryString>
+	<field name="ide_geani" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_anio, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="padre_con_ide_bocam" class="java.lang.Long"/>
+	<field name="padre_cat_codigo_bocam" class="java.lang.String"/>
+	<field name="padre_descripcion" class="java.lang.String"/>
+	<field name="con_ide_bocam" class="java.lang.Long"/>
+	<field name="sum" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="3ad301b0-8107-4db1-b07e-46f8b23bab09" x="0" y="0" width="802" height="61"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_geani">
+					<subreportParameterExpression><![CDATA[$P{ide_geani}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{ide_usua}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_horizontal.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="101" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="bdbce276-ac5a-4099-ae63-0abea0599939" x="0" y="0" width="802" height="100"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_geani">
+					<subreportParameterExpression><![CDATA[$P{ide_geani}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="con_ide_bocam">
+					<subreportParameterExpression><![CDATA[$F{con_ide_bocam}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_bodega/rep_kardex_anual_grupo.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="8" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="23" splitType="Stretch">
+			<textField>
+				<reportElement uuid="fd5e51f1-7cef-4146-a2f9-a6fd5bdb8c87" x="681" y="1" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="96383702-1391-4c8c-bf74-033f0323d835" x="761" y="1" width="40" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="5" splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_recibo_caja_ticket" pageWidth="210" pageHeight="400" columnWidth="194" leftMargin="8" rightMargin="8" topMargin="20" bottomMargin="10" isIgnorePagination="true" uuid="4f88d28a-8afc-4abc-95b3-23e811e4bb26">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:\\eclipse-jee-kepler-SR2-win32\\Proyectos\\sampu\\WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_observacion" class="java.lang.String"/>
+	<parameter name="p_cliente_ruc" class="java.lang.String"/>
+	<parameter name="p_cliente_cobro" class="java.lang.String"/>
+	<parameter name="p_nro_comprobante" class="java.lang.Integer"/>
+	<parameter name="p_ide_tecaj" class="java.lang.Integer"/>
+	<parameter name="p_ide_gtemp" class="java.lang.Integer"/>
+	<parameter name="p_recibido" class="java.lang.Double"/>
+	<parameter name="p_saldo_i" class="java.lang.Double"/>
+	<parameter name="p_vuelto" class="java.lang.Double"/>
+	<queryString>
+		<![CDATA[SELECT coalesce(cli.razon_social_recli,cli.nombre_comercial_recli) as cliente, coalesce(saldo,0) as saldo
+                FROM rec_clientes cli
+                LEFT JOIN (select ruc_comercial_recli, sum(saldo) as saldo from (
+                  select  ruc_comercial_recli, (total_fafac-valor_cobro) as valor, iva_cobrado as valor_iva,interes ,valor_cobro as abonada, (total_fafac + interes -valor_cobro) as saldo
+                     from (
+                     select fac.ide_fafac,fac.ide_recli,fac.ide_coest,coalesce(ide_fanod,0) as ide_fanod,detalle_bogrm,secuencial_fafac,coalesce(valor_cobro,0) as valor_cobro
+                     ,total_fafac+coalesce(faer.precio_total_acerp,0) as total_fafac, (case when coalesce(iva_cobrado_fafac,false)=false then valor_iva_fafac else 0 end) as iva_cobrado
+                     ,coalesce(interes_generado_fanod,0) as interes,fecha_transaccion_fafac ,ruc_comercial_recli
+                     ,case when valor_cobro is null then false else true end as abonada
+                      from fac_factura fac
+
+                     left join (select ide_fadaf,autorizacion_sri_bogrm,serie_factura_fadaf, detalle_bogrm as detalle_bogrm
+                       from fac_datos_factura a, bodt_grupo_material b where a.ide_bogrm = b.ide_bogrm
+                       order by autorizacion_sri_bogrm ) a on a.ide_fadaf = fac.ide_fadaf
+                     left join rec_clientes cli on cli.ide_recli=fac.ide_recli
+
+                     left join ( select nd.ide_fanod,nd.ide_recli,dnd.ide_fafac,detalle_fenod,interes_generado_fanod,fecha_emision_fanod
+                       from fac_nota_debito nd, fac_detalle_debito dnd
+                       where nd.ide_fanod=dnd.ide_fanod and ide_coest = (select cast(valor_para as integer) from sis_parametros where nom_para ='p_factura_emitido')
+                       ) c on c.ide_fafac=fac.ide_fafac and c.ide_recli=fac.ide_recli
+
+                     left join (select ide_fafac, sum(coalesce(valor_cobro_facob,0)+coalesce(valor_cobro_iva_facob,0)) as valor_cobro from fac_cobro group by ide_fafac) d on d.ide_fafac=fac.ide_fafac
+                     left join fac_acta_entrega_recepcion faer on faer.ide_fafac=fac.ide_fafac
+
+                     where fac.ide_coest in ((select cast(valor_para as integer) from sis_parametros where nom_para ='p_factura_emitido'),24,30)
+
+                      ) a
+
+                 where ruc_comercial_recli = $P{p_cliente_ruc}
+                  ) b group by ruc_comercial_recli) s on s.ruc_comercial_recli=cli.ruc_comercial_recli
+
+                where coalesce(cli.matriz_sucursal_recli,1)=1 and cli.ruc_comercial_recli = $P{p_cliente_ruc} limit 1]]>
+	</queryString>
+	<field name="cliente" class="java.lang.String"/>
+	<field name="saldo" class="java.math.BigDecimal"/>
+	<variable name="recaudado" class="java.math.BigDecimal" calculation="Sum"/>
+	<variable name="recaudador" class="java.lang.String"/>
+	<variable name="fecha_cobro" class="java.util.Date"/>
+	<variable name="v_vuelto" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+		<initialValueExpression><![CDATA[$P{p_recibido}.doubleValue()-$P{p_saldo_i}.doubleValue()]]></initialValueExpression>
+	</variable>
+	<title>
+		<band height="196" splitType="Immediate">
+			<staticText>
+				<reportElement uuid="1b88f064-3746-4017-83a9-b592b4b03a6d" x="0" y="0" width="194" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Empresa Pública Metropolitana de Gestión]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="87f58355-fd78-44a0-a60b-a67004433119" x="0" y="11" width="194" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Integral de Residuos Sólidos EMGIRS-EP]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="da32dd36-4a76-4466-a692-9bf0f5fce973" x="0" y="26" width="194" height="27"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Matriz: Pasaje OE3G - N51-84 y Av. Río Amazonas, Quito]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="52a4ef2b-9cf8-4452-bd90-034b6cd50fbc" x="1" y="53" width="193" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["RECIBO DE RECAUDACIÓN No. "+$P{p_nro_comprobante}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="cc889cc8-6619-4fb5-a5e0-c5a2dcdb84c3" x="1" y="109" width="45" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[CLIENTE:]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="45dc9ee3-d7dd-4784-b1ce-d1efec733711" x="48" y="109" width="146" height="30"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cliente}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="e144760c-1e1e-437c-ba14-18fbde51d5da" x="1" y="97" width="45" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[RUC:]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="b20f6265-ad7d-485b-a6a9-162db6dca3a1" x="48" y="97" width="146" height="12"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_cliente_ruc}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="true">
+				<reportElement uuid="e5467566-3e0a-44aa-905f-51150d5ca451" x="48" y="71" width="104" height="13"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="72aec032-d194-4f99-b587-2c3bca894862" x="1" y="71" width="45" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="946201c3-2dcd-4001-828e-1f02c8644a98" x="1" y="84" width="45" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[HORA:]]></text>
+			</staticText>
+			<textField pattern="h:mm a" isBlankWhenNull="true">
+				<reportElement uuid="8c980ecc-8578-4cb3-97b7-bcd62f4f77ee" x="48" y="84" width="104" height="13"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="cb26b381-3ff4-4be9-b150-e6eaca8df074" x="107" y="167" width="67" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{saldo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="9331732f-2982-4007-ad90-6e4fe843ddca" x="16" y="167" width="91" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[VALOR PENDIENTE:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="a2b13783-02f5-4ce9-a7c0-1ad759839398" x="107" y="154" width="67" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_recibido}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="7edbc1ca-31c1-4b8c-9c17-2857a1a7ad3e" x="16" y="154" width="91" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[VALOR ENTREGADO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9092596c-1308-4e9f-8a63-c41e8ddddc31" x="16" y="141" width="91" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[SALDO INICIAL:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b7962daf-4a87-417d-96a9-7c7972dbcdf4" x="16" y="180" width="91" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[VUELTO:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="83c11b47-ba42-4ce1-8b62-a3daaea9ddd4" x="107" y="141" width="67" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_saldo_i}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="fa42275b-42a6-460e-8bfe-fce4d17b2368" x="107" y="180" width="67" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_vuelto}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="19" splitType="Stretch">
+			<line>
+				<reportElement uuid="1914a5c9-0b8e-4afe-8c8e-24d9811dc482" x="0" y="0" width="194" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="f58a5e36-9190-4e8e-81ff-7382f3b27908" x="0" y="2" width="28" height="13"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[TIPO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2970295b-ff82-4f6b-b9af-f18114bcf916" x="34" y="2" width="102" height="13"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[NRO DOCUMENTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="90e27cae-c040-4fb1-b995-6b4422a68987" x="139" y="2" width="54" height="13"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[VALOR]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="b61caf0a-e62b-4e93-9806-a136dffa525c" x="0" y="16" width="194" height="1"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Immediate">
+			<subreport>
+				<reportElement uuid="9d675556-c7d4-46c7-98ce-cf608a44a008" x="0" y="0" width="194" height="22"/>
+				<subreportParameter name="p_ide_tecaj">
+					<subreportParameterExpression><![CDATA[$P{p_ide_tecaj}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_nro_comprobante">
+					<subreportParameterExpression><![CDATA[$P{p_nro_comprobante}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="p_ide_gtemp">
+					<subreportParameterExpression><![CDATA[$P{p_ide_gtemp}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<returnValue subreportVariable="recaudado" toVariable="recaudado" calculation="Sum"/>
+				<returnValue subreportVariable="recaudador" toVariable="recaudador"/>
+				<returnValue subreportVariable="fecha_cobro" toVariable="fecha_cobro"/>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_facturacion/rep_facturaDET_ticket.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<summary>
+		<band height="303" splitType="Immediate">
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="40651495-63cb-4d80-be2f-95a8a96c1c84" x="129" y="3" width="64" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{recaudado}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="abb0884f-7f00-4dc0-a9c9-c4e73b132dbf" x="39" y="3" width="89" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[TOTAL RECAUDADO:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="92059c4d-44a8-4874-a5a9-7da9e27af65d" x="0" y="77" width="193" height="13"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $P{p_cliente_cobro}.isEmpty() || $P{p_cliente_cobro}.toUpperCase().equals("NULL") ? $F{cliente}.toUpperCase() : $P{p_cliente_cobro}.toUpperCase() )]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="2b8b3f6d-e781-4c11-8462-55d163408996" x="1" y="77" width="192" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="3e68ef77-3597-4115-8a97-9bf1df0723f2" x="0" y="88" width="193" height="13"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[CLIENTE]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="180ae95b-b5f6-4f53-a2ea-f87f1993a2f5" x="0" y="156" width="193" height="13"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{recaudador}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5c6ecfce-e70c-4834-b28e-0ab87ca99185" x="0" y="167" width="193" height="13"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[RECAUDADOR]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="3c7770b6-4c78-4c7f-8294-025e5c2025ef" x="1" y="155" width="193" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="ae918b14-60e7-4853-b4f5-119fb643b893" x="0" y="279" width="193" height="21"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Nota.- Comprobante emitido automaticamente por el sistema ERP de la EMGIRS-EP.]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="3e521a2e-521e-4475-917c-a72a320272cb" x="0" y="1" width="194" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="2a14bff0-2c9b-4d74-b784-b468dffdba61" x="0" y="242" width="193" height="38"/>
+				<textElement textAlignment="Justified">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Estimad@ cliente, sus comprobantes los puede descargar
+en el link facturacion.emgirs.gob.ec/addocument_website registrando su cédula o ruc en usuario y en clave los seis primeros dígitos.]]></text>
+			</staticText>
+			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="true">
+				<reportElement uuid="4e4131db-81ec-4619-8fde-1fb59012f4df" x="63" y="16" width="90" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{fecha_cobro}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="77f538b6-e867-47c7-96f9-4d844b43a73d" x="1" y="16" width="62" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[FECHA COBRO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a4113f3f-8056-4294-95fb-f2a6c82bdac6" x="1" y="180" width="89" height="13"/>
+				<textElement textAlignment="Left">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[OBSERVACIONES:]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="3a4ce8de-0b66-48e9-947d-839d83d051a4" x="1" y="193" width="192" height="41"/>
+				<textElement textAlignment="Justified">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $P{p_observacion}.length()<5 ? "NINGUNA" : $P{p_observacion} )]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

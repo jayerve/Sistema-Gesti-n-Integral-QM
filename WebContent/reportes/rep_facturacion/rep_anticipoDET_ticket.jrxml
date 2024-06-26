@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_detReciboCaja" pageWidth="194" pageHeight="20" whenNoDataType="BlankPage" columnWidth="194" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e417e812-fc9d-4d5d-81e0-d26a47801e5c">
+	<property name="ireport.zoom" value="1.6105100000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="p_nro_comprobante" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_ide_tecaj" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_ide_gtemp" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select ide_facob,tipoDoc,fecha_cobro, nro_cuota, valor,valor_cobro, recaudador  from (
+                    SELECT fc.ide_facob,'ANTICIPO RMU' as tipoDoc,fc.fecha_cobro_facob as fecha_cobro, NRO_CUOTA_NRAMO as nro_cuota,
+                    CUOTA_NRAMO as valor, fc.valor_cobro_facob as valor_cobro, coalesce(rec.primer_nombre_gtemp,rec.segundo_nombre_gtemp) || ' ' || rec.apellido_paterno_gtemp as recaudador
+                    FROM fac_cobro fc
+                    INNER JOIN NRH_AMORTIZACION AMO ON AMO.IDE_NRAMO=fc.IDE_NRAMO
+                    left join gth_empleado rec on rec.ide_gtemp=fc.ide_gtemp
+                    WHERE fc.nro_documento_facob=$P{p_nro_comprobante} and fc.ide_tecaj=$P{p_ide_tecaj} and fc.ide_gtemp=$P{p_ide_gtemp}
+                ) doc order by 1,4]]>
+	</queryString>
+	<field name="ide_facob" class="java.lang.Integer"/>
+	<field name="tipodoc" class="java.lang.String"/>
+	<field name="fecha_cobro" class="java.sql.Date"/>
+	<field name="nro_cuota" class="java.lang.Integer"/>
+	<field name="valor" class="java.math.BigDecimal"/>
+	<field name="valor_cobro" class="java.math.BigDecimal"/>
+	<field name="recaudador" class="java.lang.String"/>
+	<variable name="recaudado" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_cobro}]]></variableExpression>
+	</variable>
+	<variable name="recaudador" class="java.lang.String">
+		<variableExpression><![CDATA[$F{recaudador}]]></variableExpression>
+	</variable>
+	<variable name="fecha_cobro" class="java.util.Date">
+		<variableExpression><![CDATA[$F{fecha_cobro}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement uuid="fa445641-4a59-4e30-8816-c47a0b6945a4" x="0" y="0" width="64" height="13"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipodoc}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="ff121ee3-da6c-4b5e-9bd9-6c5c1596f7be" x="132" y="0" width="60" height="13"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_cobro}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="c520fa24-547f-426a-9bc7-a0f9c72f9efc" x="70" y="0" width="48" height="13"/>
+				<textElement textAlignment="Left">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nro_cuota}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

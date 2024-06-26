@@ -1,0 +1,2126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="formulario107" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="BlankPage" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="5d21d273-a064-4481-b2c3-60f49e809e6d">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="2.0490403660952117"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_geedp" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="anioHasta" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IDE_ASMIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="str_ide_anio" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="anio" class="java.lang.Integer"/>
+	<parameter name="mes" class="java.lang.Integer"/>
+	<parameter name="dia" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select   *, coalesce( round(((basimp - (SELECT  case when (fraccion_basica_srdir - 1)<0 then 0 else (fraccion_basica_srdir-1) end as
+fraccion_basica_srdir
+FROM public.sri_detalle_impuesto_renta  where  ide_srimr = $P!{IDE_ASMIR} and
+basimp between fraccion_basica_srdir and exceso_hasta_srdir))*
+(SELECT coalesce(imp_fraccion_excedente_srdir ,0.00)/100
+FROM public.sri_detalle_impuesto_renta
+where  ide_srimr = $P!{IDE_ASMIR} and basimp between fraccion_basica_srdir and exceso_hasta_srdir)) + (SELECT  imp_fraccion_srdir
+FROM public.sri_detalle_impuesto_renta   where  ide_srimr = $P!{IDE_ASMIR} and basimp between fraccion_basica_srdir and exceso_hasta_srdir),2),0)    as impuestoCausado
+ from ( select distinct( select identificacion_empr from sis_empresa limit 1) as nuRuc,
+ (select nom_empr from sis_empresa limit 1) as nomEmpresa,
+  substring(detalle_gttdi from 1 for 1) as tipIdRet,
+  documento_identidad_gtemp as idRet,
+  APELLIDO_PATERNO_GTEMP ||' '|| APELLIDO_MATERNO_GTEMP as apellidoTrab,
+  COALESCE(coalesce(PRIMER_NOMBRE_GTEMP,' ') ||' '|| coalesce(SEGUNDO_NOMBRE_GTEMP,' '),' ') as nombreTrab,
+  '001' as estab,
+  '01'   as residenciaTrab,
+  '593' as pasisResidencia,
+  'NA' as aplicaConvenio,
+  case when (round(COALESCE(porcentaje_gtdie,0)) >= 40) then '02' else '01' end as tipoTrabajoDiscap,
+   case when   round(COALESCE(porcentaje_gtdie,0)) >= 40 then round(COALESCE(porcentaje_gtdie,0)) else 0 end  as porcentajeDiscap,
+   'N' as tipidDiscap,
+   '999' as idDiscap,
+   COALESCE(sueldos,0.00)  + COALESCE(VALOR_LIQUIDACION_GEEDP,0.00) as suelSal,
+   COALESCE(sobresueldos,0.00) as sobSuelComRemu,
+   '0' as partUtil,
+   '0' as intGrabGen,
+   '0' as impRentEmpl,
+   COALESCE(decimoTercero,0.00)-COALESCE(decimoTercerAjuste,0.00) as decimoTercer,
+   COALESCE(decimoCuarto, 0.00) as decimoCuarto,
+   COALESCE(fondo, 0.00) as  fondoReserva,
+   '0' as salarioDigno,
+   '0' as otrosIngRenGrav,
+   COALESCE(sueldos,0.00) + COALESCE(VALOR_LIQUIDACION_GEEDP,0.00) + COALESCE(sobresueldos,0.00)    as ingGravConEsteEmpl,
+   '1' as sisSalNet,
+   COALESCE(aporteIess, 0.00) as apoPerIess,
+   '0.00' as aporPerIessConOtrosEmpls,
+   case when round(COALESCE(porcentaje_gtdie,0)) >= 40 then round(COALESCE((select min(EXCESO_HASTA_SRDIR) * cast((SELECT VALOR_PARA FROM SIS_PARAMETROS   WHERE LOWER(NOM_PARA)='p_factor_multiplicador_renta_discapacitados' ) as numeric) * (select round(cast(porcentaje_aplica_srbtd as numeric)/100,2)    from SRI_BENEFICIO_TRIBUTARIO_DISC where porcentaje_gtdie BETWEEN GRADO_INICIAL_SRBTD and GRADO_FINAL_SRBTD)
+   from SRI_DETALLE_IMPUESTO_RENTA
+   where IDE_SRIMR= $P!{IDE_ASMIR} GROUP BY IDE_SRIMR),0),2) else 0 end  as descuentoDiscapacidad ,
+      case when round(FLOOR(((extract(year from cast('$P!{anioHasta}-12-31' as Date) )-extract(year from fecha_nacimiento_gtemp))* 372 +  (extract(month from cast('$P!{anioHasta}-12-31' as Date)) - extract(month from fecha_nacimiento_gtemp))*31 +  (extract (day from cast('$P!{anioHasta}-12-31' as Date))-extract(day from fecha_nacimiento_gtemp)))/372) ) >= 65 then round(COALESCE((select min(EXCESO_HASTA_SRDIR)  * cast((SELECT VALOR_PARA FROM SIS_PARAMETROS  WHERE LOWER(NOM_PARA)='p_factor_multiplicador_renta_discapacitados' ) as numeric)
+      from SRI_DETALLE_IMPUESTO_RENTA
+      where IDE_SRIMR= $P!{IDE_ASMIR} GROUP BY IDE_SRIMR),0),2) else 0 end  as descuentoTercera ,
+      COALESCE(round(cast(case when (COALESCE(sueldos,0.00)/2 <(COALESCE(vivienda.valor_deducible_srdee,0.00)+ COALESCE(salud.valor_deducible_srdee,0.00)+ COALESCE(educa.valor_deducible_srdee,0.00)+COALESCE(vest.valor_deducible_srdee,0.00)      +COALESCE(ali.valor_deducible_srdee,0.00)))       then (COALESCE(vivienda.valor_deducible_srdee,0.00))*(case when (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year', case when   EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta} then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta} then fecha_geedp   else '$P!{anioHasta}-01-1' end::date)) < 12 then (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year',   case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta} then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) else EXTRACT(MONTH from COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)) end)/12    else COALESCE(vivienda.valor_deducible_srdee,0.00) end as numeric ), 2),COALESCE(vivienda.valor_deducible_srdee,0.00))   as vivienda,
+      COALESCE(round(cast(case when (COALESCE(sueldos,0.00)/2 <(COALESCE(vivienda.valor_deducible_srdee,0.00)+ COALESCE(salud.valor_deducible_srdee,0.00)+ COALESCE(educa.valor_deducible_srdee,0.00)+COALESCE(vest.valor_deducible_srdee,0.00)      +COALESCE(ali.valor_deducible_srdee,0.00)))       then (COALESCE(salud.valor_deducible_srdee,0.00))*(case when (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year',   case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta} then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) < 12 then (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      else EXTRACT(MONTH from COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)) end)/12  else COALESCE(salud.valor_deducible_srdee,0.00) end as numeric ), 2),   COALESCE(salud.valor_deducible_srdee,0.00))  as salud,
+	  COALESCE(round(cast(case when (COALESCE(sueldos,0.00)/2 <(COALESCE(vivienda.valor_deducible_srdee,0.00)+ COALESCE(salud.valor_deducible_srdee,0.00)+ COALESCE(educa.valor_deducible_srdee,0.00)+COALESCE(vest.valor_deducible_srdee,0.00)      +COALESCE(ali.valor_deducible_srdee,0.00)))       then (COALESCE(educa.valor_deducible_srdee,0.00))*(case when (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year',   case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta} then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      < 12 then (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      else EXTRACT(MONTH from COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)) end)/12  else COALESCE(educa.valor_deducible_srdee,0.00) end as numeric ), 2),   COALESCE(educa.valor_deducible_srdee,0.00))   as educacion,
+      COALESCE(round(cast(case when (COALESCE(sueldos,0.00)/2 <(COALESCE(vivienda.valor_deducible_srdee,0.00)+ COALESCE(salud.valor_deducible_srdee,0.00)+ COALESCE(educa.valor_deducible_srdee,0.00)+COALESCE(vest.valor_deducible_srdee,0.00)      +COALESCE(ali.valor_deducible_srdee,0.00)))       then (COALESCE(ali.valor_deducible_srdee,0.00))*(case when (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year',   case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta} then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      < 12 then (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      else EXTRACT(MONTH from COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)) end)/12  else COALESCE(ali.valor_deducible_srdee,0.00) end as numeric ), 2),COALESCE(ali.valor_deducible_srdee,0.00))  as alimentacion,
+	  COALESCE(round(cast(case when (COALESCE(sueldos,0.00)/2 <(COALESCE(vivienda.valor_deducible_srdee,0.00)+ COALESCE(salud.valor_deducible_srdee,0.00)+ COALESCE(educa.valor_deducible_srdee,0.00)+COALESCE(vest.valor_deducible_srdee,0.00)      +COALESCE(ali.valor_deducible_srdee,0.00)))       then (COALESCE(vest.valor_deducible_srdee,0.00))*(case when (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year',   case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta} then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      < 12 then (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      else EXTRACT(MONTH from COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)) end)/12  else COALESCE(vest.valor_deducible_srdee,0.00) end as numeric ), 2),COALESCE(vest.valor_deducible_srdee,0.00)) as vestimenta,
+      case when round( cast (COALESCE(COALESCE(sueldos,0.00)+ COALESCE(VALOR_LIQUIDACION_GEEDP,0.00) +   COALESCE(sobresueldos,0.00),0.00)  - COALESCE(round(cast(case when (COALESCE(sueldos,0.00)/2 <    (COALESCE(vivienda.valor_deducible_srdee,0.00)+ COALESCE(salud.valor_deducible_srdee,0.00)+ COALESCE(educa.valor_deducible_srdee,0.00)+COALESCE(vest.valor_deducible_srdee,0.00)      +COALESCE(ali.valor_deducible_srdee,0.00)))   then (COALESCE(vivienda.valor_deducible_srdee,0.00))*(case when (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year',   case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta} then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      < 12 then (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      else EXTRACT(MONTH from COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)) end)/12  else COALESCE(vivienda.valor_deducible_srdee,0.00) end as numeric ), 2),   COALESCE(vivienda.valor_deducible_srdee,0.00))         -COALESCE(round(cast(case when (COALESCE(sueldos,0.00)/2 <   (COALESCE(vivienda.valor_deducible_srdee,0.00)+ COALESCE(salud.valor_deducible_srdee,0.00)+ COALESCE(educa.valor_deducible_srdee,0.00)+COALESCE(vest.valor_deducible_srdee,0.00)      +COALESCE(ali.valor_deducible_srdee,0.00)))   then (COALESCE(salud.valor_deducible_srdee,0.00))*(case when (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year',   case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta} then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      < 12 then (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      else EXTRACT(MONTH from COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)) end)/12  else COALESCE(salud.valor_deducible_srdee,0.00) end as numeric ), 2),   COALESCE(salud.valor_deducible_srdee,0.00))         -COALESCE(round(cast(case when (COALESCE(sueldos,0.00)/2 <   (COALESCE(vivienda.valor_deducible_srdee,0.00)+ COALESCE(salud.valor_deducible_srdee,0.00)+ COALESCE(educa.valor_deducible_srdee,0.00)+COALESCE(vest.valor_deducible_srdee,0.00)      +COALESCE(ali.valor_deducible_srdee,0.00)))   then (COALESCE(educa.valor_deducible_srdee,0.00))*(case when (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year',   case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta} then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      < 12 then (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      else EXTRACT(MONTH from COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)) end)/12  else COALESCE(educa.valor_deducible_srdee,0.00) end as numeric ), 2),   COALESCE(educa.valor_deducible_srdee,0.00))         -COALESCE(round(cast(case when (COALESCE(sueldos,0.00)/2 <   (COALESCE(vivienda.valor_deducible_srdee,0.00)+ COALESCE(salud.valor_deducible_srdee,0.00)+ COALESCE(educa.valor_deducible_srdee,0.00)+COALESCE(vest.valor_deducible_srdee,0.00)      +COALESCE(ali.valor_deducible_srdee,0.00)))   then (COALESCE(ali.valor_deducible_srdee,0.00))*(case when (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year',   case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta} then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      < 12 then (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      else EXTRACT(MONTH from COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)) end)/12  else COALESCE(ali.valor_deducible_srdee,0.00) end as numeric ), 2),   COALESCE(ali.valor_deducible_srdee,0.00))          -COALESCE(round(cast(case when (COALESCE(sueldos,0.00)/2 <   (COALESCE(vivienda.valor_deducible_srdee,0.00)+ COALESCE(salud.valor_deducible_srdee,0.00)+ COALESCE(educa.valor_deducible_srdee,0.00)+COALESCE(vest.valor_deducible_srdee,0.00)      +COALESCE(ali.valor_deducible_srdee,0.00)))   then (COALESCE(vest.valor_deducible_srdee,0.00))*(case when (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year',   case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta} then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      < 12 then (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      else EXTRACT(MONTH from COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)) end)/12  else COALESCE(vest.valor_deducible_srdee,0.00) end as numeric ), 2),   COALESCE(vest.valor_deducible_srdee,0.00))        - COALESCE(aporteIess, 0.00) -(case when round(COALESCE(porcentaje_gtdie,0)) >= 40 then round(COALESCE((select min(EXCESO_HASTA_SRDIR) * cast((SELECT VALOR_PARA FROM SIS_PARAMETROS   WHERE LOWER(NOM_PARA)='p_factor_multiplicador_renta_discapacitados' ) as numeric) * (select round(cast(porcentaje_aplica_srbtd as numeric)/100,2)    from SRI_BENEFICIO_TRIBUTARIO_DISC where porcentaje_gtdie BETWEEN GRADO_INICIAL_SRBTD and GRADO_FINAL_SRBTD) from SRI_DETALLE_IMPUESTO_RENTA    where IDE_SRIMR= $P!{IDE_ASMIR} GROUP BY IDE_SRIMR),0),2) else 0 end)   -(case when round(FLOOR(((extract(year from cast('$P!{anioHasta}-12-31' as Date))-extract(year from fecha_nacimiento_gtemp))* 372 +   (extract(month from cast('$P!{anioHasta}-12-31' as Date)) - extract(month from fecha_nacimiento_gtemp))*31 +   (extract (day from cast('$P!{anioHasta}-12-31' as Date))-extract(day from fecha_nacimiento_gtemp)))/372) ) >= 65 then round(COALESCE((select min(EXCESO_HASTA_SRDIR)  * cast((SELECT VALOR_PARA FROM SIS_PARAMETROS   WHERE LOWER(NOM_PARA)='p_factor_multiplicador_renta_discapacitados' ) as numeric)  from SRI_DETALLE_IMPUESTO_RENTA    where IDE_SRIMR= $P!{IDE_ASMIR} GROUP BY IDE_SRIMR),0),2) else 0 end)  as numeric),2) > 0   then  round( cast (COALESCE(COALESCE(sueldos,0.00)+ COALESCE(VALOR_LIQUIDACION_GEEDP,0.00) +      COALESCE(sobresueldos,0.00),0.00) -  COALESCE(round(cast(case when (COALESCE(sueldos,0.00)/2 <    (COALESCE(vivienda.valor_deducible_srdee,0.00)+ COALESCE(salud.valor_deducible_srdee,0.00)+ COALESCE(educa.valor_deducible_srdee,0.00)+COALESCE(vest.valor_deducible_srdee,0.00)      +COALESCE(ali.valor_deducible_srdee,0.00)))   then (COALESCE(vivienda.valor_deducible_srdee,0.00))*(case when (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year',   case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta} then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      < 12 then (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      else EXTRACT(MONTH from COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)) end)/12  else COALESCE(vivienda.valor_deducible_srdee,0.00) end as numeric ), 2),   COALESCE(vivienda.valor_deducible_srdee,0.00))       -COALESCE(round(cast(case when (COALESCE(sueldos,0.00)/2 <   (COALESCE(vivienda.valor_deducible_srdee,0.00)+ COALESCE(salud.valor_deducible_srdee,0.00)+ COALESCE(educa.valor_deducible_srdee,0.00)+COALESCE(vest.valor_deducible_srdee,0.00)      +COALESCE(ali.valor_deducible_srdee,0.00)))  then (COALESCE(salud.valor_deducible_srdee,0.00))*(case when (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP ,   FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta} then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      < 12 then (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      else EXTRACT(MONTH from COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)) end)/12  else COALESCE(salud.valor_deducible_srdee,0.00) end as numeric ), 2),   COALESCE(salud.valor_deducible_srdee,0.00))        -COALESCE(round(cast(case when (COALESCE(sueldos,0.00)/2 <       (COALESCE(vivienda.valor_deducible_srdee,0.00)+ COALESCE(salud.valor_deducible_srdee,0.00)+ COALESCE(educa.valor_deducible_srdee,0.00)+COALESCE(vest.valor_deducible_srdee,0.00)      +COALESCE(ali.valor_deducible_srdee,0.00)))   then (COALESCE(educa.valor_deducible_srdee,0.00))*(case when (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year',   case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta} then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      < 12 then (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      else EXTRACT(MONTH from COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)) end)/12  else COALESCE(educa.valor_deducible_srdee,0.00) end as numeric ), 2),   COALESCE(educa.valor_deducible_srdee,0.00))           -COALESCE(round(cast(case when (COALESCE(sueldos,0.00)/2 <       (COALESCE(vivienda.valor_deducible_srdee,0.00)+ COALESCE(salud.valor_deducible_srdee,0.00)+ COALESCE(educa.valor_deducible_srdee,0.00)+COALESCE(vest.valor_deducible_srdee,0.00)      +COALESCE(ali.valor_deducible_srdee,0.00)))       then (COALESCE(ali.valor_deducible_srdee,0.00))*(case when (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year',   case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta} then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))   < 12 then (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      else EXTRACT(MONTH from COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)) end)/12  else COALESCE(ali.valor_deducible_srdee,0.00) end as numeric ), 2),   COALESCE(ali.valor_deducible_srdee,0.00))        -COALESCE(round(cast(case when (COALESCE(sueldos,0.00)/2 <    (COALESCE(vivienda.valor_deducible_srdee,0.00)+ COALESCE(salud.valor_deducible_srdee,0.00)+ COALESCE(educa.valor_deducible_srdee,0.00)+COALESCE(vest.valor_deducible_srdee,0.00)      +COALESCE(ali.valor_deducible_srdee,0.00)))       then (COALESCE(vest.valor_deducible_srdee,0.00))*(case when (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year', case when   EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta} then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      < 12 then (DATE_PART('year', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('year', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date)) * 12 +      (DATE_PART('month', COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)::date) - DATE_PART('month', case when EXTRACT (YEAR from fecha_geedp) = $P!{anioHasta}  then fecha_geedp else '$P!{anioHasta}-01-1' end::date))      else EXTRACT(MONTH from COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)) end)/12  else COALESCE(vest.valor_deducible_srdee,0.00) end as numeric ), 2),   COALESCE(vest.valor_deducible_srdee,0.00))          - COALESCE(aporteIess, 0.00) -(case when round(COALESCE(porcentaje_gtdie,0)) >= 40 then round(COALESCE((select min(EXCESO_HASTA_SRDIR)  * cast((SELECT VALOR_PARA FROM SIS_PARAMETROS   WHERE LOWER(NOM_PARA)='p_factor_multiplicador_renta_discapacitados' ) as numeric) * (select round(cast(porcentaje_aplica_srbtd as numeric)/100,2)    from SRI_BENEFICIO_TRIBUTARIO_DISC where porcentaje_gtdie BETWEEN GRADO_INICIAL_SRBTD and GRADO_FINAL_SRBTD) from SRI_DETALLE_IMPUESTO_RENTA    where IDE_SRIMR= $P!{IDE_ASMIR} GROUP BY IDE_SRIMR),0),2) else 0 end)  -(case when round(FLOOR(((extract(year from cast('$P!{anioHasta}-12-31' as Date))-extract(year from fecha_nacimiento_gtemp))* 372 +  (extract(month from cast('$P!{anioHasta}-12-31' as Date)) - extract(month from fecha_nacimiento_gtemp))*31 +  (extract (day from cast('$P!{anioHasta}-12-31' as Date))-extract(day from fecha_nacimiento_gtemp)))/372) ) >= 65 then round(COALESCE((select min(EXCESO_HASTA_SRDIR)  * cast((SELECT VALOR_PARA FROM SIS_PARAMETROS   WHERE LOWER(NOM_PARA)='p_factor_multiplicador_renta_discapacitados' ) as numeric)  from SRI_DETALLE_IMPUESTO_RENTA    where IDE_SRIMR= $P!{IDE_ASMIR} GROUP BY IDE_SRIMR),0),2) else 0 end)  as numeric),2)  else 0.00 end as basImp, '0' as valRetAsuOtrosEmpls,   '0' as valImpAsuEsteEmpl,      COALESCE(rentaI,0.00)  as valRet, COALESCE(VALOR_LIQUIDACION_GEEDP,0.00) as VALOR_LIQUIDACION_GEEDP,   round(COALESCE(COALESCE(aporte,0.00)+COALESCE(varios,0.00),0.00)*100/3.3333333,2) as baseSolidaria,   COALESCE(COALESCE(COALESCE(aporte,0.00)+COALESCE(varios,0.00),0.00),0.00)  as solidario,   round(round(COALESCE(COALESCE(aporte,0.00)+COALESCE(varios,0.00),0.00)*100*(CASE when COALESCE(COALESCE(numMesesAporte,0)+COALESCE(numMesesVarios,0),1) >0   then COALESCE(COALESCE(numMesesAporte,0)+COALESCE(numMesesVarios,0),1) else 1 end)/3.3333333,2)  /((CASE when COALESCE(COALESCE(numMesesAporte,0)+COALESCE(numMesesVarios,0),1) >0 then COALESCE(COALESCE(numMesesAporte,0)+COALESCE(numMesesVarios,0),1) else 1 end)) *0.0333,2)   as impuestoSolidario ,   COALESCE(COALESCE(numMesesAporte,0)+COALESCE(numMesesVarios,0),0) as numMeses ,    round(round(COALESCE(COALESCE(aporte,0.00)+COALESCE(varios,0.00),0.00)*100/3.3333333,2)/((CASE when COALESCE(COALESCE(numMesesAporte,0)+COALESCE(numMesesVarios,0),1) >0   then COALESCE(COALESCE(numMesesAporte,0)+COALESCE(numMesesVarios,0),1) else 1 end)) ,2)  as promedio  from gth_empleado as emp      left join sri_deducibles_empleado as ali on ali.ide_gtemp   = emp.ide_gtemp  and ali.IDE_SRDED =    (select  ide_srded from  SRI_DEDUCIBLES sri left join sri_impuesto_renta as imp    on sri.ide_srimr= imp.ide_srimr where sri.ide_srimr = $P!{IDE_ASMIR}   and DETALLE_SRDED like 'ALIMENTACION')     left join sri_deducibles_empleado as salud on salud.ide_gtemp   = emp.ide_gtemp     and salud.IDE_SRDED =(select  ide_srded from  SRI_DEDUCIBLES sri    left join sri_impuesto_renta as imp on sri.ide_srimr= imp.ide_srimr where sri.ide_srimr = $P!{IDE_ASMIR}  and DETALLE_SRDED like 'SALUD')    left join sri_deducibles_empleado as vivienda on vivienda.ide_gtemp   = emp.ide_gtemp      and vivienda.IDE_SRDED =(select  ide_srded from  SRI_DEDUCIBLES sri    left join sri_impuesto_renta as imp on sri.ide_srimr= imp.ide_srimr where sri.ide_srimr = $P!{IDE_ASMIR}  and DETALLE_SRDED like 'VIVIENDA')     left join sri_deducibles_empleado as educa on educa.ide_gtemp   = emp.ide_gtemp  and educa.IDE_SRDED =    (select  ide_srded from  SRI_DEDUCIBLES sri left join sri_impuesto_renta as imp on sri.ide_srimr= imp.ide_srimr    where sri.ide_srimr = $P!{IDE_ASMIR}  and DETALLE_SRDED like 'EDUCACION')    left join sri_deducibles_empleado as vest on vest.ide_gtemp   =    emp.ide_gtemp and vest.IDE_SRDED =(select  ide_srded from  SRI_DEDUCIBLES sri    left join sri_impuesto_renta as imp on sri.ide_srimr= imp.ide_srimr where sri.ide_srimr = $P!{IDE_ASMIR}  and DETALLE_SRDED like 'VESTIMENTA')   left join   gth_tipo_documento_identidad as tdocumento on tdocumento.ide_gttdi = emp.ide_gttdi      left join gth_discapacidad_empleado as disca on disca.ide_gtemp = emp.ide_gtemp      left join (select empDepar.ide_gtemp, sum(VALOR_LIQUIDACION_GEEDP) as VALOR_LIQUIDACION_GEEDP, fecha_geedp, FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP,   STRING_AGG(cast (ide_gttem as text), '-') as ide_gttem from GEN_EMPLEADOS_DEPARTAMENTO_PAR as empDepar   left join gen_detalle_empleado_departame as empDet on empDepar.ide_geded = empDet.ide_geded
+      where  activo_geded = true   and ide_geedp in ($P!{ide_geedp}) and (COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP )    is null or EXTRACT(YEAR  from COALESCE(FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP )  )=$P!{anioHasta})   group by empDepar.ide_gtemp,fecha_geedp,FECHA_FINCTR_GEEDP , FECHA_LIQUIDACION_GEEDP)   as depar on depar.ide_gtemp= emp.ide_gtemp    left join    (SELECT IDE_GTEMP , SUM(DETAROL.VALOR_NRDRO) AS fondo      FROM NRH_DETALLE_ROL detarol    left JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR emple on detarol.IDE_GEEDP=EMPLE.IDE_GEEDP     left JOIN NRH_DETALLE_RUBRO detrubro on detarol.IDE_NRDER=detrubro.IDE_NRDER      left JOIN NRH_RUBRO rubr on detrubro.IDE_NRRUB=rubr.IDE_NRRUB       where  IDE_NRROL in (select IDE_NRROL from NRH_ROL where IDE_GEPRO in (select IDE_GEPRO from GEN_PERIDO_ROL  WHERE IDE_GEANI=  $P{str_ide_anio}))    and detrubro.IDE_NRRUB in (347,345) group by IDE_GTEMP) as fondos on fondos.IDE_GTEMP = emp.IDE_GTEMP     left join (    SELECT IDE_GTEMP, SUM(DETAROL.VALOR_NRDRO) AS sueldos    FROM NRH_DETALLE_ROL detarol     left JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR emple on detarol.IDE_GEEDP=EMPLE.IDE_GEEDP      left JOIN NRH_DETALLE_RUBRO detrubro on detarol.IDE_NRDER=detrubro.IDE_NRDER       left JOIN NRH_RUBRO rubr on detrubro.IDE_NRRUB=rubr.IDE_NRRUB    where  IDE_NRROL in    (select IDE_NRROL from NRH_ROL where IDE_GEPRO in (select IDE_GEPRO from GEN_PERIDO_ROL  WHERE IDE_GEANI=  $P{str_ide_anio}))      and detrubro.IDE_NRRUB in (288,344) group by IDE_GTEMP) sueldo on sueldo.IDE_GTEMP = emp.IDE_GTEMP      left join (    SELECT IDE_GTEMP, SUM(DETAROL.VALOR_NRDRO) as aporte , count(DETAROL.VALOR_NRDRO)  as numMesesAporte    FROM NRH_DETALLE_ROL detarol left JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR emple on detarol.IDE_GEEDP=EMPLE.IDE_GEEDP      left JOIN NRH_DETALLE_RUBRO detrubro on detarol.IDE_NRDER=detrubro.IDE_NRDER       left JOIN NRH_RUBRO rubr on detrubro.IDE_NRRUB=rubr.IDE_NRRUB    where  IDE_NRROL in    (select IDE_NRROL from NRH_ROL where IDE_GEPRO in (select IDE_GEPRO from GEN_PERIDO_ROL  WHERE IDE_GEANI=  $P{str_ide_anio}))      and detrubro.IDE_NRRUB in (356) and VALOR_NRDRO !=0  group by IDE_GTEMP) solidario on solidario.IDE_GTEMP = emp.IDE_GTEMP      left join (    SELECT IDE_GTEMP, SUM(DETAROL.VALOR_NRDRO) as varios , count(DETAROL.VALOR_NRDRO)  as numMesesVarios FROM NRH_DETALLE_ROL detarol     left JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR emple on detarol.IDE_GEEDP=EMPLE.IDE_GEEDP      left JOIN NRH_DETALLE_RUBRO detrubro on detarol.IDE_NRDER=detrubro.IDE_NRDER       left JOIN NRH_RUBRO rubr on detrubro.IDE_NRRUB=rubr.IDE_NRRUB    where  IDE_NRROL in    (select IDE_NRROL from NRH_ROL where IDE_GEPRO in (select IDE_GEPRO from GEN_PERIDO_ROL  WHERE IDE_GEANI=  $P{str_ide_anio}))      and detrubro.IDE_NRRUB in (203) and VALOR_NRDRO !=0 and ide_nrrol in (19,20) group by IDE_GTEMP) solidarioVarios on solidarioVarios.IDE_GTEMP = emp.IDE_GTEMP      left join (   SELECT IDE_GTEMP, SUM(DETAROL.VALOR_NRDRO) AS sobresueldos    FROM NRH_DETALLE_ROL detarol   left JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR emple on detarol.IDE_GEEDP=EMPLE.IDE_GEEDP      left JOIN NRH_DETALLE_RUBRO detrubro on detarol.IDE_NRDER=detrubro.IDE_NRDER     left JOIN NRH_RUBRO rubr on detrubro.IDE_NRRUB=rubr.IDE_NRRUB       where  IDE_NRROL in (select IDE_NRROL from NRH_ROL where IDE_GEPRO    in (select IDE_GEPRO from GEN_PERIDO_ROL  WHERE IDE_GEANI= $P{str_ide_anio}))      and detrubro.IDE_NRRUB in (27,17,354,331,336,313) group by IDE_GTEMP) sobre on sobre.IDE_GTEMP = emp.IDE_GTEMP     left join (   SELECT IDE_GTEMP, SUM(DETAROL.VALOR_NRDRO) AS DecimoTercero    FROM NRH_DETALLE_ROL detarol     left JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR emple on detarol.IDE_GEEDP=EMPLE.IDE_GEEDP     left JOIN NRH_DETALLE_RUBRO detrubro on detarol.IDE_NRDER=detrubro.IDE_NRDER     left JOIN NRH_RUBRO rubr on detrubro.IDE_NRRUB=rubr.IDE_NRRUB    where  IDE_NRROL    in (select IDE_NRROL from NRH_ROL where IDE_GEPRO in (select IDE_GEPRO from GEN_PERIDO_ROL  WHERE IDE_GEANI=  $P{str_ide_anio}))     and detrubro.IDE_NRRUB in (334,368,367) group by IDE_GTEMP) decimoT on decimoT.IDE_GTEMP = emp.IDE_GTEMP     left join (   SELECT IDE_GTEMP, SUM(DETAROL.VALOR_NRDRO) AS decimoTercerAjuste       FROM NRH_DETALLE_ROL detarol    left JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR emple on detarol.IDE_GEEDP=EMPLE.IDE_GEEDP    left JOIN NRH_DETALLE_RUBRO detrubro on detarol.IDE_NRDER=detrubro.IDE_NRDER       left JOIN NRH_RUBRO rubr on detrubro.IDE_NRRUB=rubr.IDE_NRRUB    where  IDE_NRROL in   (select IDE_NRROL from NRH_ROL where IDE_GEPRO in (select IDE_GEPRO from GEN_PERIDO_ROL  WHERE IDE_GEANI=  $P{str_ide_anio}))    and detrubro.IDE_NRRUB in (369) group by IDE_GTEMP) decimoTA on decimoTA.IDE_GTEMP = emp.IDE_GTEMP      left join (   SELECT IDE_GTEMP, SUM(DETAROL.VALOR_NRDRO) AS decimoCuarto    FROM NRH_DETALLE_ROL detarol    left JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR emple on detarol.IDE_GEEDP=EMPLE.IDE_GEEDP      left JOIN NRH_DETALLE_RUBRO detrubro on detarol.IDE_NRDER=detrubro.IDE_NRDER       left JOIN NRH_RUBRO rubr on detrubro.IDE_NRRUB=rubr.IDE_NRRUB      where  IDE_NRROL in (select IDE_NRROL from NRH_ROL where IDE_GEPRO in (select IDE_GEPRO from GEN_PERIDO_ROL  WHERE IDE_GEANI=  $P{str_ide_anio}))      and detrubro.IDE_NRRUB in (333,359) group by IDE_GTEMP) decimoC on decimoC.IDE_GTEMP = emp.IDE_GTEMP      left join (   SELECT IDE_GTEMP, SUM(DETAROL.VALOR_NRDRO) AS rentaI   FROM NRH_DETALLE_ROL detarol      left JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR emple on detarol.IDE_GEEDP=EMPLE.IDE_GEEDP      left JOIN NRH_DETALLE_RUBRO detrubro on detarol.IDE_NRDER=detrubro.IDE_NRDER       left JOIN NRH_RUBRO rubr on detrubro.IDE_NRRUB=rubr.IDE_NRRUB       where  IDE_NRROL in (select IDE_NRROL from NRH_ROL where IDE_GEPRO in    (select IDE_GEPRO from GEN_PERIDO_ROL  WHERE IDE_GEANI=  $P{str_ide_anio}))   and detrubro.IDE_NRRUB in (42) group by IDE_GTEMP) renta    on renta.IDE_GTEMP = emp.IDE_GTEMP   left join (   SELECT IDE_GTEMP, SUM(DETAROL.VALOR_NRDRO) AS aporteIess      FROM NRH_DETALLE_ROL detarol    left JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR emple on detarol.IDE_GEEDP=EMPLE.IDE_GEEDP    left JOIN NRH_DETALLE_RUBRO detrubro on detarol.IDE_NRDER=detrubro.IDE_NRDER       left JOIN NRH_RUBRO rubr on detrubro.IDE_NRRUB=rubr.IDE_NRRUB      where  IDE_NRROL in (select IDE_NRROL from NRH_ROL    where IDE_GEPRO in (select IDE_GEPRO from GEN_PERIDO_ROL  WHERE IDE_GEANI=  $P{str_ide_anio}))      and detrubro.IDE_NRRUB in (44) group by IDE_GTEMP) iess on iess.IDE_GTEMP = emp.IDE_GTEMP      where depar.ide_gttem not like '%3%'      order by APELLIDO_PATERNO_GTEMP ||' '|| APELLIDO_MATERNO_GTEMP,     COALESCE(coalesce(PRIMER_NOMBRE_GTEMP,' ') ||' '|| coalesce(SEGUNDO_NOMBRE_GTEMP,' '),' ')) y]]>
+	</queryString>
+	<field name="nuruc" class="java.lang.String"/>
+	<field name="nomempresa" class="java.lang.String"/>
+	<field name="tipidret" class="java.lang.String"/>
+	<field name="idret" class="java.lang.String"/>
+	<field name="apellidotrab" class="java.lang.String"/>
+	<field name="nombretrab" class="java.lang.String"/>
+	<field name="estab" class="java.lang.String"/>
+	<field name="residenciatrab" class="java.lang.String"/>
+	<field name="pasisresidencia" class="java.lang.String"/>
+	<field name="aplicaconvenio" class="java.lang.String"/>
+	<field name="tipotrabajodiscap" class="java.lang.String"/>
+	<field name="porcentajediscap" class="java.math.BigDecimal"/>
+	<field name="tipiddiscap" class="java.lang.String"/>
+	<field name="iddiscap" class="java.lang.String"/>
+	<field name="suelsal" class="java.math.BigDecimal"/>
+	<field name="sobsuelcomremu" class="java.math.BigDecimal"/>
+	<field name="partutil" class="java.lang.String"/>
+	<field name="intgrabgen" class="java.lang.String"/>
+	<field name="imprentempl" class="java.lang.String"/>
+	<field name="decimotercer" class="java.math.BigDecimal"/>
+	<field name="decimocuarto" class="java.math.BigDecimal"/>
+	<field name="fondoreserva" class="java.math.BigDecimal"/>
+	<field name="salariodigno" class="java.lang.String"/>
+	<field name="otrosingrengrav" class="java.lang.String"/>
+	<field name="inggravconesteempl" class="java.math.BigDecimal"/>
+	<field name="sissalnet" class="java.lang.String"/>
+	<field name="apoperiess" class="java.math.BigDecimal"/>
+	<field name="aporperiessconotrosempls" class="java.lang.String"/>
+	<field name="descuentodiscapacidad" class="java.math.BigDecimal"/>
+	<field name="descuentotercera" class="java.math.BigDecimal"/>
+	<field name="vivienda" class="java.math.BigDecimal"/>
+	<field name="salud" class="java.math.BigDecimal"/>
+	<field name="educacion" class="java.math.BigDecimal"/>
+	<field name="alimentacion" class="java.math.BigDecimal"/>
+	<field name="vestimenta" class="java.math.BigDecimal"/>
+	<field name="basimp" class="java.math.BigDecimal"/>
+	<field name="valretasuotrosempls" class="java.lang.String"/>
+	<field name="valimpasuesteempl" class="java.lang.String"/>
+	<field name="valret" class="java.math.BigDecimal"/>
+	<field name="valor_liquidacion_geedp" class="java.math.BigDecimal"/>
+	<field name="basesolidaria" class="java.math.BigDecimal"/>
+	<field name="solidario" class="java.math.BigDecimal"/>
+	<field name="impuestosolidario" class="java.math.BigDecimal"/>
+	<field name="nummeses" class="java.lang.Long"/>
+	<field name="promedio" class="java.math.BigDecimal"/>
+	<field name="impuestocausado" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="18" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="695" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="8cba3f82-ccc6-4414-ac86-8b1939c645d6" key="staticText-98" x="2" y="136" width="386" height="12"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[SUELDOS Y SALARIOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="28c90f34-429e-42d5-a25a-ec2c65a53342" key="staticText-99" x="388" y="136" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[301]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ab5c875a-4ac7-4987-8807-e0e3aa82b095" key="staticText-100" x="408" y="136" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="582a6967-7696-400c-a0fb-148e85406cd0" key="staticText-101" x="2" y="148" width="386" height="12"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[SOBRESUELDOS, COMISIONES, BONOS Y OTROS INGRESOS GRAVADOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="40c4952d-93f9-4fc6-8e1b-ebfb356d75c0" key="staticText-102" x="2" y="160" width="386" height="12"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[PARTICIPACIÓN UTILIDADES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="19bea097-35cc-4f3c-9435-244d606c09ab" key="staticText-103" x="2" y="172" width="386" height="12"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[INGRESOS GRAVADOS GENERADOS CON OTROS EMPLEADORES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b540228a-3114-40b5-9ad6-e61dab1f44b0" key="staticText-104" x="2" y="184" width="386" height="12"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[DÉCIMO TERCER SUELDO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6b7579ab-d918-47a0-b56a-88725c28d621" key="staticText-105" x="2" y="196" width="386" height="12"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[DÉCIMO CUARTO SUELDO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a0cea5cf-d435-46c8-a1e0-93561c06e66b" key="staticText-106" x="2" y="208" width="386" height="12"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[FONDO DE RESERVA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="49df1520-a75d-4708-b08a-4f55bf50d2a7" key="staticText-107" x="2" y="220" width="386" height="12"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[OTROS INGRESOS EN RELACIÓN DE DEPENDENCIA QUE NO CONSTITUYEN RENTA GRAVADA ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d2c88752-ee61-4ec1-bc1a-c666d6e154a0" key="staticText-108" x="2" y="232" width="386" height="12"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[(-) APORTE PERSONAL IESS CON ESTE EMPLEADOR (únicamente pagado por el trabajador)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="76179383-3d8c-4657-bf66-7e6439408013" key="staticText-109" x="2" y="244" width="386" height="12"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[(-) APORTE PERSONAL IESS CON OTROS EMPLEADORES (únicamente pagado por el trabajador)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="681e97fa-635b-4040-b454-f88e6516cbe2" key="staticText-111" x="2" y="256" width="386" height="12"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[(-) DEDUCCIÓN GASTOS PERSONALES - VIVIENDA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b84df984-0281-4245-91ae-989f815358b7" key="staticText-112" x="2" y="268" width="386" height="12"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[(-) DEDUCCIÓN GASTOS PERSONALES - SALUD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="858048b7-47e6-4aa9-9625-82d8f0cad5ae" key="staticText-113" x="2" y="304" width="386" height="12"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[(-) DEDUCCIÓN GASTOS PERSONALES - VESTIMENTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9a5a481e-4abe-4f95-ab1b-bb63807dcf30" key="staticText-114" x="2" y="280" width="386" height="12"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[(-) DEDUCCIÓN GASTOS PERSONALES - EDUCACIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="961e375d-a7bf-4601-91f0-41b1f18e1651" key="staticText-115" x="2" y="292" width="386" height="12"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[(-) DEDUCCIÓN GASTOS PERSONALES - ALIMENTACIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="31673dc1-44d7-4975-b3f6-9c0163cc6e27" key="staticText-116" x="2" y="316" width="386" height="12"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[(-) EXONERACIÓN POR DISCAPACIDAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="75f04947-c0ab-4a2c-aa86-59774e754ed1" key="staticText-117" x="2" y="352" width="386" height="15"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[BASE IMPONIBLE GRAVADA
+301+303+305+307-351-353-361-363-365-367-369-371-373+381 mayor o igual a 0 ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1e0d5c6f-7644-43e4-bd41-cbd34b8afbbb" key="staticText-118" x="2" y="328" width="386" height="12"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[(-) EXONERACIÓN POR TERCERA EDAD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b0c72756-cf58-4439-bc4d-291259dc2cec" key="staticText-119" x="2" y="340" width="386" height="12"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[IMPUESTO A LA RENTA ASUMIDO POR ESTE EMPLEADOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a2ae7382-e183-4ace-b222-7c94865e784b" key="staticText-120" x="2" y="367" width="386" height="12"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[IMPUESTO A LA RENTA CAUSADO ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="240ad813-d5f0-4833-8229-71e5ea9eabf2" key="staticText-121" x="2" y="379" width="386" height="12"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[VALOR DEL IMPUESTO RETENIDO Y ASUMIDO POR OTROS EMPLEADORES DURANTE EL PERÍODO DECLARADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bcb2d501-6e88-47ab-a649-bc74dccc25b9" key="staticText-122" x="2" y="391" width="386" height="12"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[VALOR DEL IMPUESTO ASUMIDO POR ESTE EMPLEADOR   ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cd74cf3f-f7e3-4c30-90ad-a0d2af881e95" key="staticText-123" x="2" y="403" width="386" height="12"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[VALOR DEL IMPUESTO RETENIDO AL TRABAJADOR POR ESTE EMPLEADOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c7d50786-1962-4e27-a817-3ff144d2830e" key="staticText-124" x="2" y="415" width="386" height="15"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[INGRESOS GRAVADOS CON ESTE EMPLEADOR (informativo)
+301+303+305+381]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9e214fcf-d653-4d92-a1a9-62e58b8c286c" key="staticText-125" x="388" y="148" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[303]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fd81b9e3-44d3-4cc3-884e-3b0f11e5226d" key="staticText-126" x="408" y="148" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[+]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="55289e1c-b8e7-4353-8ae2-c13c5aa5e97d" key="textField-112" positionType="Float" x="428" y="148" width="106" height="12" forecolor="#000000"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sobsuelcomremu}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="8be655db-bde1-404b-b9b0-0e06ff1f4c6a" key="staticText-127" x="388" y="160" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[305]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="09117dbb-8863-41c8-9ad7-f4ab8c36bc7b" key="staticText-128" x="408" y="160" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[+]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="e72fa7c7-e741-45bf-b244-c8172d04627a" key="textField-113" positionType="Float" x="428" y="160" width="106" height="12" forecolor="#000000"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{partutil}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="6539a0a8-5108-4c23-92e4-c1efc5291426" key="staticText-129" x="388" y="172" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[307]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="1dc5b958-9320-4959-959d-550dca71d8ff" key="textField-114" positionType="Float" x="428" y="196" width="106" height="12" forecolor="#000000"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{decimocuarto}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c3c1f8de-964a-41a4-ae07-3d80b6ad42d1" key="staticText-130" x="408" y="172" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[+]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="66ed6c78-0eb5-47b7-96ac-4de11d22349d" key="textField-115" positionType="Float" x="428" y="172" width="106" height="12" forecolor="#000000"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{intgrabgen}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="801734a7-5b24-4380-93cb-5066555e00d5" key="staticText-131" x="388" y="184" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[311]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c0338bb6-6be1-4508-ab6e-7c42f94dc9e6" key="staticText-132" x="388" y="196" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[313]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3e848a15-f1d7-4fdb-90ac-6e283df82d0d" key="staticText-133" x="408" y="196" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="55b5f4fa-4179-433b-8751-323d26872995" key="staticText-134" x="408" y="184" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="b32e4936-7431-407a-919b-c7a6f51efe7e" key="textField-116" positionType="Float" x="428" y="184" width="106" height="12" forecolor="#000000"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{decimotercer}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="297f21a0-ed07-4f97-9577-8d92c99c1d08" key="staticText-135" x="388" y="208" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[315]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2075d4ae-8865-425f-87ad-26ad682bb0c4" key="staticText-136" x="388" y="220" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[317]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="65170828-cf8a-4799-888d-1f4c1e294b7d" key="staticText-137" x="388" y="232" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[351]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="262d209d-b081-41da-a37f-7ff9a3a31ecf" key="staticText-138" x="388" y="244" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[353]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="76655a39-ec19-4156-8302-bb151ac72f4f" key="staticText-140" x="388" y="256" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[361]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d8d753fd-d781-45f7-b21d-0fec85fb3226" key="staticText-141" x="408" y="208" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bd84c54a-d3cc-4606-854d-0db6271b9db9" key="staticText-142" x="408" y="220" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2abf00b1-42a4-442f-9f5e-0cb9797095aa" key="staticText-143" x="408" y="232" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[-]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bedf9f3a-2d32-48cc-8141-2c41b69ffe22" key="staticText-144" x="408" y="244" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[-]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e116c361-1b14-4113-9b22-cdee28a48ab0" key="staticText-146" x="408" y="256" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[-]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="eea70a7c-f4ac-4da9-bd59-5e5111b115ba" key="textField-117" positionType="Float" x="428" y="208" width="106" height="12" forecolor="#000000"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fondoreserva}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="3339c5a2-d6de-4228-8e9a-4c4cff011a13" key="textField-118" positionType="Float" x="428" y="220" width="106" height="12" forecolor="#000000"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{otrosingrengrav}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="15e60266-74b6-40ee-a466-4f5774c4140a" key="textField-119" positionType="Float" x="428" y="232" width="106" height="12" forecolor="#000000"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{apoperiess}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="d1a1cb67-1342-4b23-92f8-d325340ed230" key="textField-120" positionType="Float" x="428" y="244" width="106" height="12" forecolor="#000000"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{aporperiessconotrosempls}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="9705784b-6642-4ef4-ac22-dbce69331bac" key="textField-122" positionType="Float" x="428" y="256" width="106" height="12" forecolor="#000000"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{vivienda}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="4fd38214-1983-4dfb-839b-72729b2f8ee5" key="staticText-147" x="388" y="268" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[363]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ba7905ed-e376-4f42-8919-15081783b093" key="staticText-148" x="408" y="268" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[-]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="28363f9d-b0aa-4bbb-a591-bdb3299f86c3" key="textField-123" positionType="Float" x="428" y="268" width="106" height="12" forecolor="#000000"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{salud}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="e12a9c1c-1135-4529-86f4-41a729d4964a" key="staticText-149" x="388" y="280" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[365]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0e036889-c405-4e42-b4a2-5087dc29920c" key="staticText-150" x="408" y="280" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[-]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="49ccc641-476f-4e88-9005-95969b82c20b" key="textField-124" positionType="Float" x="428" y="280" width="106" height="12" forecolor="#000000"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{educacion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="d3fdcb56-7369-4cd3-8e5f-e07dad512d57" key="staticText-151" x="388" y="292" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[367]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="66211805-9b2d-4bd9-9550-a9da02ddd9d4" key="staticText-152" x="408" y="292" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[-]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="c1503259-ef74-4d0b-9bd3-c128bb0e31f5" key="textField-125" positionType="Float" x="428" y="292" width="106" height="12" forecolor="#000000"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{alimentacion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="6c1ac34f-cf8d-4532-90cb-b1e463a6d462" key="staticText-153" x="388" y="304" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[369]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="a935ac02-f356-4e81-b749-436a4e1a5924" key="textField-126" positionType="Float" x="428" y="328" width="106" height="12" forecolor="#000000"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descuentotercera}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c938d120-f014-48d2-b23b-31fbd963280b" key="staticText-154" x="408" y="304" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[-]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="4c09aa4c-9c63-4d72-ac1c-2eaae0069447" key="textField-127" positionType="Float" x="428" y="304" width="106" height="12" forecolor="#000000"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{vestimenta}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="0769bce5-8d9d-4bb0-aa54-1a9386908c62" key="staticText-155" x="388" y="316" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[371]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bfd9fa29-37d2-4f42-9fd4-9bb439569690" key="staticText-156" x="388" y="328" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[373]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6a381c9b-d1d5-4e2a-ac2f-c66e42df9861" key="staticText-157" x="408" y="328" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[-]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="09d7f78e-8e6b-4da2-82e3-a06231614365" key="staticText-158" x="408" y="316" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[-]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="afa3a157-bc0f-4080-a9ab-377a1ed48687" key="textField-128" positionType="Float" x="428" y="316" width="106" height="12" forecolor="#000000"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descuentodiscapacidad}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f6e1a096-ef87-4c43-be5b-e00a21699221" key="staticText-159" x="388" y="340" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[381]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="65b8d73a-dd22-4567-8f66-40004b7c3943" key="staticText-160" x="388" y="352" width="20" height="15"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[399]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c2ef98ea-9c15-4ed0-9650-c750bbd04624" key="staticText-161" x="388" y="367" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[401]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1853a099-2f94-42e1-8d96-ecf63dbbebc7" key="staticText-162" x="388" y="379" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[403]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d1396da1-ab5a-4f90-934a-57adfcc1c1a0" key="staticText-163" x="388" y="391" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[405]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="66f1a561-0ec6-4c0c-89e5-29341210eb9c" key="staticText-164" x="388" y="403" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[407]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="27b28000-49ca-4ac3-be15-b92a3baeef40" key="staticText-165" x="408" y="340" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="aab92137-2c2e-4bff-832e-014d9aa6d486" key="staticText-166" x="408" y="352" width="20" height="15"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[=]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4ec9bac7-7365-4561-a994-d3ded7eb1bc5" key="staticText-167" x="408" y="367" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[=]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1ca45e78-aede-4d1d-8a62-8b441b90a019" key="staticText-168" x="408" y="379" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="aef2235b-1671-483a-af51-5b159a5ceb33" key="staticText-169" x="408" y="391" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="64b17c10-93f5-4bda-bcbc-86ea6d3e105f" key="staticText-170" x="408" y="403" width="20" height="12"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="4ac85d7c-ea67-4f34-a5d4-2eb95057e16e" key="textField-129" positionType="Float" x="428" y="340" width="106" height="12" forecolor="#000000"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{imprentempl}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="5eefe0c3-502e-43e5-92e5-e3d5c1c26741" key="textField-130" positionType="Float" x="428" y="352" width="106" height="15" forecolor="#000000"/>
+				<box rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{basimp}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="90cdb57c-d4be-4318-8050-e0f5eb2dd4df" key="textField-131" positionType="Float" x="428" y="367" width="106" height="12" forecolor="#000000"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{impuestocausado}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="fefb1410-5bff-4453-afb6-da7498eed405" key="textField-132" positionType="Float" x="428" y="379" width="106" height="12" forecolor="#000000"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valretasuotrosempls}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="0d57927a-d988-4c77-b6c4-ed76b7d57458" key="textField-133" positionType="Float" x="428" y="391" width="106" height="12" forecolor="#000000"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valimpasuesteempl}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="846afedd-f3ca-4ce3-b794-f524197f7349" key="textField-134" positionType="Float" x="428" y="403" width="106" height="12" forecolor="#000000"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valret}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="650bff84-f23e-4f63-a6b4-71d02e181533" key="staticText-171" x="388" y="415" width="20" height="15"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[349]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a6b19fa0-5eb8-442b-ab9a-c79512b6265a" key="staticText-172" x="408" y="415" width="20" height="15"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[=]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="67a64831-2e8e-4592-b977-e0ea9a7b34e1" key="textField-135" positionType="Float" x="428" y="415" width="106" height="15" forecolor="#000000"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{inggravconesteempl}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="36ef1ce0-84d4-4c41-8d48-cc0bf15be881" key="textField-112" positionType="Float" x="428" y="136" width="106" height="12" forecolor="#000000"/>
+				<box leftPadding="4" rightPadding="2">
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{suelsal}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="de75b59a-7f76-4269-9a76-0b1a8800776b" key="staticText-97" positionType="FixRelativeToBottom" mode="Transparent" x="2" y="124" width="532" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box topPadding="1" leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Tahoma" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Liquidación del Impuesto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="df0a4f3a-450b-4a48-997f-a3adc04573bf" key="staticText-89" x="216" y="62" width="25" height="17" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[106]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="3c52f297-50af-4fd9-8293-08c7f603fbd5" x="241" y="99" width="293" height="9" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{apellidotrab}+"   "+$F{nombretrab}]]></textFieldExpression>
+			</textField>
+			<image vAlign="Middle">
+				<reportElement uuid="0631b6ce-c334-4f9f-849c-882583adff39" key="image-1" mode="Transparent" x="326" y="-32" width="38" height="32"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<imageExpression><![CDATA[]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="18ce2448-b685-4826-aa95-9c5173bff2aa" key="staticText-64" x="463" y="0" width="71" height="32"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="85d88e5b-5161-4390-8fd6-866fdef8f331" key="staticText-93" x="27" y="91" width="189" height="8" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[CÉDULA O PASAPORTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e35d0cf9-2d24-4469-8347-bf6704f511be" key="staticText-67" x="434" y="32" width="50" height="7" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="4" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[MES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="90de6d9e-54be-4278-ae80-bd0c80379b8f" key="staticText-88" x="27" y="62" width="189" height="8" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[RUC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7753b984-e5dc-4164-9444-620a9d077899" key="staticText-91" positionType="FixRelativeToBottom" mode="Transparent" x="2" y="79" width="532" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box topPadding="1" leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Tahoma" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[200 Identificación del Trabajador (Contribuyente)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5b3493f7-aaaa-4bd7-8452-64e0e6c9bfa3" key="staticText-95" x="241" y="91" width="293" height="8" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[APELLIDOS Y NOMBRES COMPLETOS]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a388ea06-06a2-4895-aef1-9f16e14937ef" key="textField-103" positionType="Float" x="364" y="39" width="70" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="329e7c09-c0e1-4a2b-acf4-e3fe74e131f5" key="staticText-61" x="269" y="32" width="70" height="18" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[FECHA DE ENTREGA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4b929d7f-4cf1-4798-8ec8-d089b48ed8f8" key="staticText-173" x="16" y="-31" width="119" height="32"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e2c35281-e634-4d4d-a9ce-f06ad016dd51" key="textField-105" positionType="Float" x="484" y="39" width="50" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="a8705504-4467-4218-a6b9-cc718bf36c27" key="staticText-87" x="2" y="62" width="25" height="17" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[105]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="60f6709a-cd3c-4f39-9839-3a3739d3a546" key="staticText-86" positionType="FixRelativeToBottom" mode="Transparent" x="2" y="50" width="532" height="12"/>
+				<box topPadding="1" leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Tahoma" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[100 Identificación del Empleador (Agente de Retención)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="920efc0b-6b39-4657-92f0-652c2dd10471" key="staticText-65" x="468" y="13" width="59" height="8" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4fec4d5d-a09c-4d24-ba1e-99c70897de96" key="staticText-63" x="444" y="0" width="19" height="32" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[No.]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="09569284-6bdd-4c12-8132-8b3ea2ef44b8" x="41" y="1" width="38" height="20"/>
+				<imageExpression><![CDATA[$P{SUBREPORT_DIR}+"/reportes/rep_sri/im_sri.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="1896e813-11e9-4bc0-8892-ba53ce9bd43c" key="staticText-66" x="364" y="32" width="70" height="7" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="4" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[AÑO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="436c3106-fb69-4cae-af52-651d64721c7a" key="staticText-92" x="2" y="91" width="25" height="17" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[201]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="2ba8a92d-d40f-49a6-b80a-35380c0e066d" x="27" y="70" width="189" height="9" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2" rightPadding="4">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nuruc}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="5fc67d7a-ed47-47f0-b5b8-a007e513a7e9" key="textField-104" positionType="Float" x="434" y="39" width="50" height="11" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="25232db3-d288-46c0-9bce-9a7c0027bb60" key="staticText-5" x="121" y="32" width="70" height="18" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[EJERCICIO FISCAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3f745eef-dfea-437c-bc61-4efa6c916e16" key="staticText-1" x="121" y="0" width="323" height="16" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Bottom">
+					<font fontName="Tahoma" size="7" isBold="true" isItalic="false" isUnderline="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[COMPROBANTE DE RETENCIONES EN LA FUENTE DEL IMPUESTO A LA RENTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2c25d974-cca1-446d-8c31-dfd3adb93157" key="staticText-60" x="191" y="32" width="25" height="18" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[102]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a281d827-d493-46f8-bf8d-d6306b7227ed" key="textField-2" positionType="Float" x="216" y="32" width="53" height="18" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f7d9b47f-8721-4b7a-8de3-b748349278a9" key="staticText-90" x="241" y="62" width="293" height="8" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[RAZÓN SOCIAL O APELLIDOS Y NOMBRES COMPLETOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4c6fb50e-561b-4028-bb55-3817104f7b26" key="staticText-94" x="216" y="91" width="25" height="17"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[202]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c431a245-ea53-4cd4-ab4f-731019ecb995" key="staticText-59" x="2" y="50" width="119" height="18"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="true" isItalic="false" isUnderline="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[FORMULARIO 107
+RESOLUCIÓN No. NAC-DGERCGC12-00829]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b9413766-e355-4fc2-933b-d0e373bcba1d" key="staticText-68" x="484" y="32" width="50" height="7" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="4" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[DIA]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="9604772b-b1ea-4a57-9a2e-d2d79b94d763" x="27" y="99" width="189" height="9" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2" rightPadding="4">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{idret}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="656a5f47-841d-43cf-b4e8-5b93b35bdef0" x="241" y="70" width="293" height="9" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2" rightPadding="4">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nomempresa}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="40dec0de-74db-49cf-846f-7a485bc9bcf6" key="staticText-62" x="339" y="32" width="25" height="18" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[103]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9a901596-0cbe-4f54-9827-4d542dcf42a2" key="staticText-3" x="121" y="16" width="323" height="16" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Tahoma" size="7" isBold="true" isItalic="false" isUnderline="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[POR INGRESOS DEL TRABAJO EN RELACIÓN DE DEPENDENCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d4f09f9b-092d-4c30-a484-2a993709c965" key="staticText-58" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="0" y="443" width="534" height="12" isPrintInFirstWholeBand="true"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Tahoma" size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[IMPORTANTE: Sírvase leer cada una de las siguientes instrucciones.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2c27a711-2b9b-4fcf-9bb0-ec0c89b93695" key="staticText-69" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="0" y="455" width="534" height="16" isPrintInFirstWholeBand="true"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<text><![CDATA[1.- El trabajador que, en el mismo período fiscal haya reiniciado su actividad con otro empleador, estará en la obligación de entregar el formulario 107 entregado por su anterior empleador a su nuevo empleador, para que aquel, efectúe el cálculo de las retenciones a realizarse en lo que resta del año.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8908bf95-2870-429d-96b2-0db3284c4014" key="staticText-70" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="0" y="471" width="534" height="10" isPrintInFirstWholeBand="true"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<text><![CDATA[2.- El campo 307 deberá ser llenado con la información registrada en el campo 349 del Formulario 107 entregado por el anterior empleador, y/o con la proyección de ingresos de otros empleadores actuales, en caso de que el empleador que registra y entrega el presente formulario haya efectuado la retención por los ingresos percibidos con éstos últimos.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a3b79e08-9bfb-44c6-97c5-cec0c7cbf650" key="staticText-71" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="0" y="481" width="534" height="10" isPrintInFirstWholeBand="true"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<text><![CDATA[3.- La deducción total por gastos personales no deberá superar el 50% del total de ingresos gravados, y en ningún caso será mayor al equivalente a 1.3 veces la fracción básica exenta de Impuesto a la Renta de personas naturales.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1257a576-c2a6-4fe9-8808-ed1fcacb26b4" key="staticText-72" isPrintRepeatedValues="false" mode="Opaque" x="0" y="491" width="534" height="16" isPrintInFirstWholeBand="true"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<text><![CDATA[4.- A partir del año 2011 debe considerarse como cuantía máxima para cada tipo de gasto, el monto equivalente a la fracción básica exenta de Impuesto a la Renta en:
+vivienda 0.325 veces, educación 0.325 veces, alimentación 0.325 veces, vestimenta 0.325, salud 1.3 veces.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bb97abbc-6142-4c1a-be4b-64471f35d5aa" key="staticText-73" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="0" y="507" width="534" height="10" isPrintInFirstWholeBand="true"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<text><![CDATA[5.- El trabajador deberá presentar el Anexo de Gastos Personales que deduzca, de cumplir las condiciones establecidas por el Servicio de Rentas Internas.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="54c59a84-7da4-4fbb-8798-07a185f2630c" key="staticText-74" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="0" y="517" width="534" height="16" isPrintInFirstWholeBand="true"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<text><![CDATA[6.- De conformidad con la Resolución No. NAC-DGER2008-0566 publicada en el Registro Oficial No. 342 el 21 de mayo del 2008, el beneficio de la exoneración por tercera edad se configura a partir del ejercicio en el cual el beneficiario cumpla los 65 años de edad. El monto de la exoneración será el equivalente al doble de la fracción básica exenta de Impuesto a la Renta.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3aca7f0f-fbba-4a5e-8705-f5caeed6a28f" key="staticText-75" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="0" y="533" width="534" height="10" isPrintInFirstWholeBand="true"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<text><![CDATA[7.- A partir del año 2013, conforme lo dispuesto en la Ley Orgánica de Discapacidades el monto de la exoneración por discapacidad será el equivalente al doble de la fracción básica exenta de Impuesto a la Renta.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ae0f2737-4d94-4d70-8fa9-23848cd31260" key="staticText-76" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="0" y="543" width="534" height="40" isPrintInFirstWholeBand="true"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<text><![CDATA[8.- El presente formulario constituye la declaración de Impuesto a la Renta del trabajador, siempre que durante el período declarado la persona únicamente haya prestado sus servicios en relación de dependencia con el empleador que entrega este formulario, y no existan valores de gastos personales que deban ser reliquidados. En caso de pérdida de este documento el trabajador deberá solicitar una copia a su empleador.
+Por el contrario, el trabajador deberá presentar obligatoriamente su declaración de Impuesto a la Renta cuando haya obtenido rentas en relación de dependencia con dos o más empleadores o haya recibido además de su remuneración ingresos de otras fuentes como por ejemplo: rendimientos financieros, arrendamientos, ingresos por el libre ejercicio profesional, u otros ingresos, los cuales en conjunto superen la fracción básica exenta de Impuesto a la Renta de personas naturales, o cuando tenga que reliquidar gastos personales con aquellos efectivamente incurridos, teniendo presente los límites referidos en las notas 3 y 4 de este documento.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4a00dc94-77ac-44f0-a6cb-6af7bafc53e4" key="staticText-77" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="0" y="583" width="534" height="9" isPrintInFirstWholeBand="true"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DECLARO QUE LOS DATOS PROPORCIONADOS EN ESTE DOCUMENTO SON EXACTOS Y VERDADEROS, POR LO QUE ASUMO LA RESPONSABILIDAD LEGAL QUE DE ELLA SE DERIVEN (Art. 101 de la L.R.T.I.)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4a8e19e2-7705-443b-ad65-c2a33c86c622" key="staticText-78" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="0" y="592" width="135" height="7" isPrintInFirstWholeBand="true"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FIRMA DEL AGENTE DE RETENCIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="106ded7f-cb40-48af-a355-ec81d3752ed1" key="staticText-79" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="0" y="599" width="135" height="59" isPrintInFirstWholeBand="true"/>
+				<box leftPadding="2" rightPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c543105c-66ae-4194-9dd0-09783109d04f" key="staticText-80" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="135" y="592" width="135" height="7" isPrintInFirstWholeBand="true"/>
+				<box leftPadding="2" rightPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FIRMA DEL TRABAJADOR CONTRIBUYENTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1321b383-ce6a-4254-9680-73e3d2263537" key="staticText-82" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="270" y="592" width="264" height="7" isPrintInFirstWholeBand="true"/>
+				<box leftPadding="2" rightPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FIRMA DEL CONTADOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c02d064c-3cf0-4a98-92b7-3046767da7de" key="staticText-83" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="270" y="599" width="264" height="42" isPrintInFirstWholeBand="true"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9f751a64-d3d5-4802-bc64-397faf65ad59" key="staticText-79" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="135" y="599" width="135" height="59" isPrintInFirstWholeBand="true"/>
+				<box leftPadding="2" rightPadding="2">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="Tahoma" size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1e275f77-3198-4149-94df-79afe6f36ac1" key="staticText-84" x="270" y="641" width="25" height="17"/>
+				<box>
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[199]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a1741e3d-edc1-45d3-b277-9877f1aaca20" key="staticText-85" positionType="FixRelativeToBottom" isPrintRepeatedValues="false" mode="Opaque" x="295" y="642" width="239" height="8" isPrintInFirstWholeBand="true"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RUC CONTADOR]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="8edf99e8-729c-4d97-a999-62b43e15e2b5" key="textField-106" positionType="Float" x="295" y="650" width="239" height="8" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nuruc}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b0b6a02c-0894-4311-96db-55d243d1d3fd" x="364" y="39" width="70" height="11" isPrintWhenDetailOverflows="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{anio}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="80da592e-8779-410f-a606-937cb9cf79a3" x="435" y="39" width="49" height="11" isPrintWhenDetailOverflows="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{mes}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="bb06fcb2-127d-48c4-82a0-5c6ff626ed7f" x="484" y="39" width="50" height="11" isPrintWhenDetailOverflows="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{dia}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="69227ef6-61a4-40d6-88df-036443377843" x="216" y="32" width="53" height="18" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{anioHasta}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

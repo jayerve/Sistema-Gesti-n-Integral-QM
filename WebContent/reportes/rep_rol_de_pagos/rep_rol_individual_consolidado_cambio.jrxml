@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_rol_individual_consolidado_cambio" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="BlankPage" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b2955681-fbe3-4dfd-99f5-d7f83d792029">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="IDE_GEPRO" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IDE_NRDTN" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IDE_GEEDP" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IDE_NRTIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:/eclipse-jee-kepler-SR2-win32/Proyectos/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="par_total_recibir" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="par_total_ingresos" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="par_total_egresos" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_usua" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[(SELECT EMP.IDE_GTEMP,
+AREA.DETALLE_GEARE AS AREA,
+DEP.DETALLE_GEDEP AS DEPARTAMENTO,
+OCUPACIONAL.DETALLE_GEGRO AS GRUPO_OCUPACIONAL,
+FUNCIONAL.DETALLE_GECAF AS FUNCIONAL,
+EMP.APELLIDO_PATERNO_GTEMP ||'  '|| EMP.APELLIDO_MATERNO_GTEMP ||'  '|| EMP.PRIMER_NOMBRE_GTEMP ||'  '||EMP.SEGUNDO_NOMBRE_GTEMP AS EMPLEADO,
+EMP.DOCUMENTO_IDENTIDAD_GTEMP AS CEDULA,
+RUB.DETALLE_NRRUB AS RUBROS,
+TIPORUBRO.IDE_NRTIR,
+COALESCE(TIPORUBRO.SIGNO_NRTIR,3)as SIGNO_NRTIR,
+DETA.VALOR_NRDRO AS MONTO,
+PERIODO.FECHA_INICIAL_GEPRO AS FECHA_INICIAL,
+PERIODO.FECHA_FINAL_GEPRO AS FECHA_FINAL,
+MES.DETALLE_GEMES AS MES,
+ANIO.DETALLE_GEANI AS ANIO,
+SUCU.NOM_SUCU,
+a.total_recibir,
+b.total_ingresos,
+c.total_egresos
+FROM NRH_DETALLE_ROL DETA
+LEFT JOIN NRH_ROL ROL ON ROL.IDE_NRROL=DETA.IDE_NRROL
+LEFT JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR PAR ON PAR.IDE_GEEDP=DETA.IDE_GEEDP
+LEFT JOIN GTH_TIPO_CONTRATO CONTRATO ON CONTRATO.IDE_GTTCO=PAR.IDE_GTTCO
+LEFT JOIN GTH_TIPO_EMPLEADO TIPOEMP ON TIPOEMP.IDE_GTTEM=PAR.IDE_GTTEM
+LEFT JOIN SIS_SUCURSAL SUCU ON SUCU.IDE_SUCU=PAR.IDE_SUCU
+LEFT JOIN NRH_DETALLE_RUBRO DERUBRO ON DERUBRO.IDE_NRDER=DETA.IDE_NRDER
+LEFT JOIN GEN_DEPARTAMENTO DEP ON DEP.IDE_GEDEP=PAR.IDE_GEDEP
+LEFT JOIN GEN_GRUPO_OCUPACIONAL OCUPACIONAL ON OCUPACIONAL.IDE_GEGRO=PAR.IDE_GEGRO
+LEFT JOIN GEN_CARGO_FUNCIONAL FUNCIONAL ON FUNCIONAL.IDE_GECAF=PAR.IDE_GECAF
+LEFT JOIN GTH_EMPLEADO EMP ON EMP.IDE_GTEMP=PAR.IDE_GTEMP
+LEFT JOIN GEN_AREA AREA ON AREA.IDE_GEARE=PAR.IDE_GEARE
+LEFT JOIN NRH_RUBRO  RUB ON  DERUBRO.IDE_NRRUB=RUB.IDE_NRRUB
+LEFT JOIN NRH_TIPO_RUBRO TIPORUBRO ON TIPORUBRO.IDE_NRTIR=RUB.IDE_NRTIR
+LEFT JOIN GEN_PERIDO_ROL PERIODO ON PERIODO.IDE_GEPRO=ROL.IDE_GEPRO
+LEFT JOIN GEN_MES MES ON MES.IDE_GEMES=PERIODO.IDE_GEMES
+LEFT JOIN GEN_ANIO ANIO ON ANIO.IDE_GEANI=PERIODO.IDE_GEANI
+LEFT JOIN (
+SELECT drol.ide_geedp,sum(valor_nrdro) as total_recibir from
+nrh_detalle_rol drol
+LEFT JOIN NRH_ROL ROL ON ROL.IDE_NRROL=DROL.IDE_NRROL
+where DROL.ide_nrder in (select ide_nrder from nrh_detalle_rubro where ide_nrrub = 131) AND ROL.IDE_GEPRO IN($P!{IDE_GEPRO}) AND DROL.IDE_GEEDP=$P{IDE_GEEDP}
+GROUP BY DROL.ide_geedp
+)a ON deta.ide_geedp=a.ide_geedp
+LEFT JOIN (
+SELECT drol.ide_geedp,sum(valor_nrdro) as total_ingresos from
+nrh_detalle_rol drol
+LEFT JOIN NRH_ROL ROL ON ROL.IDE_NRROL=DROL.IDE_NRROL
+where DROL.ide_nrder in (select ide_nrder from nrh_detalle_rubro where ide_nrrub = 256) AND ROL.IDE_GEPRO IN($P!{IDE_GEPRO}) AND DROL.IDE_GEEDP=$P{IDE_GEEDP}
+GROUP BY DROL.ide_geedp
+)b ON deta.ide_geedp=b.ide_geedp
+LEFT JOIN (
+SELECT drol.ide_geedp,sum(valor_nrdro) as total_egresos from
+nrh_detalle_rol drol
+LEFT JOIN NRH_ROL ROL ON ROL.IDE_NRROL=DROL.IDE_NRROL
+where DROL.ide_nrder in (select ide_nrder from nrh_detalle_rubro where ide_nrrub = 255) AND ROL.IDE_GEPRO IN($P!{IDE_GEPRO}) AND DROL.IDE_GEEDP=$P{IDE_GEEDP}
+GROUP BY DROL.ide_geedp
+)c ON deta.ide_geedp=c.ide_geedp
+WHERE
+ROL.IDE_GEPRO in($P!{IDE_GEPRO})
+AND ROL.IDE_NRDTN in ($P!{IDE_NRDTN}) and RUB.IDE_NRRUB !=345
+AND DETA.IDE_GEEDP=$P{IDE_GEEDP} AND DETA.VALOR_NRDRO!=0
+AND(TIPORUBRO.IDE_NRTIR IN ($P!{IDE_NRTIR}) or DERUBRO.orden_imprime_nrder =0) and coalesce (DERUBRO.VER_ROL_NRDER,false) = true
+ORDER BY TIPORUBRO.IDE_NRTIR,EMPLEADO,ROL.IDE_GEPRO)
+union all
+(
+SELECT  EMP.IDE_GTEMP,
+AREA.DETALLE_GEARE AS AREA,
+DEP.DETALLE_GEDEP AS DEPARTAMENTO,
+OCUPACIONAL.DETALLE_GEGRO AS GRUPO_OCUPACIONAL,
+FUNCIONAL.DETALLE_GECAF AS FUNCIONAL,
+EMP.APELLIDO_PATERNO_GTEMP ||'  '|| EMP.APELLIDO_MATERNO_GTEMP ||'  '|| EMP.PRIMER_NOMBRE_GTEMP ||'  '||EMP.SEGUNDO_NOMBRE_GTEMP AS EMPLEADO,
+EMP.DOCUMENTO_IDENTIDAD_GTEMP AS CEDULA,
+'DIAS '||RUB.DETALLE_NRRUB AS RUBROS,
+TIPORUBRO.IDE_NRTIR,
+3 as SIGNO_NRTIR,
+trunc(DETA.VALOR_NRDRO/3) AS MONTO,
+PERIODO.FECHA_INICIAL_GEPRO AS FECHA_INICIAL,
+PERIODO.FECHA_FINAL_GEPRO AS FECHA_FINAL,
+MES.DETALLE_GEMES AS MES,
+ANIO.DETALLE_GEANI AS ANIO,
+SUCU.NOM_SUCU,
+a.total_recibir,
+b.total_ingresos,
+c.total_egresos
+FROM NRH_DETALLE_ROL DETA
+LEFT JOIN NRH_ROL ROL ON ROL.IDE_NRROL=DETA.IDE_NRROL
+LEFT JOIN GEN_EMPLEADOS_DEPARTAMENTO_PAR PAR ON PAR.IDE_GEEDP=DETA.IDE_GEEDP
+LEFT JOIN GTH_TIPO_CONTRATO CONTRATO ON CONTRATO.IDE_GTTCO=PAR.IDE_GTTCO
+LEFT JOIN GTH_TIPO_EMPLEADO TIPOEMP ON TIPOEMP.IDE_GTTEM=PAR.IDE_GTTEM
+LEFT JOIN SIS_SUCURSAL SUCU ON SUCU.IDE_SUCU=PAR.IDE_SUCU
+LEFT JOIN NRH_DETALLE_RUBRO DERUBRO ON DERUBRO.IDE_NRDER=DETA.IDE_NRDER
+LEFT JOIN GEN_DEPARTAMENTO DEP ON DEP.IDE_GEDEP=PAR.IDE_GEDEP
+LEFT JOIN GEN_GRUPO_OCUPACIONAL OCUPACIONAL ON OCUPACIONAL.IDE_GEGRO=PAR.IDE_GEGRO
+LEFT JOIN GEN_CARGO_FUNCIONAL FUNCIONAL ON FUNCIONAL.IDE_GECAF=PAR.IDE_GECAF
+LEFT JOIN GTH_EMPLEADO EMP ON EMP.IDE_GTEMP=PAR.IDE_GTEMP
+LEFT JOIN GEN_AREA AREA ON AREA.IDE_GEARE=PAR.IDE_GEARE
+LEFT JOIN NRH_RUBRO  RUB ON  DERUBRO.IDE_NRRUB=RUB.IDE_NRRUB
+LEFT JOIN NRH_TIPO_RUBRO TIPORUBRO ON TIPORUBRO.IDE_NRTIR=RUB.IDE_NRTIR
+LEFT JOIN GEN_PERIDO_ROL PERIODO ON PERIODO.IDE_GEPRO=ROL.IDE_GEPRO
+LEFT JOIN GEN_MES MES ON MES.IDE_GEMES=PERIODO.IDE_GEMES
+LEFT JOIN GEN_ANIO ANIO ON ANIO.IDE_GEANI=PERIODO.IDE_GEANI
+LEFT JOIN (
+SELECT drol.ide_geedp,sum(valor_nrdro) as total_recibir from
+nrh_detalle_rol drol
+LEFT JOIN NRH_ROL ROL ON ROL.IDE_NRROL=DROL.IDE_NRROL
+where DROL.ide_nrder in (select ide_nrder from nrh_detalle_rubro where ide_nrrub = 131) AND ROL.IDE_GEPRO IN($P!{IDE_GEPRO}) AND DROL.IDE_GEEDP=$P{IDE_GEEDP}
+GROUP BY DROL.ide_geedp
+)a ON deta.ide_geedp=a.ide_geedp
+LEFT JOIN (
+SELECT drol.ide_geedp,sum(valor_nrdro) as total_ingresos from
+nrh_detalle_rol drol
+LEFT JOIN NRH_ROL ROL ON ROL.IDE_NRROL=DROL.IDE_NRROL
+where DROL.ide_nrder in (select ide_nrder from nrh_detalle_rubro where ide_nrrub = 256) AND ROL.IDE_GEPRO IN($P!{IDE_GEPRO}) AND DROL.IDE_GEEDP=$P{IDE_GEEDP}
+GROUP BY DROL.ide_geedp
+)b ON deta.ide_geedp=b.ide_geedp
+LEFT JOIN (
+SELECT drol.ide_geedp,sum(valor_nrdro) as total_egresos from
+nrh_detalle_rol drol
+LEFT JOIN NRH_ROL ROL ON ROL.IDE_NRROL=DROL.IDE_NRROL
+where DROL.ide_nrder in (select ide_nrder from nrh_detalle_rubro where ide_nrrub = 255) AND ROL.IDE_GEPRO IN($P!{IDE_GEPRO}) AND DROL.IDE_GEEDP=$P{IDE_GEEDP}
+GROUP BY DROL.ide_geedp
+)c ON deta.ide_geedp=c.ide_geedp
+WHERE
+ROL.IDE_GEPRO in($P!{IDE_GEPRO})
+AND ROL.IDE_NRDTN in($P!{IDE_NRDTN}) and RUB.IDE_NRRUB !=345
+AND DETA.IDE_GEEDP=$P{IDE_GEEDP}
+and DERUBRO.VER_ROL_NRDER = TRUE AND DETA.VALOR_NRDRO!=0
+AND (TIPORUBRO.IDE_NRTIR IN ($P!{IDE_NRTIR}) or DERUBRO.orden_imprime_nrder =0)
+and RUB.DETALLE_NRRUB like 'ALIMENTACION'
+ORDER BY TIPORUBRO.IDE_NRTIR,EMPLEADO,ROL.IDE_GEPRO)]]>
+	</queryString>
+	<field name="ide_gtemp" class="java.lang.Integer"/>
+	<field name="area" class="java.lang.String"/>
+	<field name="departamento" class="java.lang.String"/>
+	<field name="grupo_ocupacional" class="java.lang.String"/>
+	<field name="funcional" class="java.lang.String"/>
+	<field name="empleado" class="java.lang.String"/>
+	<field name="cedula" class="java.lang.String"/>
+	<field name="rubros" class="java.lang.String"/>
+	<field name="ide_nrtir" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave foranea que proviene de la tabla nrh_tipo_rubro. Para imprimir las liquidaciones se debe considerar que los rubros que se imprimen son los INGRESOS, EGRESOS, EGRESO INFORMATIVO, INGRESO INFORMATIVO, los informativos nunca s eimprimen, ejemplo: dias vacacion ingreso informativo.]]></fieldDescription>
+	</field>
+	<field name="signo_nrtir" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define el signo por el cual va a multiplar el rubro si es egreso (-1), ingreso (1)]]></fieldDescription>
+	</field>
+	<field name="monto" class="java.math.BigDecimal"/>
+	<field name="fecha_inicial" class="java.sql.Date"/>
+	<field name="fecha_final" class="java.sql.Date"/>
+	<field name="mes" class="java.lang.String"/>
+	<field name="anio" class="java.lang.String"/>
+	<field name="nom_sucu" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre de la sucursal.]]></fieldDescription>
+	</field>
+	<field name="total_recibir" class="java.math.BigDecimal"/>
+	<field name="total_ingresos" class="java.math.BigDecimal"/>
+	<field name="total_egresos" class="java.math.BigDecimal"/>
+	<variable name="ingresos" class="java.lang.String">
+		<variableExpression><![CDATA[$F{signo_nrtir}.toString().equals("1")?$F{monto}.toString():null]]></variableExpression>
+	</variable>
+	<variable name="egresos" class="java.lang.String">
+		<variableExpression><![CDATA[$F{signo_nrtir}.toString().equals("-1")?$F{monto}.toString():null]]></variableExpression>
+	</variable>
+	<variable name="total_ingresos" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[new Double($F{signo_nrtir}.toString().equals("1")?$F{monto}.doubleValue():"0")]]></variableExpression>
+	</variable>
+	<variable name="total_egresos" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[new Double($F{signo_nrtir}.toString().equals("-1")?$F{monto}.doubleValue():"0")]]></variableExpression>
+	</variable>
+	<variable name="valor_recibir" class="java.lang.Double">
+		<variableExpression><![CDATA[$V{total_ingresos}-$V{total_egresos}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="142" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="075368e4-09e4-4000-a975-4730c31f5066" stretchType="RelativeToBandHeight" x="0" y="128" width="62" height="13" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEPARTAMENTO:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="1bd2a45b-fda5-4761-9c1a-f602eeebfdaf" stretchType="RelativeToBandHeight" x="62" y="128" width="299" height="13" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{departamento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="9f4d4917-e979-440f-b0cc-c24a196e72d0" stretchType="RelativeToBandHeight" x="365" y="116" width="81" height="13" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GRUPO OCUPACIONAL:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="d825791d-92e3-459c-8fd3-ef2eb34e87ed" stretchType="RelativeToBandHeight" x="446" y="115" width="97" height="13" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{grupo_ocupacional}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="641e97e9-f1bf-43f2-9bec-0092465688c4" stretchType="RelativeToBandHeight" x="365" y="128" width="81" height="13" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CARGO FUNCIONAL:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="ccc4dde6-70b3-416d-a594-7de3bd350459" stretchType="RelativeToBandHeight" x="446" y="128" width="97" height="13" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{funcional}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="36c9c131-4308-464d-81e6-49abb066afa8" stretchType="RelativeToBandHeight" x="0" y="104" width="62" height="13" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[EMPLEADO:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="7ab0eb22-1088-4af6-abe3-c5b309aa9b49" stretchType="RelativeToBandHeight" x="62" y="104" width="299" height="13" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{empleado}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c6a9d93c-9029-497d-b4bf-64db8b4de1c8" stretchType="RelativeToBandHeight" x="365" y="103" width="81" height="13" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CEDULA:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="d60ad457-91f3-476e-b838-1de9e893289b" stretchType="RelativeToBandHeight" x="446" y="104" width="97" height="13" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cedula}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="11b67fff-59ec-4c58-a3ea-97ba82ea5a06" stretchType="RelativeToBandHeight" x="0" y="116" width="62" height="13" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AREA:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="af7d1650-b7c4-4484-bf36-0f9ab0b8c48e" stretchType="RelativeToBandHeight" x="62" y="116" width="299" height="13" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{area}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="25898bec-25a1-45c7-9147-c51a68991115" x="281" y="74" width="29" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MES:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="670271f1-4e56-4212-a170-705d9c4fb8a4" x="309" y="74" width="80" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{mes}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="8e87f3f0-fdcd-498a-bd5e-bc1f48d4ed2f" x="281" y="84" width="29" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AÑO:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="793c5ab8-44e2-4026-a129-35c0a68fce03" x="309" y="84" width="80" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{anio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="992a5d18-dce6-446a-8d42-e9a604b2f0f4" x="215" y="62" width="63" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA DESDE:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="580efc66-2ebf-4a7c-87ac-09b58c2e06e1" x="277" y="62" width="51" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_inicial}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="429b3e6e-bc19-4c69-af93-9dbf8a128b78" x="328" y="62" width="34" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HASTA:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="b093a655-ba1c-4f37-b1dc-1c93d8a8a2b5" x="361" y="62" width="81" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_final}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="205e7961-e8d1-4243-a8eb-178e1ae72cfb" stretchType="RelativeToBandHeight" x="0" y="92" width="62" height="13" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SUCURSAL:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="7191b1ba-1460-4353-a3d8-2d61e8261b98" stretchType="RelativeToBandHeight" x="62" y="92" width="109" height="13" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nom_sucu}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement uuid="767eb3a0-6db5-4780-b1ef-17581f40c28d" x="-1" y="0" width="555" height="37"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="par_total_egresos">
+					<subreportParameterExpression><![CDATA[$P{par_total_egresos}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="par_total_ingresos">
+					<subreportParameterExpression><![CDATA[$P{par_total_ingresos}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="usuario">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="par_total_recibir">
+					<subreportParameterExpression><![CDATA[$P{par_total_recibir}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="12" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="226c5666-6af5-4c63-a4d5-dab94475731c" x="0" y="0" width="288" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONCEPTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8895784c-441b-49c5-8ad1-89e9a3973c03" x="373" y="0" width="85" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INGRESOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8030bc07-0665-45a8-bfba-515dfc3729bd" x="458" y="0" width="85" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[EGRESOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="786ee89b-edd9-4330-ac19-c7e9aa450bb8" x="288" y="0" width="85" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="9" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="d2c9cebd-01ff-4ab0-9c6d-40af5e889add" stretchType="RelativeToBandHeight" x="0" y="0" width="288" height="9" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{signo_nrtir}.toString().equals("1")?$F{rubros}.toString():
+$F{signo_nrtir}.toString().equals("-1")?$F{rubros}.toString():
+$F{signo_nrtir}.toString().equals("3")?$F{rubros}.toString():
+null]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="945421f2-553f-457c-8276-8f2394949780" stretchType="RelativeToBandHeight" x="373" y="0" width="85" height="9" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
+				<box rightPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{signo_nrtir}.toString().equals("1")?$F{monto}:null]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="dd0686cd-4580-40c1-8ce0-3105f8ae0ad1" stretchType="RelativeToBandHeight" x="458" y="0" width="85" height="9" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
+				<box rightPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{signo_nrtir}.toString().equals("-1")?$F{monto}:null]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="5d540775-0bd8-4c6b-8f56-754420a190e8" stretchType="RelativeToBandHeight" x="288" y="0" width="85" height="9" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#000000"/>
+				<box rightPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{signo_nrtir}.toString().equals("3")?$F{monto}:null]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="84" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="02634a84-4aaa-4758-8aad-99c0419d8af2" stretchType="RelativeToBandHeight" x="0" y="0" width="373" height="9" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTALES:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="720065aa-8cd9-4f0b-bead-9f7e5902109d" stretchType="RelativeToBandHeight" x="-1" y="19" width="458" height="9" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR A RECIBIR:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d030cd73-97bd-4136-a8d9-250f3b29fed3" stretchType="RelativeToBandHeight" x="-1" y="68" width="556" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RECIBI CONFORME: .............................................................................................................................]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="871409d9-627b-4c48-8b45-aea66aae3ff9" x="373" y="0" width="85" height="9"/>
+				<box rightPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_ingresos}==null?$V{total_ingresos}:$F{total_ingresos}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="4b6f0c6c-79f4-4f57-a61a-4f5b8e2f7f1b" x="457" y="19" width="85" height="9"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{valor_recibir}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="5216a2b2-1cca-4851-b2cc-4588fdefe74e" positionType="FixRelativeToBottom" stretchType="RelativeToBandHeight" x="458" y="0" width="85" height="9"/>
+				<box rightPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_egresos}==null?$V{total_egresos}:$F{total_egresos}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

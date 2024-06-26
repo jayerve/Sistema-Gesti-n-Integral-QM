@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_kardex_individual_anual" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f2039012-673d-43a4-8ac7-378ca9838a39">
+	<property name="ireport.zoom" value="1.5000000000000009"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_geani" class="java.lang.Long"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:/codigo_fuente/sampu-existencias/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_usua" class="java.lang.Integer"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<parameter name="titulo" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Resumen General Anual"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="autorizado" class="java.lang.String"/>
+	<parameter name="elaborado" class="java.lang.String"/>
+	<parameter name="meses_estimacion" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[6]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[WITH param AS (
+ SELECT
+ $P{ide_geani} as ide_geani,
+ $P{meses_estimacion} as meses_estimacion
+),
+resumen AS(
+SELECT
+	ide_bocam,  egreso.ide_inttr,
+       EXTRACT(YEAR FROM fecha_ingeg) as year, EXTRACT(MONTH FROM fecha_ingeg) as month, MIN(fecha_ingeg) as fecha_minima,SUM(cantidad_inegd) as cantidad
+  FROM bodt_ingreso_egreso_det as detalle
+  LEFT JOIN bodt_ingreso_egreso as egreso ON egreso.ide_ingeg = detalle.ide_ingeg
+  WHERE egreso.ide_inttr = 2
+  GROUP BY 1, 2, 3, 4
+  ORDER BY year, month
+),
+stock AS (
+ SELECT ide_bocam, (SELECT SUM(cantidad_inicial_boinv) FROM bodt_bodega_inventario WHERE ide_bocam = bodt_ingreso_egreso_det.ide_bocam AND ide_geani = (SELECT ide_geani FROM param)) + SUM(CASE WHEN ide_inttr = 2 THEN -1 * cantidad_inegd ELSE cantidad_inegd END) AS cantidad_stock FROM bodt_ingreso_egreso_det WHERE ide_inttr IN (1,2) GROUP BY ide_bocam
+),
+calculo AS (
+SELECT resumen.ide_bocam, clasificador.codigo_clasificador_prcla, catalogo.descripcion_bocam,
+stock.cantidad_stock,
+MIN(fecha_minima), EXTRACT(year FROM age(NOW(),MIN(fecha_minima)))*12 + EXTRACT(month FROM age(NOW(),MIN(fecha_minima))) as meses_transcurridos, SUM(cantidad) as suma_egreso
+FROM resumen
+LEFT JOIN stock ON resumen.ide_bocam = stock.ide_bocam
+LEFT JOIN bodt_catalogo_material as catalogo ON catalogo.ide_bocam = resumen.ide_bocam
+LEFT JOIN pre_clasificador as clasificador ON clasificador.ide_prcla = catalogo.ide_prcla
+GROUP BY 1, 2, 3,4
+ORDER BY 2, 3
+),
+calculo_promedio AS(
+SELECT *, COALESCE(suma_egreso / NULLIF(meses_transcurridos,0), suma_egreso) as promedio FROM calculo
+)
+SELECT *, cantidad_stock/promedio as meses_restantes, promedio * (SELECT meses_estimacion FROM param) - cantidad_stock AS cantidad_requerida FROM calculo_promedio]]>
+	</queryString>
+	<field name="ide_bocam" class="java.lang.Long">
+		<fieldDescription><![CDATA[Primary de bodt_catalogo_material con el cual se va a unir a todos los otros modulos]]></fieldDescription>
+	</field>
+	<field name="codigo_clasificador_prcla" class="java.lang.String">
+		<fieldDescription><![CDATA[codigo_clasificador_prcla]]></fieldDescription>
+	</field>
+	<field name="descripcion_bocam" class="java.lang.String"/>
+	<field name="cantidad_stock" class="java.math.BigDecimal"/>
+	<field name="min" class="java.sql.Date"/>
+	<field name="meses_transcurridos" class="java.lang.Double"/>
+	<field name="suma_egreso" class="java.math.BigDecimal"/>
+	<field name="promedio" class="java.lang.Double"/>
+	<field name="meses_restantes" class="java.lang.Double"/>
+	<field name="cantidad_requerida" class="java.lang.Double"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="63" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="3ad301b0-8107-4db1-b07e-46f8b23bab09" x="-1" y="0" width="556" height="63"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_geani">
+					<subreportParameterExpression><![CDATA[$P{ide_geani}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{ide_usua}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="27" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="f8b2a211-a338-40b5-b401-bf7b5d12b9db" x="395" y="0" width="89" height="27"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Meses restantes *]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9eeedd13-b549-435c-a088-e6ba3352ff25" x="100" y="0" width="211" height="27"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Descripción]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7eb9255a-e2f2-4207-8471-8ad8bc16df5d" x="0" y="0" width="100" height="27"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Partida]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="34a7b19d-ea1f-4bc1-9560-050ae1cb45a2" x="311" y="0" width="85" height="27"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Consumo Promedio Mensual *]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="">
+				<reportElement uuid="3bfc64c4-f189-4d6e-982c-5e04c30ec712" x="484" y="0" width="71" height="27"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Cantidad requerida ("+$P{meses_estimacion}+" meses)"]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="b508db0b-1e69-47b6-a40e-03df8e931256" x="0" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo_clasificador_prcla}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="344df14f-0997-4baa-84f8-2b2c73b4bc05" x="100" y="0" width="211" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion_bocam}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement uuid="a1af2203-ec2b-4c58-9d14-e67949dbd76a" x="311" y="0" width="85" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{promedio}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement uuid="1f4f315a-047e-460d-a67f-5c9fc0c8e924" x="396" y="0" width="88" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{meses_restantes}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement uuid="d9d70d29-3247-499a-8eb0-b52e005bf883" x="484" y="0" width="71" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{cantidad_requerida} >=0 ? $F{cantidad_requerida} : 0 )]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="8" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="23" splitType="Stretch">
+			<textField>
+				<reportElement uuid="fd5e51f1-7cef-4146-a2f9-a6fd5bdb8c87" x="435" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="96383702-1391-4c8c-bf74-033f0323d835" x="515" y="0" width="40" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="e1dcbe45-1c13-4ec0-85c4-217482110802" x="0" y="3" width="276" height="20"/>
+				<textElement>
+					<font size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[*Valor estimado en base a los consumos mensuales]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="116" splitType="Stretch">
+			<line>
+				<reportElement uuid="37993a45-d557-4d27-bc17-58841278a251" x="298" y="82" width="236" height="1">
+					<printWhenExpression><![CDATA[false]]></printWhenExpression>
+				</reportElement>
+			</line>
+			<textField>
+				<reportElement uuid="a307bdab-22fb-485d-afcf-ce3a2e781a8e" x="14" y="95" width="236" height="12">
+					<printWhenExpression><![CDATA[false]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{elaborado}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="e501ab59-a2a7-4a44-82f8-09d1e420edc3" x="14" y="82" width="236" height="1">
+					<printWhenExpression><![CDATA[false]]></printWhenExpression>
+				</reportElement>
+			</line>
+			<textField>
+				<reportElement uuid="e5edd310-45a3-4913-ad01-cfb13ceca4ae" x="298" y="95" width="236" height="12">
+					<printWhenExpression><![CDATA[false]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{autorizado}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="19c52003-6b77-4a8b-bede-50c22e531943" x="58" y="83" width="164" height="12">
+					<printWhenExpression><![CDATA[false]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ELABORADO POR:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6f3bf319-e6a6-46b3-87aa-10d4a23638f1" x="337" y="83" width="162" height="12">
+					<printWhenExpression><![CDATA[false]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AUTORIZADO POR:]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

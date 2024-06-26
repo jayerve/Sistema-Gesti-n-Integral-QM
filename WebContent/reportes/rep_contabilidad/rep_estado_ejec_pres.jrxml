@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_estado_ejec_pres" pageWidth="595" pageHeight="842" whenNoDataType="BlankPage" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e417e812-fc9d-4d5d-81e0-d26a47801e5c">
+	<property name="ireport.zoom" value="1.6105100000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="32"/>
+	<parameter name="fecha_inicial1" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_final1" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cargo_gerente" class="java.lang.String"/>
+	<parameter name="gerente" class="java.lang.String"/>
+	<parameter name="coordinador_finaciero" class="java.lang.String"/>
+	<parameter name="contador_general" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:/eclipse-jee-kepler-SR2-win32/Proyectos/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="ide_geani" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select ide_prgre as grupo,detalle_prgre,
+                to_date($P{fecha_inicial1},'yyyy-mm-dd') as fecha_inicial, to_date($P{fecha_final1},'yyyy-mm-dd') as fecha_final
+                from pre_grupo_economico pge
+                where activo_prgre=true order by ide_prgre;]]>
+	</queryString>
+	<field name="detalle_prgre" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_prgre]]></fieldDescription>
+	</field>
+	<field name="fecha_inicial" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_inicial]]></fieldDescription>
+	</field>
+	<field name="fecha_final" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_final]]></fieldDescription>
+	</field>
+	<field name="grupo" class="java.lang.Integer">
+		<fieldDescription><![CDATA[grupo]]></fieldDescription>
+	</field>
+	<variable name="valor_codificado" class="java.math.BigDecimal" resetType="None" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="valor_diferencia" class="java.math.BigDecimal" resetType="None" calculation="Sum">
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="valor_devengado_pres" class="java.math.BigDecimal" resetType="None" calculation="Sum">
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="codificado_ingreso" class="java.math.BigDecimal" calculation="Sum"/>
+	<variable name="devengado_ingreso" class="java.math.BigDecimal" calculation="Sum"/>
+	<variable name="codificado_gasto" class="java.math.BigDecimal" calculation="Sum"/>
+	<variable name="devengado_gastos" class="java.math.BigDecimal" calculation="Sum"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="53" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="e2bfcc95-de21-47d1-9497-560b305405ea" x="0" y="1" width="555" height="52"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="usuario">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_estados.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="61">
+			<rectangle>
+				<reportElement uuid="eaa8c3d4-ac87-4a49-9dd9-56f9ae3dac05" x="2" y="26" width="553" height="32"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="3381935f-7d5e-4196-9f7c-7d9e068102c2" x="5" y="31" width="62" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GRUPOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="765cb76c-4088-46bb-a899-2a39a6336844" x="149" y="31" width="92" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONCEPTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="af28bb43-b3e9-47b5-9445-6707e54e4ba9" x="336" y="31" width="66" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CODIFICADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="15a7366d-f34b-4647-a5d4-c0411f6c82f9" x="67" y="26" width="73" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUENTA CONTABLE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6b746dd8-e233-4d1e-965f-7e2154c1b327" x="408" y="31" width="66" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEVENGADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e2b4ad63-76c9-4bff-8c70-8deebe35f06a" x="480" y="31" width="66" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DIFERENCIA]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="014cd0d0-a230-4d4d-b494-e4fac6eeebb0" x="2" y="13" width="201" height="10"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["EXPRESADO EN: MILES DE DOLARES Y DOS DECIMALES"]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="false">
+				<reportElement uuid="56b13b41-a602-4b56-b3af-49906981d721" x="256" y="0" width="148" height="13"/>
+				<textElement textAlignment="Left">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_final}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="false">
+				<reportElement uuid="d9e4174e-1213-4ead-8f44-8bbc6cd32200" x="237" y="0" width="20" height="13"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Al"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="38" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="de53c3cd-7607-4123-8d16-02c112cc1f1f" x="0" y="0" width="555" height="38"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="fecha_inicial">
+					<subreportParameterExpression><![CDATA[$F{fecha_inicial}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="fecha_final">
+					<subreportParameterExpression><![CDATA[$F{fecha_final}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_geani">
+					<subreportParameterExpression><![CDATA[$P{ide_geani}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_prgre">
+					<subreportParameterExpression><![CDATA[$F{grupo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<returnValue subreportVariable="valor_codificado" toVariable="valor_codificado" calculation="Sum"/>
+				<returnValue subreportVariable="valor_devengado_pres" toVariable="valor_devengado_pres" calculation="Sum"/>
+				<returnValue subreportVariable="valor_diferencia" toVariable="valor_diferencia"/>
+				<returnValue subreportVariable="codificado_ingreso" toVariable="codificado_ingreso" calculation="Sum"/>
+				<returnValue subreportVariable="devengado_ingreso" toVariable="devengado_ingreso" calculation="Sum"/>
+				<returnValue subreportVariable="codificado_gasto" toVariable="codificado_gasto" calculation="Sum"/>
+				<returnValue subreportVariable="devengado_gastos" toVariable="devengado_gastos" calculation="Sum"/>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_contabilidad/rep_estado_ejec_presGrp.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="29">
+			<textField pattern="#,##0.00">
+				<reportElement uuid="bcc5bd79-44a6-4ca0-b190-f537d4bb82b7" x="472" y="8" width="81" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[msg("{0,number,#,##0.00;(#,##0.00)}",($V{valor_codificado}.doubleValue()-$V{valor_devengado_pres}.doubleValue()))]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="c7ad7dcb-0b11-4978-9651-3f313b0e68e0" x="313" y="8" width="83" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[msg("{0,number,#,##0.00;(#,##0.00)}", $V{valor_codificado})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="a8defd0b-d0ed-4cb2-8e0a-7d736450e496" x="394" y="8" width="79" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[msg("{0,number,#,##0.00;(#,##0.00)}",$V{valor_devengado_pres})]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="9d3598b6-49e0-4d67-a89c-0b0a11de4018" x="5" y="5" width="547" height="1"/>
+			</line>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="74a47ee3-f5c1-4d9d-85d2-3fc89cbe22a7" x="3" y="6" width="238" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["SUPERAVIT/DEFICIT "+$F{detalle_prgre}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="ff7f7d91-9a42-423a-bf41-8e56c7679be5" x="253" y="8" width="56" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL:]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="238" splitType="Stretch">
+			<rectangle>
+				<reportElement uuid="1e65e8d8-3073-4549-aa72-6efba3af2e91" x="315" y="2" width="240" height="58"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="5ece7748-2704-4d85-b644-48a158b625b2" x="204" y="2" width="105" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="true" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[TOTAL INGRESOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8451da31-a2f6-41e8-8b29-b6024f3c0748" x="204" y="21" width="105" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="true" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[TOTAL GASTOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6dcfa05d-e383-45bb-9bca-3944855a85ee" x="87" y="40" width="222" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="true" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[SUPERAVIT/DEFICIT PRESUPUESTARIO]]></text>
+			</staticText>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="7af9bf76-c856-48b4-a5f3-6c219d8c7fbf" x="315" y="40" width="79" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[msg("{0,number,#,##0.00;(#,##0.00)}",($V{codificado_ingreso}.doubleValue()-$V{codificado_gasto}.doubleValue()))]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="b8bbd988-e099-470e-b21a-a9fbb49b56a8" x="396" y="40" width="77" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[msg("{0,number,#,##0.00;(#,##0.00)}",($V{devengado_ingreso}.doubleValue()-$V{devengado_gastos}.doubleValue()))]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="0847c597-f5a7-4999-8716-44558181dd6f" x="476" y="40" width="77" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[msg("{0,number,#,##0.00;(#,##0.00)}",($V{codificado_ingreso}.doubleValue()-$V{devengado_ingreso}.doubleValue())-($V{codificado_gasto}.doubleValue()-$V{devengado_gastos}.doubleValue()))]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="0ac3466b-83c7-4213-bdb9-feaf6435b559" x="315" y="2" width="79" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[msg("{0,number,#,##0.00;(#,##0.00)}",$V{codificado_ingreso})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="1ab628dc-61aa-4f8f-8b2c-65b9ff6662e4" x="397" y="2" width="76" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[msg("{0,number,#,##0.00;(#,##0.00)}",$V{devengado_ingreso})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="961d4d6d-f2af-4ac7-8280-212d952a5ec0" x="475" y="2" width="78" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[msg("{0,number,#,##0.00;(#,##0.00)}",($V{codificado_ingreso}.doubleValue()-$V{devengado_ingreso}.doubleValue()))]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="3cc1c4ff-3909-4479-951e-1e20748e859e" x="475" y="22" width="78" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["("+msg("{0,number,#,##0.00;(#,##0.00)}",($V{codificado_gasto}.doubleValue()-$V{devengado_gastos}.doubleValue()))+")"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="2b441593-ccc9-4751-8c3a-b54cb7e3c337" x="396" y="22" width="77" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["("+msg("{0,number,#,##0.00;(#,##0.00)}",$V{devengado_gastos})+")"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="c2cabfc1-14d3-4d4d-97de-6e82877b36a8" x="315" y="22" width="79" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["("+msg("{0,number,#,##0.00;(#,##0.00)}",$V{codificado_gasto})+")"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="feaaae67-a9f9-491a-a94b-a5b80cf20074" x="396" y="2" width="1" height="58"/>
+			</line>
+			<line>
+				<reportElement uuid="338bab27-a8fe-463a-8b0b-1f7384006040" x="475" y="2" width="1" height="58"/>
+			</line>
+			<textField>
+				<reportElement uuid="56578f9c-e637-4bf4-a486-8269850c172b" x="177" y="209" width="192" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cargo_gerente}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="3396254b-164f-43de-aa98-a8b611ff8cfc" x="381" y="189" width="162" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="fd44e9e7-4a07-4459-943f-2c2442a86f5f" x="177" y="193" width="192" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{gerente}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="48bb5e00-f6fc-4d75-87a1-4d19d299198a" x="20" y="189" width="149" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="bbdcfc63-2dd2-419a-bf02-94eed4c6005b" x="196" y="189" width="149" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="ee48e11e-fd24-4733-ab6c-ac0b113bcf23" x="-1" y="194" width="176" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{contador_general}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="b9fa6619-44c3-4748-9e88-2db11f856b34" x="400" y="207" width="137" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[COORDINADOR FINANCIERO]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="39c0fd84-ed41-4b2f-b85f-aa855e225da5" x="371" y="192" width="183" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{coordinador_finaciero}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="11045617-0a19-4f53-b790-d139b49e43b9" x="8" y="209" width="159" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[CONTADOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="75e91083-24c6-4490-a4ae-2e32964df0c8" x="5" y="103" width="550" height="86" forecolor="#FF0033">
+					<printWhenExpression><![CDATA[new Boolean(($V{codificado_ingreso}.doubleValue()-$V{codificado_gasto}.doubleValue())!=0)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[EJECUCIÓN DESCUADRADA]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

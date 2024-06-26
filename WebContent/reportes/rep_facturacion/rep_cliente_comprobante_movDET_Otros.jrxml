@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_cliente_comprobante_movDET_Otros" pageWidth="554" pageHeight="842" whenNoDataType="BlankPage" columnWidth="554" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e417e812-fc9d-4d5d-81e0-d26a47801e5c">
+	<property name="ireport.zoom" value="1.6105100000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="p_ide_fafac" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT ide_fafac, detalle_coest, fecha_pago_fafac,fecha_conciliado_fafac, coalesce(documento_conciliado_fafac,'') as documento_conciliado_fafac,
+                coalesce(documento_bancario_fafac,'') as documento_bancario_fafac, valor_conciliado_fafac, total_fafac
+                  FROM fac_factura fac
+                left join cont_estado est on est.ide_coest=fac.ide_coest
+                where (coalesce(valor_conciliado_fafac,0)>0 or documento_conciliado_fafac like 'CAJA MATRIZ' or length(documento_conciliado_fafac)>0) and ide_fafac=$P{p_ide_fafac}]]>
+	</queryString>
+	<field name="ide_fafac" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla fac_factura.]]></fieldDescription>
+	</field>
+	<field name="detalle_coest" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_coest]]></fieldDescription>
+	</field>
+	<field name="fecha_pago_fafac" class="java.sql.Date"/>
+	<field name="fecha_conciliado_fafac" class="java.sql.Date"/>
+	<field name="documento_conciliado_fafac" class="java.lang.String"/>
+	<field name="documento_bancario_fafac" class="java.lang.String"/>
+	<field name="valor_conciliado_fafac" class="java.math.BigDecimal"/>
+	<field name="total_fafac" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el valor total de la factura.]]></fieldDescription>
+	</field>
+	<columnHeader>
+		<band height="56">
+			<staticText>
+				<reportElement uuid="39855739-2785-4928-881e-55092678bdda" x="0" y="20" width="43" height="36"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3da7a739-9c52-4c0a-b67a-7a7f67a1829f" x="0" y="0" width="555" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[OTROS PAGOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f253e313-ee49-4c27-b68e-f1d5a1c45635" x="52" y="20" width="43" height="36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA PAGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ad52a6b2-2e3f-40a6-b89f-a55f4fa0e4a5" x="108" y="20" width="68" height="36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA CONCILIADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d43ec8bc-5743-4941-9fe9-f956caca0ec2" x="186" y="20" width="73" height="36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DOCUMENTO CONCILIADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3143863a-31ed-495a-a9cc-9d9e919f5e97" x="272" y="20" width="205" height="36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DOCUMENTO BANCARIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0b2ccc7e-bdbd-4ba3-a85f-c1fbe69795a2" x="493" y="20" width="43" height="36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="fa445641-4a59-4e30-8816-c47a0b6945a4" x="179" y="0" width="90" height="15"/>
+				<textElement textAlignment="Left">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{documento_conciliado_fafac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy-MM-dd" isBlankWhenNull="true">
+				<reportElement uuid="206ccd28-f176-4b7d-81b6-c2d69737a47e" x="111" y="0" width="65" height="15"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{fecha_conciliado_fafac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="ff121ee3-da6c-4b5e-9bd9-6c5c1596f7be" x="272" y="0" width="205" height="15"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{documento_bancario_fafac}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="32667067-e2b9-4c87-8008-1115c6f44123" x="553" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="2c8deda5-1213-4037-9df9-3e49834ff3ae" x="0" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="e82b3dd2-0cdf-4902-99f1-bdf819e83d43" x="109" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="ca6ca4f9-2e36-4294-98ea-32dfc8ec7c18" x="269" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="308b92f6-601d-4590-9775-64ae3c33f3f8" x="478" y="0" width="1" height="15"/>
+			</line>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="e7b6dc12-003c-4df3-92f6-114a696929e6" x="479" y="0" width="73" height="15"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{total_fafac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="ebc165a4-4661-4688-9b7b-195d0ce8dedf" x="1" y="0" width="40" height="15"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{detalle_coest}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy-MM-dd" isBlankWhenNull="true">
+				<reportElement uuid="13ec17f9-7ae8-450b-b47b-0f022468c25b" x="43" y="0" width="65" height="15"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{fecha_pago_fafac}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="5ea138ef-62f5-469a-a2c4-6877cbb252ef" x="41" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="798ce7c4-2e10-431d-b1e5-f508dd82fa77" x="177" y="0" width="1" height="15"/>
+			</line>
+		</band>
+	</detail>
+</jasperReport>

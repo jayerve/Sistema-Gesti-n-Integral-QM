@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_flujo_efectivo" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1b0db692-5764-44b7-bbb4-e30fcb828b4e">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:\\workspace\\biess\\WebContent\\reportes\\rep_sistema_biess\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="anio" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from rep_estado_situacion_financiera order by codigo_general_rpesf,codigo_especifico_rpesf,codigo_rpesf]]>
+	</queryString>
+	<field name="ide_rpesf" class="java.lang.Integer"/>
+	<field name="titulo1_rpesf" class="java.lang.String">
+		<fieldDescription><![CDATA[titulo1_rpesf]]></fieldDescription>
+	</field>
+	<field name="titulo2_rpesf" class="java.lang.String">
+		<fieldDescription><![CDATA[titulo2_rpesf]]></fieldDescription>
+	</field>
+	<field name="codigo_rpesf" class="java.lang.String">
+		<fieldDescription><![CDATA[codigo_rpesf]]></fieldDescription>
+	</field>
+	<field name="concepto_rpesf" class="java.lang.String">
+		<fieldDescription><![CDATA[concepto_rpesf]]></fieldDescription>
+	</field>
+	<field name="valor_rpesf" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[valor_rpesf]]></fieldDescription>
+	</field>
+	<field name="total_rpesf" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[total_rpesf]]></fieldDescription>
+	</field>
+	<field name="codigo_general_rpesf" class="java.lang.Integer"/>
+	<field name="codigo_especifico_rpesf" class="java.lang.Integer"/>
+	<variable name="suma_subtotal" class="java.math.BigDecimal" resetType="Group" resetGroup="grupo_dos" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_rpesf}]]></variableExpression>
+	</variable>
+	<variable name="total_general" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_rpesf}]]></variableExpression>
+	</variable>
+	<variable name="grupo_especifico" class="java.math.BigDecimal" resetType="Group" resetGroup="codigo_especifico" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_rpesf}]]></variableExpression>
+	</variable>
+	<group name="grupo_dos">
+		<groupExpression><![CDATA[$F{codigo_general_rpesf}]]></groupExpression>
+		<groupHeader>
+			<band height="21">
+				<textField>
+					<reportElement uuid="ddcbdee2-d1ec-4881-b9e5-936912204883" x="105" y="4" width="334" height="15"/>
+					<textElement textAlignment="Center">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{titulo1_rpesf}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField evaluationTime="Group" evaluationGroup="grupo_dos" pattern="#,##0.00;(#,##0.00)">
+					<reportElement uuid="a4b38d92-cda8-48b2-9d98-f4be02f26089" x="442" y="4" width="100" height="15"/>
+					<textElement textAlignment="Right">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{suma_subtotal}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="ce7de5db-c90f-4a56-a55e-6d4e5f24d1f7" x="21" y="4" width="418" height="15"/>
+					<textElement textAlignment="Right">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["SUBTOTAL "+$F{titulo1_rpesf}]]></textFieldExpression>
+				</textField>
+				<rectangle radius="5">
+					<reportElement uuid="8f4fae33-dfa8-4853-a232-0069c4a0b6ac" mode="Transparent" x="0" y="1" width="555" height="19"/>
+				</rectangle>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="codigo_especifico">
+		<groupExpression><![CDATA[$F{codigo_especifico_rpesf}]]></groupExpression>
+		<groupHeader>
+			<band height="15">
+				<textField>
+					<reportElement uuid="88618e39-09a9-4b03-b498-0cb9d40b465a" x="21" y="0" width="334" height="15"/>
+					<textElement>
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{titulo2_rpesf}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="30">
+				<textField evaluationTime="Group" evaluationGroup="codigo_especifico" pattern="#,##0.00;(#,##0.00)">
+					<reportElement uuid="97e318e7-70d0-468e-b1ce-8d4c1a62d19d" x="442" y="7" width="100" height="15"/>
+					<textElement textAlignment="Right">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{grupo_especifico}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="85006d07-4d3b-4c57-a0d0-6c595ca62ba3" x="21" y="7" width="418" height="15"/>
+					<textElement textAlignment="Right">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["SUBTOTAL "+$F{titulo2_rpesf}]]></textFieldExpression>
+				</textField>
+				<rectangle radius="5">
+					<reportElement uuid="649be55c-f052-4c9f-9b7b-7d2ab1799d06" mode="Transparent" x="0" y="4" width="555" height="19"/>
+				</rectangle>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="112" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="d6c7b2b8-b93c-48bd-81ff-1fc7e1e298c2" x="0" y="2" width="555" height="79"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement uuid="2baaf0e7-1b57-4212-9d8c-41604af84c6c" x="184" y="81" width="171" height="19"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{anio}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="19" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="b2288e33-9edd-476c-b637-3923a56c3607" x="21" y="4" width="100" height="15"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CODIGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a51e84a8-129e-4c94-8788-08ce36e89b4b" x="169" y="4" width="100" height="15"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONCEPTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e7f61495-7c4e-44a7-8338-f0e7ba874496" x="439" y="4" width="100" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR]]></text>
+			</staticText>
+			<rectangle radius="0">
+				<reportElement uuid="87a1b756-228b-49f5-b13c-e8c8de2b354d" mode="Transparent" x="0" y="0" width="555" height="19"/>
+			</rectangle>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="56ceaa52-9663-48f3-aaf2-7dc4b66d2ce9" x="21" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{codigo_rpesf}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="269900ee-ff2e-4f15-8efe-4c5e78580429" x="133" y="0" width="306" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{concepto_rpesf}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;(#,##0.00)" isBlankWhenNull="true">
+				<reportElement uuid="7fb5c9a4-25bf-41ed-aec6-f69e9720a78b" x="442" y="0" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{valor_rpesf}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement uuid="62e39fee-7be5-42f9-9a68-a722a6d506cc" x="455" y="10" width="100" height="20"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pág. Nro: "+$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="196" splitType="Stretch">
+			<textField pattern="#,##0.00">
+				<reportElement uuid="a4cf6e4b-ef12-41b8-8a3b-1d91797b8546" x="442" y="5" width="100" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_general}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="8b51eb59-4019-4ed2-ad5c-c552e3cdaa27" x="190" y="5" width="249" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RESULTADO DEL EJERCICIO]]></text>
+			</staticText>
+			<rectangle radius="5">
+				<reportElement uuid="e5531a2c-8ccd-497d-84fe-63a689ec1772" mode="Transparent" x="0" y="2" width="555" height="25"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="2eb69be1-89a9-4a54-b5c8-3c558cd1d40c" x="37" y="174" width="173" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONTADOR GENERAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0131740c-077e-4bac-aeac-38ca4f1a5c21" x="322" y="174" width="173" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COORDINACION FINANCIERA]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="487a7c7e-32a6-447f-adfe-f683596d451f" x="37" y="174" width="209" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="201a4d7c-e5b2-4322-881c-e0a5d6cb4348" x="306" y="173" width="209" height="1"/>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

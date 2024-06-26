@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_solicitud_pac" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="86204aec-e63f-4eb1-9f97-aa5b0292b336">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="144"/>
+	<parameter name="ide_prpac" class="java.lang.Integer"/>
+	<parameter name="para" class="java.lang.String"/>
+	<parameter name="pie_para" class="java.lang.String"/>
+	<parameter name="nro_documento" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT pac.ide_prpac, descripcion_prpac, justificacion_prpac, NOMBRES_APELLIDOS,detalle_geare, DETALLE_GEDEP,detalle_copec as cuatrimestre, descripcion_prpac as descripcion
+	 ,cpc_prpac ,pc.codigo_clasificador_prcla as partida,detalle_cotio as tipo_compra,case when tregimen_prpac=1 then 'Común' else 'Especial' end as tregimen_prpac
+	 ,detalle_adtic as procedimiento, valor_total_prpac
+                    FROM pre_pac pac
+                    left join pre_responsable_contratacion rpac on rpac.ide_prpac=pac.ide_prpac
+                    left join (SELECT EPAR.IDE_GEEDP, EMP.DOCUMENTO_IDENTIDAD_GTEMP,
+                         coalesce(EMP.PRIMER_NOMBRE_GTEMP,'') || ' ' || coalesce(EMP.SEGUNDO_NOMBRE_GTEMP,'') || ' ' || coalesce(EMP.APELLIDO_PATERNO_GTEMP,'') || ' ' || coalesce(EMP.APELLIDO_MATERNO_GTEMP,'')
+                         AS NOMBRES_APELLIDOS, DEPA.DETALLE_GEDEP, EPAR.activo_geedp, detalle_geare FROM GEN_EMPLEADOS_DEPARTAMENTO_PAR EPAR
+                         LEFT JOIN GTH_EMPLEADO EMP ON EMP.IDE_GTEMP=EPAR.IDE_GTEMP LEFT JOIN SIS_SUCURSAL SUCU ON SUCU.IDE_SUCU=EPAR.IDE_SUCU
+                         LEFT JOIN GEN_DEPARTAMENTO DEPA ON DEPA.IDE_GEDEP=EPAR.IDE_GEDEP LEFT JOIN GEN_AREA AREA ON AREA.IDE_GEARE=EPAR.IDE_GEARE) resp on resp.IDE_GEEDP=rpac.IDE_GEEDP
+
+		left join cont_periodo_cuatrimestre cua on cua.ide_copec=pac.ide_copec
+		left join cont_tipo_compra tc on tc.ide_cotio=pac.ide_cotio
+		left join adq_tipo_contratacion tcon on tcon.ide_adtic=pac.ide_adtic
+		left join pre_partida_pac ppac on ppac.ide_prpac=pac.ide_prpac
+		left join pre_clasificador pc on pc.ide_prcla = ppac.ide_prcla
+
+  where rpac.activo_prrec=true and pac.ide_prpac=$P{ide_prpac}]]>
+	</queryString>
+	<field name="ide_prpac" class="java.lang.Long"/>
+	<field name="descripcion_prpac" class="java.lang.String">
+		<fieldDescription><![CDATA[descripcion_prpac]]></fieldDescription>
+	</field>
+	<field name="justificacion_prpac" class="java.lang.String"/>
+	<field name="nombres_apellidos" class="java.lang.String"/>
+	<field name="detalle_geare" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del area ejemplo: Directorio, Auditoria Interna, etc.]]></fieldDescription>
+	</field>
+	<field name="detalle_gedep" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del departamento, ejemplo: DIRECTORIO, TECNOLOGIA, INFRAESTRUCTURA, etc.]]></fieldDescription>
+	</field>
+	<field name="cuatrimestre" class="java.lang.String"/>
+	<field name="descripcion" class="java.lang.String"/>
+	<field name="cpc_prpac" class="java.lang.String">
+		<fieldDescription><![CDATA[cpc_prpac]]></fieldDescription>
+	</field>
+	<field name="partida" class="java.lang.String"/>
+	<field name="tipo_compra" class="java.lang.String"/>
+	<field name="tregimen_prpac" class="java.lang.String"/>
+	<field name="procedimiento" class="java.lang.String"/>
+	<field name="valor_total_prpac" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[valor_ total_prpac]]></fieldDescription>
+	</field>
+	<background>
+		<band height="842">
+			<image scaleImage="RetainShape" vAlign="Bottom">
+				<reportElement uuid="4116195a-8d8b-4225-bba8-2875a4205d48" x="0" y="0" width="595" height="842"/>
+				<imageExpression><![CDATA["C:\\proyecto\\sampu\\web\\upload\\logos\\HojaMembretada.png"]]></imageExpression>
+			</image>
+		</band>
+	</background>
+	<title>
+		<band height="153" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="bc02f684-495a-4b3d-a42e-50e4dfcc319e" x="50" y="90" width="490" height="32"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SOLICITUD CERTIFICACIÓN PAC]]></text>
+			</staticText>
+			<textField pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="3971fe8e-8c5e-4fa1-bc88-ea7355051645" x="453" y="137" width="87" height="15"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e9f0ccec-3806-4808-8814-46ad4a7db6af" x="197" y="122" width="343" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nro_documento}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="a17a1f80-e93f-4474-a1f8-9b532a70ad73" x="414" y="137" width="39" height="15"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="101" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="473df7cb-bb9d-49cb-a08a-47c8ef1e2bfa" x="50" y="16" width="51" height="15"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PARA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="60766b69-fb8b-41cf-9dfd-cfd513fd397c" x="50" y="49" width="51" height="15"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ASUNTO:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="0602cd3f-2131-4696-b10b-ac9a6e779597" x="138" y="49" width="402" height="45"/>
+				<textElement textAlignment="Justified">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Solicitud de certificación PAC para el Proceso de \"" + $F{descripcion_prpac}.toUpperCase()+"\""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8b1f8e57-cc9e-4d76-929c-e67c62d8bf5a" x="138" y="16" width="402" height="15"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{para}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3094ff1d-cf0f-45cc-be15-4217f3bf17a4" x="138" y="31" width="402" height="15"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{pie_para}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="141">
+			<rectangle>
+				<reportElement uuid="512791a0-e677-4236-9eb9-96aa799875a3" x="51" y="110" width="490" height="30"/>
+			</rectangle>
+			<textField>
+				<reportElement uuid="f750d95e-4e44-4aaa-9690-9ad92e55ee0d" x="50" y="32" width="490" height="78"/>
+				<textElement textAlignment="Justified" markup="html">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["<p>Por medio del presente solicito se emita la Certificación PAC con la cual se evidencie que la siguiente contratación <b>\""+$F{descripcion_prpac}.toUpperCase()+"\".</b>, consta en el PAC del año fiscal en curso de la Empresa Pública Metropolitana de Gestión Integral de Residuos Sólidos EMGIRS EP, según el siguiente detalle:</p>"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="be5494e8-d28f-45d3-9ffd-614546a10f47" x="50" y="9" width="107" height="14"/>
+				<textElement markup="none">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[De mi consideración:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8d7a7a92-065b-419b-b9d3-0f34f3caabc7" x="275" y="110" width="68" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PROCEDIMIENTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="911da8c5-bc0f-42bd-9a62-548e43cb6d02" x="51" y="110" width="61" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PARTIDA PRESUPUESTARIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e373db28-2cea-4a69-99ad-616136427ef1" x="344" y="110" width="85" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DESCRIPCIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="630b80a6-2211-4e5f-ba58-e0348bce0c5b" x="113" y="110" width="61" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CPC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="82363889-01d2-435d-9913-d09fe939c6d1" x="227" y="110" width="47" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[REGIMEN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4a873294-b2a6-4dc4-b322-95e9c0dbd331" x="175" y="110" width="51" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[T. COMPRA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f4140584-f4db-48c5-9fc4-e874fae7d135" x="429" y="110" width="67" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[V. TOTAL (sin IVA)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8cbda582-12b9-49e9-be05-fb17d54d60e3" x="496" y="110" width="44" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUATRIMESTRE]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="32" splitType="Stretch">
+			<textField>
+				<reportElement uuid="f4333918-7cf5-409a-8799-b875d49be098" x="50" y="1" width="61" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{partida}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="47a19570-27b8-4d54-ab27-a352998a93a7" x="113" y="1" width="61" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cpc_prpac}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c42a4ed8-223d-4904-b7b9-92ed369d79b7" x="175" y="1" width="51" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipo_compra}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="154e2ba9-6070-4747-9f07-d88badc9a07d" x="227" y="1" width="48" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tregimen_prpac}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="80c803d3-89a3-44d5-b157-3a34360893cb" x="275" y="1" width="68" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{procedimiento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2d0308a7-1b74-422b-8b1f-28e8bbf1d292" x="344" y="1" width="85" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion_prpac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement uuid="6cee3b90-460a-4d01-87a5-6237b87731c4" x="430" y="1" width="62" height="30"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_total_prpac}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0527df52-4082-43a0-be08-55252b3f6b7f" x="496" y="1" width="45" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cuatrimestre}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="168">
+			<staticText>
+				<reportElement uuid="daa8bad5-f36c-4e18-a48d-f9329cdf8dc1" x="50" y="150" width="330" height="14"/>
+				<textElement markup="none">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Documento generado automaticamente por el Sistema SAMPU-ERP]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="80831315-e36b-41bd-8fa9-43fea50fa541" x="59" y="101" width="149" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="6daf5626-833b-4920-aaab-ed147538940b" x="50" y="120" width="174" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_geare}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6ee216db-14c0-45ee-8dd0-3c116a3de491" x="50" y="105" width="174" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombres_apellidos}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="31a59723-4e33-44ac-8617-a41f23c67151" x="50" y="6" width="303" height="45"/>
+				<textElement markup="none">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Con sentimientos de distinguida consideración.
+
+Atentamente,]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

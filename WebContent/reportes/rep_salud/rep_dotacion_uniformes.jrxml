@@ -1,0 +1,631 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_dotacion_uniformes" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="898477e9-76fb-4482-8452-62ab6c59661b">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["D:\\workspace\\biess\\WebContent\\reportes\\rep_gestion\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IDE_GTEMP" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT c.ide_geedp,d.ide_gtemp,d.nombre_empleado,d.documento,a.fecha_entrega_sacus,a.fecha_descarga_sacus,
+a.nro_acta_sacus,a.uso_sacus,h.detalle_sacol,i.detalle_sagrb,b.cantidad_sadou,b.valor_unitario_sadou,b.detalle_sadou,
+e.sucursal,f.area,g.departamento,j.gocupacional,k.cargo,m.partida
+FROM sao_custodio a
+LEFT JOIN(
+SELECT ide_sadou,ide_sacus,ide_sacol,ide_sagrb,cantidad_sadou,valor_unitario_sadou,detalle_sadou FROM SAO_DOTACION_UNIFORME
+)b on b.ide_sacus=a.ide_sacus
+LEFT JOIN(
+SELECT ide_geedp,ide_gtemp,ide_sucu,ide_geare,ide_gedep,ide_gegro,ide_gecaf,ide_gepgc FROM gen_empleados_departamento_par
+)c on c.ide_geedp=a.ide_geedp
+LEFT JOIN (
+SELECT ide_gtemp,apellido_paterno_gtemp || ' '||apellido_materno_gtemp||' '||primer_nombre_gtemp||' '||
+segundo_nombre_gtemp as nombre_empleado,documento_identidad_gtemp as documento FROM gth_empleado
+)d on d.ide_gtemp=c.ide_gtemp
+left join(
+SELECT ide_sucu,nom_sucu as sucursal FROM sis_sucursal
+)e on e.ide_sucu=c.ide_sucu
+left join(
+SELECT ide_geare,detalle_geare as area FROM gen_area
+)f on f.ide_geare=c.ide_geare
+left join(
+SELECT ide_gedep,detalle_gedep as departamento FROM gen_departamento
+)g on g.ide_gedep=c.ide_gedep
+LEFT JOIN(
+SELECT ide_sacol,detalle_sacol FROM sao_color
+)h on h.ide_sacol=b.ide_sacol
+LEFT JOIN (
+SELECT ide_sagrb,detalle_sagrb FROM sao_grupo_bien
+)i on i.ide_sagrb=b.ide_sagrb
+LEFT JOIN(
+SELECT ide_gegro,detalle_gegro as gocupacional FROM gen_grupo_ocupacional
+)j ON j.ide_gegro=c.ide_gegro
+LEFT JOIN(
+SELECT ide_gecaf,detalle_gecaf as cargo FROM gen_cargo_funcional
+)k ON k.ide_gecaf=c.ide_gecaf
+LEFT JOIN(
+SELECT ide_gepgc,ide_gepap FROM gen_partida_grupo_cargo
+)l ON l.ide_gepgc=c.ide_gepgc
+LEFT JOIN(
+SELECT ide_gepap,codigo_partida_gepap as partida FROM gen_partida_presupuestaria
+)m ON m.ide_gepap=l.ide_gepap
+WHERE
+a.tipo_sacus=0
+and c.ide_gtemp in ($P!{IDE_GTEMP})
+ORDER BY d.nombre_empleado,c.ide_geedp,e.sucursal,f.area,g.departamento,j.gocupacional,k.cargo,m.partida]]>
+	</queryString>
+	<field name="IDE_GEEDP" class="java.math.BigDecimal"/>
+	<field name="IDE_GTEMP" class="java.math.BigDecimal"/>
+	<field name="NOMBRE_EMPLEADO" class="java.lang.String"/>
+	<field name="DOCUMENTO" class="java.lang.String"/>
+	<field name="FECHA_ENTREGA_SACUS" class="java.sql.Timestamp"/>
+	<field name="FECHA_DESCARGA_SACUS" class="java.sql.Timestamp"/>
+	<field name="NRO_ACTA_SACUS" class="java.lang.String"/>
+	<field name="USO_SACUS" class="java.lang.String"/>
+	<field name="DETALLE_SACOL" class="java.lang.String"/>
+	<field name="DETALLE_SAGRB" class="java.lang.String"/>
+	<field name="CANTIDAD_SADOU" class="java.math.BigDecimal"/>
+	<field name="VALOR_UNITARIO_SADOU" class="java.math.BigDecimal"/>
+	<field name="DETALLE_SADOU" class="java.lang.String"/>
+	<field name="SUCURSAL" class="java.lang.String"/>
+	<field name="AREA" class="java.lang.String"/>
+	<field name="DEPARTAMENTO" class="java.lang.String"/>
+	<field name="GOCUPACIONAL" class="java.lang.String"/>
+	<field name="CARGO" class="java.lang.String"/>
+	<field name="PARTIDA" class="java.lang.String"/>
+	<group name="IDE_GEEDP">
+		<groupExpression><![CDATA[$F{IDE_GEEDP}]]></groupExpression>
+		<groupHeader>
+			<band height="144">
+				<staticText>
+					<reportElement uuid="3ac64f0e-9373-47b7-a12f-b4c8abf60776" stretchType="RelativeToBandHeight" x="0" y="48" width="83" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[SUCURSAL:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="6dbe67e8-d45b-4d8c-8976-9c519707126d" stretchType="RelativeToBandHeight" x="0" y="60" width="83" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[AREA:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="4fa232ee-1e2d-4fe8-b97e-c82ff789ec21" stretchType="RelativeToBandHeight" x="0" y="72" width="83" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[DEPARTAMENTO:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="176e9ce8-bafc-4e3a-a651-a074a80662f5" stretchType="RelativeToBandHeight" x="0" y="84" width="83" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[GRUPO OCUPACIONAL:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="1c98001a-34b8-45fb-a862-d33211f06cb1" stretchType="RelativeToBandHeight" x="0" y="96" width="83" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[CARGO:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="5342bb7c-115e-40ab-8bd6-d16d6f94b1be" stretchType="RelativeToBandHeight" x="0" y="108" width="83" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[PARTIDA:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="6ca54c41-1697-4111-9fa4-9bc445fe8f58" stretchType="RelativeToBandHeight" x="83" y="48" width="273" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{SUCURSAL}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="a27a403f-80c8-4401-b9a2-4ffa11129bb9" stretchType="RelativeToBandHeight" x="83" y="60" width="273" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{AREA}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="f5c579c6-6305-44f7-884d-7450faf44057" stretchType="RelativeToBandHeight" x="83" y="72" width="273" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DEPARTAMENTO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="d9bb60dc-3ffb-46dd-a3d8-538671ca81e2" stretchType="RelativeToBandHeight" x="83" y="84" width="472" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{GOCUPACIONAL}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="656a9aa0-6f21-4e85-b3c8-93dcf1204745" stretchType="RelativeToBandHeight" x="83" y="96" width="472" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{CARGO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="5fe28c83-f020-42e1-af2c-114133662716" stretchType="RelativeToBandHeight" x="83" y="108" width="472" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{PARTIDA}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="a94e00ef-1cba-45c9-9859-7ad05892fc70" stretchType="RelativeToBandHeight" x="0" y="36" width="83" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[EMPLEADO:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="4e92d2e3-aac0-439e-9ed0-e88801922725" stretchType="RelativeToBandHeight" x="356" y="36" width="80" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[DOCUMENTO:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="570cc7ef-45e0-4660-bfa8-2dc87155959e" stretchType="RelativeToBandHeight" x="356" y="48" width="80" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[FECHA ENTREGA:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="1b66566a-3f0f-4927-93c4-abbbefef2412" stretchType="RelativeToBandHeight" x="356" y="60" width="80" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[FECHA DESCARGA:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="31fb4563-10f6-4b0d-ae10-1ad29261c705" stretchType="RelativeToBandHeight" x="356" y="72" width="80" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[NRO ACTA:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="b194d4fc-e4df-4596-ace3-225eb3ff6ccf" stretchType="RelativeToBandHeight" x="0" y="120" width="83" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[USO:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="7ca3ad84-1aa9-45b0-8820-97d4c8a3ab12" stretchType="RelativeToBandHeight" x="83" y="36" width="273" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{NOMBRE_EMPLEADO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="b32824e5-6119-4486-81df-ec134616283e" stretchType="RelativeToBandHeight" x="436" y="36" width="119" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DOCUMENTO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+					<reportElement uuid="2891b8b0-0c34-4307-8506-4f548288d043" stretchType="RelativeToBandHeight" x="436" y="48" width="119" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{FECHA_ENTREGA_SACUS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+					<reportElement uuid="4dd043bd-336b-47b4-9ff5-c05746acbc06" stretchType="RelativeToBandHeight" x="436" y="60" width="119" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{FECHA_DESCARGA_SACUS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="84edc8fc-4721-47d4-91d9-6fabbd533091" stretchType="RelativeToBandHeight" x="436" y="72" width="119" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{NRO_ACTA_SACUS}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement uuid="47c7702a-f48d-4e43-af7c-d8fc396e702f" stretchType="RelativeToBandHeight" x="83" y="120" width="472" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box leftPadding="3">
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{USO_SACUS}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="998d8634-70b4-4a36-8e65-4a9f220ecfc3" stretchType="RelativeToBandHeight" x="0" y="132" width="83" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[COLOR]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="47cff0ba-a337-4784-a215-e1598b022bbe" stretchType="RelativeToBandHeight" x="83" y="132" width="179" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[DETALLE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="8565e996-c9da-4a22-9035-4b5c5f41f2cb" stretchType="RelativeToBandHeight" x="262" y="132" width="50" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[CANTIDAD]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="ca3dcf67-145b-45fe-a3b8-eaeec581d93c" stretchType="RelativeToBandHeight" x="312" y="132" width="37" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[V/U.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="1aa54a85-3ba4-4218-ae39-a46266793d90" stretchType="RelativeToBandHeight" x="349" y="132" width="206" height="12" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+					<box>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7" isBold="true" pdfFontName="Courier-Bold" isPdfEmbedded="true"/>
+					</textElement>
+					<text><![CDATA[OBSERVACIÓN]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="20" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="11a24837-c7f5-4f71-8c77-4d1d4054acab" x="0" y="0" width="555" height="20"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema_biess/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="10" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="86c4169e-1988-4769-ba5e-16218d6f17f5" stretchType="RelativeToBandHeight" x="0" y="0" width="83" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DETALLE_SACOL}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="4a68e09c-ed56-47dc-86ae-2b232eb669b8" stretchType="RelativeToBandHeight" x="83" y="0" width="179" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DETALLE_SAGRB}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="ca83e69f-dd50-4454-b94c-e10f3be465ee" stretchType="RelativeToBandHeight" x="262" y="0" width="50" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CANTIDAD_SADOU}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="4ed3d5a2-bf27-401f-9895-a0b4dc919fb5" stretchType="RelativeToBandHeight" x="312" y="0" width="37" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box rightPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{VALOR_UNITARIO_SADOU}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="0aac0315-4ff1-44b3-99da-00c85aa0ab48" stretchType="RelativeToBandHeight" x="349" y="0" width="206" height="10" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="3">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DETALLE_SADOU}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="10" splitType="Stretch">
+			<textField>
+				<reportElement uuid="8d4938e7-7cc1-41b8-b8e6-ba37451c6917" x="478" y="0" width="37" height="10"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="98fceb8d-b341-4cb3-98bb-ec2ed2d46f59" x="515" y="0" width="40" height="10"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

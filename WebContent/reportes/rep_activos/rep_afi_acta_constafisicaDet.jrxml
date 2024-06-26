@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_actaDet" pageWidth="803" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="803" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="3ccf602c-8b15-4dd2-9216-12a2155abad2">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="pide_empleado" class="java.lang.Integer"/>
+	<parameter name="p_ubicacion" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select a.ide_afcus,a.ide_gtemp,fecha_entrega_afcus,numero_acta_afcus,custodio,activo_afcus,cedula,detalle_gecaf,detalle_geare,detalle_afest,cod_anterior_afact,
+        detalle_afact,valor_compra_afact as valor_unitario_afact,detalle_afubi as color_afact,nro_factura_afact,
+        coalesce(marca_afact,'N/A') as marca_afact,
+        coalesce(serie_afact,'N/A') as serie_afact,
+        coalesce(modelo_afact,'N/A') as modelo_afact,
+        detalle_afnoa,cod_barra_afcus,
+        ide_afacd,observaciones_afact
+        from (
+        select ide_afcus,ide_afact,b.ide_gtemp,fecha_entrega_afcus,numero_acta_afcus,activo_afcus,documento_identidad_gtemp as cedula,
+        apellido_paterno_gtemp||' '||(case when apellido_materno_gtemp is null then '' else  apellido_materno_gtemp end)||' '||
+        primer_nombre_gtemp||' '||(case when segundo_nombre_gtemp is null then '' else segundo_nombre_gtemp end) as custodio,cod_barra_afcus
+        from afi_custodio a, gen_empleados_departamento_par b, gth_empleado c
+        where a.ide_geedp = b.ide_geedp and b.ide_gtemp = c.ide_gtemp
+        ) a, (
+        select ide_afact,detalle_afact,valor_compra_afact,color_afact,nro_factura_afact,marca_afact,serie_afact,modelo_afact,detalle_afnoa,detalle_afest,cod_anterior_afact,ide_afacd
+        ,substring(observaciones_afact from 0 for 80) as observaciones_afact, detalle_afubi, d.ide_afubi
+        from afi_activo a, afi_nombre_activo b,afi_estado c, afi_ubicacion d
+        where a.ide_afnoa = b.ide_afnoa and a.ide_afest = c.ide_afest and a.ide_afubi = d.ide_afubi
+        ) b,
+        (
+        select ide_gtemp,detalle_gecaf,detalle_geare from gen_empleados_departamento_par a
+        left join gen_area b on a.ide_geare = b.ide_geare
+        left join gen_cargo_funcional c on a.ide_gecaf = c.ide_gecaf
+        where coalesce(a.activo_geedp,false) in (true,false) and ide_geedp in (select max(ide_geedp) as ide_geedp from gen_empleados_departamento_par group by ide_gtemp )
+        order by ide_gtemp
+        ) c
+        where a.ide_afact = b.ide_afact
+        and a.ide_gtemp = c.ide_gtemp
+        and activo_afcus=true
+        and a.ide_gtemp= $P{pide_empleado}
+        and case when $P{p_ubicacion} > 0 then b.ide_afubi = $P{p_ubicacion} else b.ide_afubi = b.ide_afubi end
+        and not ide_afacd in ((select cast(valor_para as integer)  from sis_parametros where nom_para='p_estado_baja_activo'),6)
+        order by fecha_entrega_afcus desc;]]>
+	</queryString>
+	<field name="ide_afcus" class="java.lang.Long">
+		<fieldDescription><![CDATA[Define la clave primaria de la tabla afi_activo.]]></fieldDescription>
+	</field>
+	<field name="ide_gtemp" class="java.lang.Integer"/>
+	<field name="fecha_entrega_afcus" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_entrega_afcus]]></fieldDescription>
+	</field>
+	<field name="numero_acta_afcus" class="java.lang.String">
+		<fieldDescription><![CDATA[numero_acta_afcus]]></fieldDescription>
+	</field>
+	<field name="custodio" class="java.lang.String"/>
+	<field name="activo_afcus" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[Define el estado del registro si se encuentra activo o inactivo.]]></fieldDescription>
+	</field>
+	<field name="cedula" class="java.lang.String"/>
+	<field name="detalle_gecaf" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del cargo y el puesto en el caso d emonte de piedad, ejemplo: PROFESIONAL 1, TECNICO A , TECNICO B, asi como los puestos: CAJERO, PQ Y PH, etc]]></fieldDescription>
+	</field>
+	<field name="detalle_geare" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del area ejemplo: Directorio, Auditoria Interna, etc.]]></fieldDescription>
+	</field>
+	<field name="detalle_afest" class="java.lang.String"/>
+	<field name="cod_anterior_afact" class="java.lang.String"/>
+	<field name="detalle_afact" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_afact]]></fieldDescription>
+	</field>
+	<field name="valor_unitario_afact" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[valor_unitario_afact]]></fieldDescription>
+	</field>
+	<field name="color_afact" class="java.lang.String"/>
+	<field name="nro_factura_afact" class="java.lang.String"/>
+	<field name="marca_afact" class="java.lang.String">
+		<fieldDescription><![CDATA[marca_afact]]></fieldDescription>
+	</field>
+	<field name="serie_afact" class="java.lang.String">
+		<fieldDescription><![CDATA[serie_afact]]></fieldDescription>
+	</field>
+	<field name="modelo_afact" class="java.lang.String">
+		<fieldDescription><![CDATA[modelo_afact]]></fieldDescription>
+	</field>
+	<field name="detalle_afnoa" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_afnoa]]></fieldDescription>
+	</field>
+	<field name="cod_barra_afcus" class="java.lang.String">
+		<fieldDescription><![CDATA[cod_barra_afcus]]></fieldDescription>
+	</field>
+	<field name="ide_afacd" class="java.lang.Long"/>
+	<field name="observaciones_afact" class="java.lang.String"/>
+	<variable name="vcuenta_bien" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{ide_afcus}]]></variableExpression>
+	</variable>
+	<variable name="vsum_total" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor_unitario_afact}]]></variableExpression>
+	</variable>
+	<variable name="orden" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{ide_afcus}]]></variableExpression>
+	</variable>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="c4609a2a-30ea-4a49-8dcc-86dd496c4d0e" stretchType="RelativeToBandHeight" x="157" y="0" width="90" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="none">
+					<font size="7" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_afnoa}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="4ffc6417-44fa-4eb9-8c50-67d998c64fd3" stretchType="RelativeToBandHeight" x="247" y="0" width="153" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="none">
+					<font size="7" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_afact}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="4bfb8318-cfab-40d3-84b9-6bfdefc42b12" stretchType="RelativeToBandHeight" x="529" y="0" width="57" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
+					<font size="7" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{marca_afact}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="227c77c3-ebdb-404e-8f14-f38cc4d62787" stretchType="RelativeToBandHeight" x="586" y="0" width="57" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
+					<font size="7" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{modelo_afact}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="12aa9dda-501b-4c58-9786-8b97917640de" stretchType="RelativeToBandHeight" x="643" y="0" width="67" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
+					<font size="7" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{serie_afact}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="d9327525-833f-4363-a4ea-812b033640b6" stretchType="RelativeToBandHeight" x="710" y="0" width="45" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
+					<font size="7" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{color_afact}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="f65aaa74-8aa3-49ae-8c8f-3cf6997105fd" stretchType="RelativeToBandHeight" x="755" y="0" width="47" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top" markup="none">
+					<font size="7" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_unitario_afact}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="de3aa601-689c-431e-86f2-ab3b676d3dc1" stretchType="RelativeToBandHeight" x="21" y="0" width="65" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
+					<font size="7" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cod_barra_afcus}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="50115bef-38ba-4b80-b96d-3f1099373225" stretchType="RelativeToBandHeight" x="488" y="0" width="41" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
+					<font size="7" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_afest}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="32e52c52-f83d-45b5-9344-1aec28bf5722" stretchType="RelativeToBandHeight" x="400" y="0" width="88" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="none">
+					<font size="7" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{observaciones_afact}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="501aceaa-af2e-4b75-875c-b5f31446341e" stretchType="RelativeToBandHeight" x="86" y="0" width="71" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
+					<font size="7" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cod_anterior_afact}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="d388e083-b8a2-4ebb-ac54-e62a12b39c68" stretchType="RelativeToBandHeight" x="0" y="0" width="21" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="none">
+					<font size="7" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{orden}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_recibo_caja_ticket" language="groovy" pageWidth="210" pageHeight="550" columnWidth="210" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="4f88d28a-8afc-4abc-95b3-23e811e4bb26">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_afdoc" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[2915]]></defaultValueExpression>
+	</parameter>
+	<parameter name="empleado_generacion" class="java.lang.String"/>
+	<parameter name="pjefe_activos" class="java.lang.String"/>
+	<parameter name="recibiConforme" class="java.lang.String"/>
+	<parameter name="DIRECTORIO_FOTO_FIRMA" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:/jboss-as-7.1.1.Final/welcome-content/files_erp"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="foto_firma" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+	DISTINCT emp.ide_gtemp,
+	doc.ide_geani,
+	emp.apellido_paterno_gtemp,
+	(case when emp.apellido_materno_gtemp is null then '' else emp.apellido_materno_gtemp end) as apellido_materno_gtemp,
+	emp.primer_nombre_gtemp,
+	(case when emp.segundo_nombre_gtemp is null then '' else emp.segundo_nombre_gtemp end) as segundo_nombre_gtemp,
+	emp.documento_identidad_gtemp,
+	(select count(*) as numCust from afi_doc_detalle_custodio where activo_afdda = TRUE AND ide_afdoc =  $P{ide_afdoc}) as numCust,
+	cargo.detalle_gecaf,
+	cargo.detalle_geare
+FROM
+	afi_docu doc
+	LEFT JOIN afi_doc_detalle_custodio cusdoc ON doc.ide_afdoc = cusdoc.ide_afdoc
+	LEFT JOIN gth_empleado emp ON emp.ide_gtemp = cusdoc.ide_gtemp
+         	LEFT JOIN (select  	ide_gtemp,
+			detalle_gecaf,
+			detalle_geare
+		from 	gen_empleados_departamento_par a
+			left join gen_area b on a.ide_geare = b.ide_geare
+			left join gen_cargo_funcional c on a.ide_gecaf = c.ide_gecaf
+		where coalesce(a.activo_geedp,false) in (true,false) and ide_geedp in (select max(ide_geedp) as ide_geedp from gen_empleados_departamento_par group by ide_gtemp )) cargo
+ON cargo.ide_gtemp = emp.ide_gtemp
+WHERE
+doc.ide_afdoc = $P{ide_afdoc}
+ORDER BY ide_gtemp DESC;]]>
+	</queryString>
+	<field name="ide_gtemp" class="java.lang.Integer"/>
+	<field name="ide_geani" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gen_anio, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="apellido_paterno_gtemp" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el apellido paterno del empleado.]]></fieldDescription>
+	</field>
+	<field name="apellido_materno_gtemp" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el apellido materno del empleado.]]></fieldDescription>
+	</field>
+	<field name="primer_nombre_gtemp" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el prmer nombre del empleado.]]></fieldDescription>
+	</field>
+	<field name="segundo_nombre_gtemp" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el segundo nombre del empleado.]]></fieldDescription>
+	</field>
+	<field name="documento_identidad_gtemp" class="java.lang.String"/>
+	<field name="numcust" class="java.lang.Long"/>
+	<field name="detalle_gecaf" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del cargo y el puesto en el caso d emonte de piedad, ejemplo: PROFESIONAL 1, TECNICO A , TECNICO B, asi como los puestos: CAJERO, PQ Y PH, etc]]></fieldDescription>
+	</field>
+	<field name="detalle_geare" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del area ejemplo: Directorio, Auditoria Interna, etc.]]></fieldDescription>
+	</field>
+	<variable name="countCustodios" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{documento_identidad_gtemp}]]></variableExpression>
+	</variable>
+	<group name="documento_identidad_gtemp">
+		<groupExpression><![CDATA[$F{documento_identidad_gtemp}]]></groupExpression>
+	</group>
+	<title>
+		<band height="12" splitType="Stretch">
+			<textField>
+				<reportElement uuid="0ac90c73-18bc-4ab8-bb5f-bf20406a5cc5" x="1" y="1" width="209" height="10"/>
+				<textElement>
+					<font size="6" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["RECIBIDO POR "+$F{numcust}+" CUSTODIO(S):"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="87" splitType="Stretch">
+			<textField>
+				<reportElement uuid="1664f472-5576-4037-94e3-b7f978d2e14b" x="1" y="34" width="210" height="9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_geare}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="27ce0544-b5de-45e2-899c-802d49ca201b" x="1" y="43" width="210" height="11"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{apellido_paterno_gtemp}+" "+$F{apellido_materno_gtemp}+" "+$F{primer_nombre_gtemp}+" "+$F{segundo_nombre_gtemp}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="555269b5-1184-4fcf-b641-f010f28d3ca9" x="1" y="32" width="188" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="54ca7a03-0bed-4fbf-9b2e-d9d38b367eca" x="1" y="55" width="210" height="11"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{documento_identidad_gtemp}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="145d6046-98a8-4a75-bf78-02947958cc61" x="52" y="66" width="108" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{recibiConforme}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement uuid="9fcbf33c-0359-4f05-bbe1-bf47c0aa24d2" x="70" y="0" width="63" height="30"/>
+				<imageExpression><![CDATA[$P{DIRECTORIO_FOTO_FIRMA}+$P{foto_firma}]]></imageExpression>
+			</image>
+		</band>
+	</detail>
+</jasperReport>

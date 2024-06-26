@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_kardex_individual_anual" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="NoDataSection" columnWidth="832" leftMargin="5" rightMargin="5" topMargin="0" bottomMargin="0" uuid="f2039012-673d-43a4-8ac7-378ca9838a39">
+	<property name="ireport.zoom" value="1.4641000000000013"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_geani" class="java.lang.Long"/>
+	<parameter name="ide_bocam" class="java.lang.Long"/>
+
+	<queryString>
+		<![CDATA[SELECT ide_bocam, descripcion_bocam, cat_codigo_bocam FROM bodt_catalogo_material WHERE ide_bocam = $P{ide_bocam}]]>
+	</queryString>
+	<field name="ide_bocam" class="java.lang.Long">
+		<fieldDescription><![CDATA[Primary de bodt_catalogo_material con el cual se va a unir a todos los otros modulos]]></fieldDescription>
+	</field>
+	<field name="descripcion_bocam" class="java.lang.String"/>
+	<field name="cat_codigo_bocam" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement uuid="a15d63bd-20fe-4e0a-9fdb-34a475d3f4b8" x="100" y="3" width="335" height="17"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{descripcion_bocam}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7d66e8d4-7ad0-4c05-8849-7dd39d9bc524" x="0" y="3" width="100" height="17"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cat_codigo_bocam}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="8" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="43" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="13b98239-1acb-47df-ba1f-dca44929173a" x="0" y="0" width="808" height="20"/>
+				<textElement/>
+				<text><![CDATA[No se encontraron resultados]]></text>
+			</staticText>
+		</band>
+	</summary>
+	<noData>
+		<band height="50">
+			<staticText>
+				<reportElement uuid="93438518-9c61-4ce6-877f-a0d0d713f3e8" x="0" y="0" width="808" height="20"/>
+				<textElement/>
+				<text><![CDATA[No se encontraron resultados]]></text>
+			</staticText>
+		</band>
+	</noData>
+</jasperReport>

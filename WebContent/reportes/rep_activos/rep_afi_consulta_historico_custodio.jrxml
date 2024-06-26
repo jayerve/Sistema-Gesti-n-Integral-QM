@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_entrega_recepcion" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3ccf602c-8b15-4dd2-9216-12a2155abad2">
+	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:/eclipse-jee-kepler-SR2-win32/Proyectos/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="pbase_legal" class="java.lang.String"/>
+	<parameter name="pide_empleado" class="java.lang.Integer"/>
+	<parameter name="pnum_acta" class="java.lang.String"/>
+	<parameter name="pdirector_administrativo" class="java.lang.String"/>
+	<parameter name="pjefe_activos" class="java.lang.String"/>
+	<parameter name="empleado_generacion" class="java.lang.String"/>
+	<parameter name="ide_gtemp" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[6]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+	emp.apellido_paterno_gtemp || ' '||
+	emp.apellido_materno_gtemp || ' '||
+	emp.primer_nombre_gtemp|| ' '||
+	emp.segundo_nombre_gtemp || ' '||
+	emp.documento_identidad_gtemp as nombre_custodio,
+	addc.ide_gtemp,
+	adoc.ide_afdoc,
+	CASE WHEN recibe_afddc THEN 'RECIBE' ELSE 'ENTREGA' END recibe_afddc,
+    atid.ide_aftidoc,
+	detalle_aftidoc,
+	n.detalle_geani as acta_anio,
+	fecha_afdoc as acta_fecha,
+	nro_secuencial_afdoc,
+	detalle_afdoc,
+	(SELECT nom_usua FROM sis_usuario WHERE nick_usua = adoc.usuario_ingre) as acta_responsable,
+	(SELECT count(ide_afact) FROM afi_doc_detalle_activo act WHERE act.ide_afdoc=adoc.ide_afdoc) as numero_bienes,
+	(SELECT array_to_string(array(SELECT ide_afact FROM afi_doc_detalle_activo act WHERE act.ide_afdoc=adoc.ide_afdoc ORDER BY act.ide_afact),', ')) as CODIGO_BIENES
+FROM afi_doc_detalle_custodio addc
+	LEFT JOIN afi_docu adoc ON addc.ide_afdoc=adoc.ide_afdoc
+	LEFT JOIN afi_tipo_docu atid ON adoc.ide_aftidoc=atid.ide_aftidoc
+	LEFT JOIN gen_anio n ON adoc.ide_geani = n.ide_geani
+	LEFT JOIN gth_empleado emp ON emp.ide_gtemp =$P{ide_gtemp}
+WHERE addc.ide_gtemp IN ($P{ide_gtemp}) order by adoc.fecha_afdoc;]]>
+	</queryString>
+	<field name="nombre_custodio" class="java.lang.String"/>
+	<field name="ide_gtemp" class="java.lang.Long"/>
+	<field name="ide_afdoc" class="java.lang.Long"/>
+	<field name="recibe_afddc" class="java.lang.String">
+		<fieldDescription><![CDATA[True cuando el custodio es el que recibe, False para cuando entrega]]></fieldDescription>
+	</field>
+	<field name="ide_aftidoc" class="java.lang.Long">
+		<fieldDescription><![CDATA[Foranea de afi_tipo_docu]]></fieldDescription>
+	</field>
+	<field name="detalle_aftidoc" class="java.lang.String">
+		<fieldDescription><![CDATA[Descripcion del acta permitida en los documentos de afi_tipo_docu]]></fieldDescription>
+	</field>
+	<field name="acta_anio" class="java.lang.String"/>
+	<field name="acta_fecha" class="java.sql.Date"/>
+	<field name="nro_secuencial_afdoc" class="java.lang.Long">
+		<fieldDescription><![CDATA[Numero secuencial del documento pertinente]]></fieldDescription>
+	</field>
+	<field name="detalle_afdoc" class="java.lang.String">
+		<fieldDescription><![CDATA[Para colocar alguna observacion del documento]]></fieldDescription>
+	</field>
+	<field name="acta_responsable" class="java.lang.String"/>
+	<field name="numero_bienes" class="java.lang.Long"/>
+	<field name="codigo_bienes" class="java.lang.String"/>
+	<variable name="vcuenta_bien" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<variable name="vsum_total" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<variable name="orden" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<title>
+		<band height="52" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="9ac73269-3e9f-45e1-bf79-98fc4fbdea30" x="0" y="0" width="802" height="52"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_horizontal.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="44">
+			<staticText>
+				<reportElement uuid="fcfdc5c0-4050-4b77-a9b1-096aa94ec9ce" x="0" y="24" width="30" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="true" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[CÓDIGO ACTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c19e5e88-4a34-4112-89f5-2e6e3959228c" x="201" y="24" width="220" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="true" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[OBSERVACIÓN ACTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0fbe7306-a318-4a74-a8da-233f6a06e72f" x="30" y="24" width="30" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="true" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[# ACTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b423eb14-069b-49d4-952f-f8cbb9ed965d" x="60" y="24" width="66" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="true" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[FECHA ACTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="765d1b7f-cad7-41bf-af84-d35c8422f62e" x="421" y="24" width="80" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="true" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[ACCIÓN CUSTODIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0bceff3d-78a0-483f-befd-a1bbdb2fa242" x="126" y="24" width="75" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="true" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[TIPO ACTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="afcc75fb-a2dc-46cd-ae6a-028718548c17" x="0" y="12" width="126" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="10" rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[FECHA CONSULTA]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="0fe2be24-6ddc-4046-87a3-e990500b428a" x="126" y="12" width="675" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+					<paragraph leftIndent="10" rightIndent="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="edba46a6-d703-476f-b67a-87e0f26d0a9c" x="0" y="0" width="126" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="10" rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[CUSTODIO]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="28ff5138-6697-4b1d-93d2-4e24926bcdf8" x="126" y="0" width="675" height="12" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+					<paragraph leftIndent="10" rightIndent="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_custodio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="d756171e-3147-4660-8b1e-6190a1490341" x="501" y="24" width="150" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="true" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[RESPONSABLE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8dea6009-ec9d-42d4-b73a-796ed26b6630" x="651" y="24" width="150" height="20"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5" isBold="true" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[BIENES INVOLUCRADOS]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="10" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a497b567-3fad-4c32-a5e7-c7445fb63d61" stretchType="RelativeToBandHeight" x="60" y="0" width="66" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{acta_fecha}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="fe2c66d3-12a2-48d9-b903-4d1acdbced72" stretchType="RelativeToBandHeight" x="651" y="0" width="150" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo_bienes}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="5390e3e1-5342-4740-95ed-fa17302e9092" stretchType="RelativeToBandHeight" x="0" y="0" width="30" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ide_afdoc}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="57acf2cf-2458-400a-b957-8f896b77a487" stretchType="RelativeToBandHeight" x="501" y="0" width="150" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{acta_responsable}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="8f26d3cd-9036-424b-9370-001dba3f7e9a" stretchType="RelativeToBandHeight" x="126" y="0" width="75" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_aftidoc}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="2066b621-8db7-4c5d-b288-8ad2b38c08c9" stretchType="RelativeToBandHeight" x="421" y="0" width="80" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5"/>
+					<paragraph leftIndent="5" rightIndent="5" spacingAfter="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{recibe_afddc}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="01ea58b6-0b62-4a3f-9753-2591c7a44aa7" stretchType="RelativeToBandHeight" x="30" y="0" width="30" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{ide_aftidoc}!=6 ? $F{nro_secuencial_afdoc} : "N/A" )]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="863208e6-d91d-4750-842a-226baf401508" stretchType="RelativeToBandHeight" x="201" y="0" width="220" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="5"/>
+					<paragraph leftIndent="5" rightIndent="5" spacingAfter="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_afdoc}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="10">
+			<textField>
+				<reportElement uuid="44aa0859-a77f-43b4-8de8-4d548bbc33aa" x="614" y="0" width="137" height="10"/>
+				<textElement textAlignment="Right">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="a80c1524-d5c9-48bc-a0d2-353f28a8d22f" x="751" y="0" width="50" height="10"/>
+				<textElement>
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="12">
+			<elementGroup/>
+		</band>
+	</summary>
+</jasperReport>

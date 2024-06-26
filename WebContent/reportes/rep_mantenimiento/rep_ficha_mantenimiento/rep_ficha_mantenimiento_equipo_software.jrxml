@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_ficha_mantenimiento_equipo_software" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="5cad558d-212c-4d3e-b6e9-bfb7703046e1">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\eclipse-jee-kepler-SR2-win32\\Proyectos\\sampu\\WebContent\\reportes\\rep_mantenimiento\\rep_ficha_mantenimiento\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IDE_MTEQU" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IDE_MTMAN" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT mteqs.ide_mteqs, mteqs.ide_software,tipsof.nombre_mtsof, mteqs.comentario_mteqs, mteqs.identificador_mteqs,
+       case when mteqs.instalado_mteqs=true then 'SI' else 'NO' END as instalado_mteqs, mteqs.licencia_mteqs, mteqs.version_software_mteqs,
+        mteqs.ide_mtman, mteqs.ide_afact
+  FROM mto_equipo_software mteqs
+  left join mto_software  tipsof  on tipsof.ide_mtsof=mteqs.ide_software
+
+where mteqs.ide_mtman in($P!{IDE_MTMAN})]]>
+	</queryString>
+	<field name="ide_mteqs" class="java.lang.Long"/>
+	<field name="ide_software" class="java.lang.Long">
+		<fieldDescription><![CDATA[Para colocar la descripción del tipo de equipo]]></fieldDescription>
+	</field>
+	<field name="nombre_mtsof" class="java.lang.String">
+		<fieldDescription><![CDATA[Para colocar el nombre que se va a mostrar en los combobox]]></fieldDescription>
+	</field>
+	<field name="comentario_mteqs" class="java.lang.String">
+		<fieldDescription><![CDATA[Comentario]]></fieldDescription>
+	</field>
+	<field name="identificador_mteqs" class="java.lang.String">
+		<fieldDescription><![CDATA[Identificador unico]]></fieldDescription>
+	</field>
+	<field name="instalado_mteqs" class="java.lang.String">
+		<fieldDescription><![CDATA[Para colocar el estado]]></fieldDescription>
+	</field>
+	<field name="licencia_mteqs" class="java.lang.String">
+		<fieldDescription><![CDATA[Licencia del software]]></fieldDescription>
+	</field>
+	<field name="version_software_mteqs" class="java.lang.String"/>
+	<field name="ide_mtman" class="java.lang.Long"/>
+	<field name="ide_afact" class="java.lang.Long">
+		<fieldDescription><![CDATA[Define la clave primaria de la tabla afi_activo.]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="62" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="3ab31792-785e-4ddd-b59b-4ebc6ce77206" x="364" y="10" width="144" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{identificador_mteqs}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="93e86ff3-423f-45b7-bb43-293cf2fccef1" x="236" y="10" width="128" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{licencia_mteqs}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="6e921a69-fcc6-47ff-b8f6-5bce73812257" x="0" y="10" width="124" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre_mtsof}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="4683ec37-16c4-47d6-b9be-710fa41463a6" x="0" y="0" width="124" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[SOFTWARE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8b473bca-0862-4a68-aece-089eeaa28724" x="124" y="0" width="112" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[VERSION]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="bfbc23be-3954-4c9a-bb79-a725cebc9507" x="124" y="10" width="112" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{version_software_mteqs}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="211bdef7-b73d-4d02-b794-36f114c58ccd" x="364" y="0" width="144" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[ID PRODUCTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="72dc644e-d346-4210-9fb1-7314ea594322" x="236" y="0" width="128" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[LICENCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5e551682-8baa-4299-8fb8-c2a6e58d1554" x="0" y="22" width="555" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[OBSERVACION]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="1dfa05e7-5c96-458c-bcec-964ed6b0cd57" x="0" y="32" width="555" height="30" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{comentario_mteqs}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="aa8763d8-02b7-4a1e-95cc-f6acc69a71ef" x="508" y="0" width="47" height="10"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[INSTALADO]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="d5bc1e9e-f9c9-4ad6-b536-3e0074af9797" x="508" y="10" width="47" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{instalado_mteqs}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

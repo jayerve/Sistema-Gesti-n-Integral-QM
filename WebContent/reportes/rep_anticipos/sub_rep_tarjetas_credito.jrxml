@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rep_tarjetas_credito" language="groovy" pageWidth="555" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="d6909229-9440-4b9e-ad24-e4ce58344536">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="IDE_NRANT" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+ANT.IDE_NRANT,
+TCE.IDE_GTTCE,
+INS.DETALLE_GEINS AS EMISOR,
+TCE.NUMERO_TARGETA_GTTCE AS TARJETA,
+TCE.FECHA_ACTUA AS FECHA_VECIMIENTO
+FROM GTH_TARJETA_CREDITO_EMPLEADO TCE
+LEFT JOIN NRH_ANTICIPO ANT ON ANT.IDE_GTEMP=TCE.IDE_GTEMP
+LEFT JOIN GTH_CUENTA_BANCARIA_EMPLEADO CBE ON CBE.IDE_GTEMP=TCE.IDE_GTEMP
+LEFT JOIN GEN_INSTITUCION INS ON INS.IDE_GEINS=CBE.IDE_GEINS
+WHERE
+ANT.IDE_NRANT=$P{IDE_NRANT} AND
+TCE.ACTIVO_GTTCE=true]]>
+	</queryString>
+	<field name="ide_nrant" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla nrh_anticipo, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_gttce" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_gttce]]></fieldDescription>
+	</field>
+	<field name="emisor" class="java.lang.String"/>
+	<field name="tarjeta" class="java.lang.String"/>
+	<field name="fecha_vecimiento" class="java.sql.Date"/>
+	<pageHeader>
+		<band height="12">
+			<staticText>
+				<reportElement uuid="7c4375c4-f434-44b4-b3c2-20c87fd21d05" x="0" y="0" width="555" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[TARJETAS DE CREDITO]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="10" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="26e5fb53-f930-4249-bf93-76b88538abc6" positionType="Float" stretchType="RelativeToBandHeight" x="50" y="0" width="95" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{emisor}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="59beedd0-d5bb-44b2-b481-48bd696eea28" positionType="Float" stretchType="RelativeToBandHeight" x="406" y="0" width="149" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tarjeta}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="1d9dfd97-22a2-437c-ad08-5ec7051b0102" positionType="Float" stretchType="RelativeToBandHeight" x="235" y="0" width="102" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_vecimiento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="21f34ee1-1e17-4ee7-91a7-965553f81255" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="50" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[EMISOR: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f8f60731-0494-4932-a1aa-86f7f33d3176" positionType="Float" stretchType="RelativeToBandHeight" x="337" y="0" width="69" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[    TARJETA No: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c4392126-e937-4eaa-9bc8-86c2732bfef5" positionType="Float" stretchType="RelativeToBandHeight" x="145" y="0" width="90" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[FECHA VECIMIENTO:]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

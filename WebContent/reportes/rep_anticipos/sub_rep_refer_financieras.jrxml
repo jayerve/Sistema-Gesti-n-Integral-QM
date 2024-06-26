@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rep_refer_financieras" language="groovy" pageWidth="555" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ce3748a3-d34d-44c5-9c05-3cab18fafbf4">
+	<property name="ireport.zoom" value="1.8433187801425601"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="IDE_NRANT" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+ANT.IDE_NRANT,
+CBE.IDE_GTCBE,
+GIN.DETALLE_GEINS AS INSTITUCION,
+TCB.DETALLE_GTTCB AS TIPO_CUENTA,
+CBE.NUMERO_CUENTA_GTCBE AS NUM_CUENTA
+
+from  GTH_CUENTA_BANCARIA_EMPLEADO  CBE
+LEFT JOIN GTH_TIPO_CUENTA_BANCARIA  TCB ON TCB.IDE_GTTCB=CBE.IDE_GTTCB
+LEFT JOIN GEN_INSTITUCION GIN ON GIN.IDE_GEINS=CBE.IDE_GEINS
+LEFT JOIN NRH_ANTICIPO ANT ON ANT.IDE_GTEMP=CBE.IDE_GTEMP
+WHERE ANT.IDE_NRANT=$P{IDE_NRANT} and cbe.activo_gtcbe=true]]>
+	</queryString>
+	<field name="ide_nrant" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla nrh_anticipo, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="ide_gtcbe" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla gth_cuenta_bancaria_empleado, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="institucion" class="java.lang.String"/>
+	<field name="tipo_cuenta" class="java.lang.String"/>
+	<field name="num_cuenta" class="java.lang.String"/>
+	<pageHeader>
+		<band height="12">
+			<staticText>
+				<reportElement uuid="ffb18853-ce02-498a-8f03-dd25e901f082" x="0" y="0" width="555" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[REFERENCIAS FINACIERAS]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="10" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="ba9d043f-8fcf-4afe-81d3-c45e8ff5041a" positionType="Float" stretchType="RelativeToBandHeight" x="60" y="0" width="85" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{institucion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="32dd6606-82b7-4d53-b9d5-ab6317523471" positionType="Float" stretchType="RelativeToBandHeight" x="337" y="0" width="52" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[No. CUENTA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c5341a1d-c6b7-4ccd-8fc9-08437c875e2d" positionType="Float" stretchType="RelativeToBandHeight" x="0" y="0" width="60" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[BANCO: ]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="01d9a0ae-86ec-47bb-b7ea-55769daba317" positionType="Float" stretchType="RelativeToBandHeight" x="388" y="0" width="167" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{num_cuenta}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="974b2d5e-b84d-4824-8097-0fca74e0666a" positionType="Float" stretchType="RelativeToBandHeight" x="145" y="0" width="39" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" isPdfEmbedded="true"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[CTA.CTE.]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="706b0a27-1b49-4760-97e2-26ca999b6cb4" positionType="Float" stretchType="RelativeToBandHeight" x="183" y="0" width="154" height="10" isPrintWhenDetailOverflows="true"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipo_cuenta}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

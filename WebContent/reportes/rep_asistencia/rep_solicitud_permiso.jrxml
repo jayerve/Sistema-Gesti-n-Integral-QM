@@ -1,0 +1,797 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_solicitud_permiso" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="852c4d6a-0081-4cb4-999b-90b0ee43d843">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="27"/>
+	<property name="ireport.y" value="192"/>
+	<parameter name="IDE_GTEMP" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:/eclipse-jee-kepler-SR2-win32/Proyectos/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="ide_aspvh" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select a.ide_aspvh,b.detalle_asmot,documento_identidad_gtemp,
+    			 APELLIDO_PATERNO_GTEMP || ' ' ||
+    			 (case when APELLIDO_MATERNO_GTEMP is null then '' else APELLIDO_MATERNO_GTEMP end) || ' ' ||
+    			 PRIMER_NOMBRE_GTEMP || ' ' ||
+    			 (case when SEGUNDO_NOMBRE_GTEMP is null then '' else SEGUNDO_NOMBRE_GTEMP end) AS NOMBRES_APELLIDOS,
+    			 fecha_solicitud_aspvh,
+    			 fecha_desde_aspvh,fecha_hasta_aspvh,detalle_aspvh,
+    			 (SELECT EMP.APELLIDO_PATERNO_GTEMP || ' ' ||
+    			 (case when EMP.APELLIDO_MATERNO_GTEMP is null then '' else EMP.APELLIDO_MATERNO_GTEMP end) || ' ' ||
+    			 EMP.PRIMER_NOMBRE_GTEMP || ' ' ||
+    			 (case when EMP.SEGUNDO_NOMBRE_GTEMP is null then '' else EMP.SEGUNDO_NOMBRE_GTEMP end) AS NOMBRES_APELLIDOS
+    			 FROM GEN_EMPLEADOS_DEPARTAMENTO_PAR EPAR
+    			 LEFT JOIN GTH_EMPLEADO EMP ON EMP.IDE_GTEMP=EPAR.IDE_GTEMP
+    			 where epar.ide_geedp=a.gen_ide_geedp2) as jefe_inmediato,
+
+    			 (SELECT EMP.APELLIDO_PATERNO_GTEMP || ' ' ||
+    			 (case when EMP.APELLIDO_MATERNO_GTEMP is null then '' else EMP.APELLIDO_MATERNO_GTEMP end) || ' ' ||
+    			 EMP.PRIMER_NOMBRE_GTEMP || ' ' ||
+    			 (case when EMP.SEGUNDO_NOMBRE_GTEMP is null then '' else EMP.SEGUNDO_NOMBRE_GTEMP end) AS NOMBRES_APELLIDOS
+    			 FROM GEN_EMPLEADOS_DEPARTAMENTO_PAR EPAR
+    			 LEFT JOIN GTH_EMPLEADO EMP ON EMP.IDE_GTEMP=EPAR.IDE_GTEMP
+    			 where epar.ide_geedp=a.gen_ide_geedp3) as aprobador_tthh,
+
+
+    			 hora_desde_aspvh,hora_hasta_aspvh,nro_horas_aspvh,nro_dias_aspvh,
+    			 case when tipo_aspvh=1 then 'HORAS' ELSE 'DIAS' END as tipo_permiso,
+    			 case when aprobado_aspvh=true then 'APROBADO' ELSE 'SIN APROBAR' END as aprobacion_jefe_inmediato,
+    			 case when aprobado_tthh_aspvh=true then 'APROBADO' ELSE 'SIN APROBAR' END as aprobacion_tthh,
+    			 case when anulado_aspvh=true then 'ANULADO' ELSE '' END as permiso_anulado,
+    			 razon_anula_aspvh,
+			 fecha_anula_aspvh,
+			 j.detalle_aspej,j.fecha_aspej,j.archivo_aspej,
+	 		e.titulo_cargo_gepgc,
+			 g.detalle_geare
+
+    			 from asi_permisos_vacacion_hext a
+    			 left join asi_motivo b on a.ide_asmot = b.ide_asmot
+    			 left join gth_empleado c on a.ide_gtemp = c.ide_gtemp
+    			 left join gen_empleados_departamento_par d on a.ide_geedp = d.ide_geedp
+    			 left join gen_partida_grupo_cargo e on d.ide_gepgc = e.ide_gepgc
+    			 left join gen_cargo_funcional f on d.ide_gecaf = f.ide_gecaf
+    			 left join gen_area g on d.ide_geare = g.ide_geare
+    			 left join gth_tipo_empleado h on d.ide_gttem = h.ide_gttem
+    			 left join sis_sucursal i on e.ide_sucu = i.ide_sucu
+    			 left join asi_permiso_justificacion j on j.ide_aspvh=a.ide_aspvh
+    			 where a.ide_aspvh=$P{ide_aspvh} and a.ide_gtemp=$P{IDE_GTEMP}
+    			 order by apellido_paterno_gtemp asc,APELLIDO_MATERNO_GTEMP asc,PRIMER_NOMBRE_GTEMP asc,SEGUNDO_NOMBRE_GTEMP asc,fecha_solicitud_aspvh asc]]>
+	</queryString>
+	<field name="ide_aspvh" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla asi_permisos_vacacion_hext, valor entero generado.]]></fieldDescription>
+	</field>
+	<field name="detalle_asmot" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre de la novedad. ejempo: horas no laboradas por enfermedad, horas extras 100% etc.]]></fieldDescription>
+	</field>
+	<field name="documento_identidad_gtemp" class="java.lang.String"/>
+	<field name="nombres_apellidos" class="java.lang.String"/>
+	<field name="fecha_solicitud_aspvh" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha de solicitud tanto del permiso, vaciones como horas extras.]]></fieldDescription>
+	</field>
+	<field name="fecha_desde_aspvh" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha desde cuando solicito el permiso o las vacaciones.]]></fieldDescription>
+	</field>
+	<field name="fecha_hasta_aspvh" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha hasta cuanod solicita las vaciones o el permiso depnediendo el motivo y tipo de solicitud.]]></fieldDescription>
+	</field>
+	<field name="detalle_aspvh" class="java.lang.String">
+		<fieldDescription><![CDATA[Est campo define el detalle del permiso solicitud de vaavcion u hora extra.]]></fieldDescription>
+	</field>
+	<field name="jefe_inmediato" class="java.lang.String"/>
+	<field name="aprobador_tthh" class="java.lang.String"/>
+	<field name="hora_desde_aspvh" class="java.sql.Time"/>
+	<field name="hora_hasta_aspvh" class="java.sql.Time"/>
+	<field name="nro_horas_aspvh" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el numero de horas de restar fecha_desde menos fecha_hasta.]]></fieldDescription>
+	</field>
+	<field name="nro_dias_aspvh" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Estecampo define el numero de dias que solicita tanto el permiso como las vacaciones.]]></fieldDescription>
+	</field>
+	<field name="tipo_permiso" class="java.lang.String"/>
+	<field name="aprobacion_jefe_inmediato" class="java.lang.String"/>
+	<field name="aprobacion_tthh" class="java.lang.String"/>
+	<field name="permiso_anulado" class="java.lang.String"/>
+	<field name="razon_anula_aspvh" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define la razon porque se da de baja a una solicitud de vavacion ejemplo: por regreso de empleado fuerza mayor requerida por gerenet general.]]></fieldDescription>
+	</field>
+	<field name="fecha_anula_aspvh" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha de anulacion de la solicitud de vacacion]]></fieldDescription>
+	</field>
+	<field name="detalle_aspej" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el detalle de la jsutificacion.]]></fieldDescription>
+	</field>
+	<field name="fecha_aspej" class="java.sql.Date">
+		<fieldDescription><![CDATA[Estecampo define la fecha de entrega de la justificacion]]></fieldDescription>
+	</field>
+	<field name="archivo_aspej" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el path del archivo como anexo d ela justificacion.]]></fieldDescription>
+	</field>
+	<field name="titulo_cargo_gepgc" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo contiene el titulo del cargo]]></fieldDescription>
+	</field>
+	<field name="detalle_geare" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del area ejemplo: Directorio, Auditoria Interna, etc.]]></fieldDescription>
+	</field>
+	<variable name="variable1" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="37" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="4a1722a9-e75f-4bd1-bdbc-f379fe113076" x="0" y="0" width="555" height="37"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="261" splitType="Stretch">
+			<elementGroup/>
+			<elementGroup/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="9ddd4ef6-188f-44a9-b15a-0595552ab842" x="103" y="70" width="97" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ide_aspvh}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="1de57624-6a4f-4ec0-89e6-31d3adf51503" x="0" y="70" width="103" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CODIGO]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="50eca6ba-555a-4605-a364-3ba308e02942" x="300" y="70" width="255" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_asmot}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="e0f12648-5d1a-4132-9e9f-52496377b8c7" x="200" y="70" width="100" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MOTIVO]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="ca11d25f-a302-41b8-95d1-a59ab09cddc1" x="103" y="80" width="297" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{jefe_inmediato}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="ccbacc28-811e-406d-b288-a7a3be41613d" x="0" y="80" width="103" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[JEFE INMEDIATO]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="68d2ec27-3004-44d5-b988-905dfd86c2ab" x="103" y="90" width="297" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{aprobador_tthh}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3c62f744-51be-40b8-8fcb-4ff963805898" x="0" y="90" width="103" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RESPONSABLE TTHH]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="3911b0c0-2e2b-4b4d-856b-7846f2fb0f96" x="103" y="100" width="97" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_solicitud_aspvh}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="6ed11cd3-6b0e-4913-8d13-8c4b81288e19" x="0" y="100" width="103" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA SOLICITUD]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="f270f502-7b84-4bf4-92e6-1ae098f985c0" x="103" y="110" width="97" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_desde_aspvh}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="45387562-0aac-416e-abbb-f7190b650313" x="0" y="110" width="103" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA DESDE]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="306e1028-0b25-4af6-8049-79c8be12cc5f" x="300" y="110" width="100" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_hasta_aspvh}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="9969a8a6-dd7c-4a35-a4b0-971dd292cf7d" x="200" y="110" width="100" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA HASTA]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="24990c51-aff8-4113-ae51-f7051ed6891a" x="0" y="145" width="555" height="30" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_aspvh}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5d5f0153-f0a7-4bcb-bd37-171bbb424a9a" x="0" y="130" width="555" height="15" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[3. DETALLE PERMISO]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="fb77835c-f815-4937-a6aa-0d8375fe4093" x="466" y="110" width="89" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nro_dias_aspvh}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="0fde5064-4cbb-4e00-8b80-7df882a966ff" x="400" y="110" width="66" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NRO. DIAS]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="40961212-f810-4abf-a66c-98c2e66c873e" x="466" y="120" width="89" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nro_horas_aspvh}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="416a70a1-c89d-471a-828d-dc5f71ef8ec3" x="400" y="120" width="66" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NRO. HORAS]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="h.mm a" isBlankWhenNull="true">
+				<reportElement uuid="8c20e9e8-0d58-4c23-afb9-82149a4ae50b" x="300" y="120" width="100" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{hora_hasta_aspvh}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="ade69e2a-ecf3-471c-9d9f-52339f9252c2" x="200" y="120" width="100" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HORA HASTA]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="h.mm a" isBlankWhenNull="true">
+				<reportElement uuid="38e627a6-3214-401c-b17d-856644cc6356" x="103" y="120" width="97" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{hora_desde_aspvh}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="d85b4c60-ab2d-480e-ab34-40741dbb1c8f" x="0" y="120" width="103" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HORA DESDE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b1f755ab-4a2a-4f55-af59-25b306e9b98a" x="0" y="0" width="555" height="15" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[1. INFORMACION DE FUNCIONARIO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="01e47125-03fc-4586-8125-9a00764ceadc" x="0" y="25" width="103" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[APELLIDOS Y NOMBRES]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="8e6ccc78-8a77-405d-bc28-ba2924a6353e" x="103" y="25" width="452" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombres_apellidos}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="ba6b8e5a-cb58-4367-8eb5-1d65cf576619" x="0" y="15" width="103" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DOCUMENTO DE IDENTIDAD]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="da5339b9-d372-43f1-9b3e-b1d0e19cc3e9" x="103" y="15" width="452" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{documento_identidad_gtemp}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="d9533dcc-2fa2-49fd-87da-3c58b4889066" x="0" y="55" width="555" height="15" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[2. INFORMACION PERMISO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="02245ed0-4f86-4438-b27b-67d536c2ddf1" x="200" y="100" width="355" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4f53b76c-8d7f-4401-b275-04054f0292bd" x="0" y="175" width="555" height="15" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[4. ANULACION]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="53b96302-fe3a-450a-8f82-5afa38180bfb" x="0" y="200" width="300" height="14" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{razon_anula_aspvh}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="73e30ad1-bb0c-400c-bee4-e5c5c958af3f" x="0" y="190" width="300" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RAZON ANULA]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement uuid="d0446855-3499-4175-8462-b5c08476a8ef" x="400" y="190" width="155" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_anula_aspvh}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="bdfc5a76-7fae-4926-804a-613f0dfce183" x="300" y="190" width="100" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA ANULA]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a723e01e-c04a-45cb-b935-a737bb1c9731" x="400" y="202" width="155" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{permiso_anulado}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="d7ea348e-501d-4e5c-84f3-bec5881d1c0f" x="300" y="202" width="100" height="12" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTADO]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e46b7e45-f2f6-483c-b424-90d7fc187661" x="103" y="35" width="452" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{titulo_cargo_gepgc}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="94520e91-7188-4b3f-8352-2d6286e732d7" x="103" y="45" width="452" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_geare}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="11fa9bfc-d28d-4ff1-9315-55b59c7b2740" x="0" y="35" width="103" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CARGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="94e93d3c-25df-40f7-a3fd-b204cdca05bb" x="0" y="45" width="103" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AREA]]></text>
+			</staticText>
+			<subreport>
+				<reportElement uuid="60b1025f-ec8c-4a3e-bba4-4ab20fb1d9a3" positionType="Float" x="0" y="214" width="555" height="47" isPrintWhenDetailOverflows="true"/>
+				<subreportParameter name="ide_aspvh">
+					<subreportParameterExpression><![CDATA[$P{ide_aspvh}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_asistencia/detallePermiso/sub_reporte_justificacion.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement uuid="0c186e57-708c-4982-a53a-c4c39b046ef5" x="400" y="80" width="66" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="791f0145-8c26-4823-80f2-7cff914790a7" x="400" y="90" width="66" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ESTADO]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="be75d4b1-ee58-41d2-b8ca-22fbe95484d7" x="466" y="90" width="89" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{aprobacion_tthh}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="f21d87b3-9c1b-4ceb-b7e7-cce46d8b1b08" x="466" y="80" width="89" height="10" isPrintWhenDetailOverflows="true"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{aprobacion_jefe_inmediato}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="47" splitType="Immediate"/>
+		<band/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="13" splitType="Stretch">
+			<textField evaluationTime="Report">
+				<reportElement uuid="2c8d7721-0c75-4b1f-801f-afd91ca0fc23" x="515" y="0" width="40" height="12"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0dc8a81c-6675-4160-b7fa-c4805c6fdc58" x="435" y="0" width="80" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_simulador_amortizacion" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6a205b60-67f5-44f8-b4e3-cc852e5ec839">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="16"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="monto" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_concesion" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="plazo" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="tasa" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="total_cuota" class="java.lang.Double">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from DUAL]]>
+	</queryString>
+	<field name="NRO_CUOTA_NRAMO" class="java.lang.String"/>
+	<field name="FECHA_VENCIMIENTO_NRAMO" class="java.lang.String"/>
+	<field name="PRINCIPAL_NRAMO" class="java.lang.String"/>
+	<field name="INTERES_NRAMO" class="java.lang.String"/>
+	<field name="CUOTA_NRAMO" class="java.lang.String"/>
+	<field name="CAPITAL_NRAMO" class="java.lang.String"/>
+	<field name="IDE_NRAMO" class="java.lang.String"/>
+	<variable name="CUOTA_NRAMO_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{CUOTA_NRAMO}]]></variableExpression>
+	</variable>
+	<title>
+		<band height="104" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="0e01ee4b-35ce-47e1-b994-b8b787450539" positionType="Float" x="7" y="47" width="99" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MONTO DEL PRESTAMO:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="6656251e-17c7-4d87-9168-c87bf8d2442b" positionType="Float" x="106" y="47" width="91" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{monto}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="9ef5475b-9dfd-4e17-9517-1d05dd79a442" positionType="Float" x="303" y="47" width="55" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TASA INTERES:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="35db5f7e-6065-4717-9147-091b3d77e887" positionType="Float" x="358" y="46" width="57" height="14"/>
+				<box leftPadding="5"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tasa}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="04454b18-368a-49a2-b3cf-2a17ad9833f6" positionType="Float" x="303" y="75" width="35" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PLAZO:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="33019232-c85f-4711-a938-38035549c37a" positionType="Float" x="338" y="75" width="89" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{plazo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="a40a2fc7-9728-4f06-94d4-1a024fe2c3b6" positionType="Float" x="7" y="75" width="87" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA DE CONCESION :]]></text>
+			</staticText>
+			<textField pattern="yyyy/MM/dd" isBlankWhenNull="true">
+				<reportElement uuid="53374e99-b5cd-4b08-b976-7d70647eef4c" positionType="Float" x="94" y="75" width="54" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fecha_concesion}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="12" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="16811368-dfba-4f4d-b523-7e9c3d7d46c6" x="43" y="0" width="64" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[VENCIMIENTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f3f64b76-c1a2-40a7-96a2-70b3e8596d83" x="159" y="0" width="52" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[INTERES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="dcda6dc9-6d58-42a9-ad4b-6bdf952848e0" x="211" y="0" width="48" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUOTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="daeb0ccd-1b13-4fa7-90b8-c296f3caa3ea" x="107" y="0" width="52" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CAPITAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="de971c6e-3944-493a-88ac-e286588011b3" x="259" y="0" width="66" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALDO CAPITAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7bbd4702-1581-42f9-9cee-daf7ed4f4274" x="0" y="0" width="43" height="12"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PERIODO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement uuid="9c3f5ae7-10a8-441f-a745-579437dfebf6" x="0" y="0" width="43" height="21"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{NRO_CUOTA_NRAMO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ca25e681-4040-4166-96ea-20548a6490c4" x="43" y="1" width="63" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{FECHA_VENCIMIENTO_NRAMO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d3e52d8f-19a9-4b87-a799-1928e39f9fb9" x="107" y="0" width="52" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{CAPITAL_NRAMO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="29cfd35a-91b8-401d-9727-487c5841c7e8" x="159" y="1" width="52" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{INTERES_NRAMO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f121857a-2d96-48c6-8e7d-3a7383ecad24" x="211" y="1" width="48" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{CUOTA_NRAMO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ffb51970-47a9-4d9d-8dab-b7f68bc9c8c9" x="259" y="1" width="66" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{CAPITAL_NRAMO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="20" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="63ea91bf-b1b2-4cde-a8fb-eb3969775d62" x="211" y="0" width="48" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{total_cuota}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

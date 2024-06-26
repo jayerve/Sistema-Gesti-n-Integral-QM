@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_cuentas_xpagar" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f8322af3-e349-48bb-9ef9-7ed818954e2e">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:\\workspace\\biess\\WebContent\\reportes\\rep_sistema_biess\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="titulo" class="java.lang.String"/>
+	<parameter name="usuario" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[select * from rep_cuentas_x_pagar   order by  codigo_grupo_rpcxp]]>
+	</queryString>
+	<field name="ide_rpcxp" class="java.lang.Integer"/>
+	<field name="titulo_rpcxp" class="java.lang.String">
+		<fieldDescription><![CDATA[titulo_rpcxp]]></fieldDescription>
+	</field>
+	<field name="proveedor_rpcxp" class="java.lang.String">
+		<fieldDescription><![CDATA[proveedor_rpcxp]]></fieldDescription>
+	</field>
+	<field name="concepto_rpcxp" class="java.lang.String">
+		<fieldDescription><![CDATA[concepto_rpcxp]]></fieldDescription>
+	</field>
+	<field name="valor_rpcxp" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[valor_rpcxp]]></fieldDescription>
+	</field>
+	<field name="total_rpcxp" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[total_rpcxp]]></fieldDescription>
+	</field>
+	<field name="beneficiario_rpcxp" class="java.lang.String"/>
+	<field name="codigo_grupo_rpcxp" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<elementGroup/>
+			<subreport>
+				<reportElement uuid="a1a1a368-f596-4664-99e5-0e40fd6bd21f" x="0" y="0" width="555" height="79"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{usuario}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="50" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="aa55c20c-34ef-4913-ae46-1ec1a2991787" x="71" y="6" width="365" height="20"/>
+				<textElement textAlignment="Justified">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Desde el 2 de Enero del 2014 hasta el 31 de Diciembre del 2014]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement uuid="38274ace-e2cf-436e-ba12-5419227a55b4" x="56" y="29" width="380" height="18"/>
+			</rectangle>
+			<textField>
+				<reportElement uuid="fa1f8be5-c91d-4b6e-818f-233ea1fff362" x="56" y="31" width="378" height="15"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{titulo_rpcxp}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="24" splitType="Stretch">
+			<rectangle radius="0">
+				<reportElement uuid="8dcc1365-921f-45fe-ba15-6ac41d2abeaf" mode="Transparent" x="2" y="3" width="553" height="19"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="f0feaf9b-51e7-4b84-91d5-ab5dd2dff065" x="8" y="9" width="56" height="15"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CODIGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4161718c-9558-4d82-879c-e0b74a119c39" x="71" y="9" width="100" height="15"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PROVEEDOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="92aa27aa-797f-4590-985a-0b0be03c519c" x="197" y="9" width="100" height="15"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONCEPTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8f027c33-637a-4b4f-8ce5-0f65416ec847" x="509" y="9" width="43" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="22a58687-b186-4660-b5f7-0d38662bd696" x="336" y="10" width="100" height="14"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOMBRE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="efddae35-63bf-45bf-9dab-470a88b621d3" x="454" y="8" width="36" height="16"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[VALOR]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="27" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="201dba29-fd96-47e2-a5f6-35738faef67e" x="197" y="5" width="131" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{concepto_rpcxp}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="47d4cc01-1bbe-4275-8096-69122a633734" x="454" y="7" width="36" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_rpcxp}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c19a3478-d1ab-448b-9103-7355afe9b0eb" x="509" y="7" width="43" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_rpcxp}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="534a522d-c436-4741-8dcd-2ee71702e9b4" x="336" y="5" width="100" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{beneficiario_rpcxp}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="47712c91-eff8-4bfe-9e53-1b2393c429e6" x="66" y="4" width="128" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{proveedor_rpcxp}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="27ce410c-7997-42cf-8ee0-e1caf257a9d7" x="6" y="3" width="56" height="20"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo_grupo_rpcxp}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="1" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="124" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="034aa4d4-8d7c-41ad-91fe-5ac1a9d31e66" x="18" y="94" width="173" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONTADOR GENERAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c224ccdc-0420-40b0-a10a-b312f6fa691e" x="303" y="94" width="173" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COORDINACION FINANCIERA]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="11b06d61-ddcc-4436-a916-6137832f83f0" x="287" y="93" width="209" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="f06651c6-046c-4664-81be-0954b3d4b30a" x="18" y="94" width="209" height="1"/>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

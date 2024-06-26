@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_rubros_tipo_nomina" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f31bd071-341e-40e2-a069-39a0db9868d2">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="IDE_NRDER" class="java.math.BigDecimal"/>
+	<field name="IDE_NRRUB" class="java.math.BigDecimal"/>
+	<field name="IDE_NRDTN" class="java.math.BigDecimal"/>
+	<field name="FORMULA_NRDER" class="java.lang.String"/>
+	<field name="FECHA_INICIAL_NRDER" class="java.lang.String"/>
+	<field name="FECHA_FINAL_NRDER" class="java.lang.String"/>
+	<field name="FECHA_PAGO_NRDER" class="java.lang.String"/>
+	<field name="OBSERVACION_NRDER" class="java.lang.String"/>
+	<field name="ACTIVO_NRDER" class="java.math.BigDecimal"/>
+	<field name="USUARIO_INGRE" class="java.lang.String"/>
+	<field name="FECHA_INGRE" class="java.sql.Timestamp"/>
+	<field name="HORA_INGRE" class="oracle.sql.TIMESTAMP"/>
+	<field name="USUARIO_ACTUA" class="java.lang.String"/>
+	<field name="FECHA_ACTUA" class="java.sql.Timestamp"/>
+	<field name="HORA_ACTUA" class="oracle.sql.TIMESTAMP"/>
+	<field name="ORDEN_NRDER" class="java.math.BigDecimal"/>
+	<field name="IMPRIME_NRDER" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="56" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="26" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

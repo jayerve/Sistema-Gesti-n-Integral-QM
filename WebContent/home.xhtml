@@ -1,0 +1,241 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+<h:head>
+	<title>SISTEMA QUITO HONESTO ERP</title>
+	<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="generator" content="7.4.30.244" />
+	<meta http-equiv="X-UA-Compatible" content="chrome=IE8" />
+	<!-- CSS -->
+	<h:outputScript library="sistema" name="sistema.js" />
+	<!-- Other scripts -->
+	<script>
+		document.documentElement.className += ' js';
+		var myHome=true;
+	 	function time2(){
+	 		setTimeout('check2()', 100);
+	 	}
+	 	function check2(){
+	 	  if(myWindow2.closed){
+	 		document.getElementById("forcerrar:salir_erp2").click();
+	 	  }
+	 	}
+	</script>
+	<style>
+.button,.button:link,.button:visited,.button:active,.button:hover {
+	background-color: transparent;
+	-moz-border-radius: 15px;
+	-webkit-border-radius: 15px;
+	border-radius: 15px;
+	border: 3px solid #000000;
+	display: inline-block;
+	cursor: pointer;
+	color: #000000;
+	font-family: Arial;
+	font-size: 25px;
+	padding: 10px 15px;
+	text-decoration: none;
+	text-shadow: 0px 1px 4px #eaf5e9;
+	text-align: center;
+	margin: 7px;
+	min-width: 200px;
+}
+
+.buttonS,.buttonS:link,.buttonS:visited,.buttonS:active,.buttonS:hover {
+	background-color: transparent;
+	-moz-border-radius: 15px;
+	-webkit-border-radius: 15px;
+	border-radius: 15px;
+	border: 3px solid #000000;
+	display: inline-block;
+	cursor: pointer;
+	color: #000000;
+	font-family: Arial;
+	font-size: 18px;
+	padding: 5px 10px;
+	text-decoration: none;
+	text-shadow: 0px 1px 4px #eaf5e9;
+	text-align: center;
+	margin: 7px;
+	min-width: 200px;
+}
+</style>
+	<style>
+.content-wrapper {
+	margin: 0 auto;
+	padding: 5px;
+	text-align: center;
+	line-height: 25px;
+}
+.linea {
+	display: block;
+	margin: 0 auto;
+	min-width: 50%;
+	max-width: 100%;
+}
+
+.footer {
+	font-size: 12px;
+	line-height: 15px;
+}
+
+.title {
+	font-size: 28px;
+	line-height: 28px;
+}
+
+.head {
+	margin: 10px;
+}
+</style>
+	<style>
+body,html {
+	height: 100%;
+	margin: 0;
+	font: 400 15px/1.8 "Lato", sans-serif;
+	color: #000000;
+}
+
+.bgimg-1,.bgimg-2,.bgimg-3 {
+	position: relative;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+.bgimg-1 {
+	background: #ffffff url("imagenes/gradient_home.png") repeat-x !important;
+	height: 100%;
+}
+
+.caption span.border {
+	background-color: #111;
+	color: #fff;
+	padding: 18px;
+	font-size: 25px;
+	letter-spacing: 10px;
+}
+
+h3 {
+	letter-spacing: 5px;
+	text-transform: uppercase;
+	font: 25px "Lato", sans-serif;
+	color: #ffffff;
+}
+
+    /* Define the style for the button */
+    .custom-button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #4CAF50; /* Green background */
+        color: white; /* White text */
+        text-align: center;
+        text-decoration: none;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    /* Change button style on hover */
+    .custom-button:hover {
+        background-color: #45a049; /* Darker green background */
+    }
+
+
+</style>
+</h:head>
+<h:body style="overflow: auto;">
+
+	<div class="bgimg-1">
+		<div class="content-wrapper">
+		
+			<div class="head">
+			<br></br>
+				<div class="float-left">
+					<img class="picPrincipal" alt="LOGO-EMGIRS-EP" width="600px"
+						src="images/logo_blanco.png" />
+				</div>
+				<br></br>
+				<!-- animation -->
+			      <iframe style="height: 300px; width: 720px; border: none;" src="assets/banner/banner.html" scrolling="no" ></iframe>
+
+			</div>
+			
+			<table align="center" border="0" cellpadding="1" cellspacing="1"
+				style="width: 500px;">
+				<tbody>
+				<div style="height: 30px" ></div>
+					<tr>
+						<td><a class="button "  href="#"
+							onclick="abrirPopUp2('portal.jsf'); return false;">PORTAL</a></td>
+						<td align="center"></td>
+						
+						<td><a class="button " href="#"
+							onclick="abrirNuevoPopUp('login.jsf'); return false;">SISTEMA
+								ERP</a></td>
+					</tr>
+					
+					<!--<tr>
+						<td colspan="3">
+							<hr></hr> Acceso a los servidores dedicados, seleccione el
+							servidor de acuerdo a su &aacute;rea
+							<hr></hr>
+						</td>
+					</tr>
+					<tr>
+						 
+						<td><a class="buttonS " href="#"
+							onclick="abrirPopUpFinanciero('login.jsf'); return false;">FINANCIERO</a></td>
+						<td><a class="buttonS " href="#"
+							onclick="abrirPopUpTTHH('login.jsf'); return false;">TALENTO
+								HUMANO</a></td>
+						<td><a class="buttonS " href="#"
+							onclick="abrirPopUpAdministrativo('login.jsf'); return false;">ADMINISTRATIVO</a></td>
+					</tr>-->
+				</tbody>
+			</table>
+			
+			<div class="footer">
+				<div class="linea float-left">
+					<p style="text-align: center"></p>
+				</div>
+				<img width="750px" height="200" alt="SEPERACION-EMGIRS-EP" src="images/franja.png" />
+			</div>
+		</div>
+
+	</div>
+	<!-- JS includes -->
+	<script type="text/javascript">
+   if (document.location.protocol != 'https:') document.write('\x3Cscript src="http://musecdn.businesscatalyst.com/scripts/4.0/jquery-1.8.3.min.js" type="text/javascript">\x3C/script>');
+</script>
+	<script type="text/javascript">
+   window.jQuery || document.write('\x3Cscript src="scripts/jquery-1.8.3.min.js" type="text/javascript">\x3C/script>');
+</script>
+	<script src="scripts/museutils.js?4291592202" type="text/javascript"></script>
+	<script src="scripts/jquery.musepolyfill.bgsize.js?291134478"
+		type="text/javascript"></script>
+	<script src="scripts/jquery.watch.js?4068933136" type="text/javascript"></script>
+	<!-- Other scripts -->
+	<script type="text/javascript">
+   $(document).ready(function() { try {
+Muse.Utils.transformMarkupToFixBrowserProblemsPreInit();/* body */
+Muse.Utils.prepHyperlinks(true);/* body */
+Muse.Utils.initializeAnimations();/* animations */
+Muse.Utils.fullPage('#page');/* 100% height page */
+Muse.Utils.showWidgetsWhenReady();/* body */
+Muse.Utils.transformMarkupToFixBrowserProblems();/* body */
+} catch(e) { Muse.Assert.fail('Error calling selector function:' + e); }});
+</script>
+	<h:form id="forcerrar">
+		<h:commandButton id="salir_erp2" action="#{pre_login.salirPortal}"
+			style="display:none">
+			<f:ajax render="salir_erp2" execute="salir_erp2" />
+		</h:commandButton>
+	</h:form>
+</h:body>
+</html>
+

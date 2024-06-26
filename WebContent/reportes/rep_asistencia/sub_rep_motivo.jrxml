@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rep_motivo.jrxml" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d109b9af-a0f5-4380-a53f-956ed55c1178">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_gtemp" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_desde" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_hasta" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select a.detalle_asmot,sum(a.nro_horas_aspvh) horas,sum(a.nro_dias_aspvh) dias,a.ide_gtemp
+
+from (
+select a.ide_gtemp,a.primer_nombre_gtemp ||' '||
+(case when  a.segundo_nombre_gtemp is null then  '' else a.segundo_nombre_gtemp end) || ''|| a.apellido_paterno_gtemp || ' ' ||
+(case when a.apellido_materno_gtemp is null then '' else a.apellido_materno_gtemp end) Nombre,
+c.ide_gecaf,c.detalle_gecaf,d.ide_geare,d.detalle_geare,e.fecha_solicitud_aspvh,e.nro_horas_aspvh,f.ide_asmot,f.detalle_asmot,
+e.fecha_desde_aspvh,e.fecha_hasta_aspvh,nro_dias_aspvh
+from gth_empleado a
+left join gen_empleados_departamento_par b on a.ide_gtemp=b.ide_gtemp
+left join gen_cargo_funcional c on c.ide_gecaf=b.ide_gecaf
+left join gen_area d on d.ide_geare=b.ide_geare
+left join asi_permisos_vacacion_hext e on e.ide_gtemp=a.ide_gtemp and b.ide_geedp=e.ide_geedp
+left join asi_motivo f on f.ide_asmot=e.ide_asmot
+where a.ide_gtemp=$P{ide_gtemp}
+and e.fecha_desde_aspvh between  cast($P{fecha_desde} as date) and cast($P{fecha_hasta} as date)
+order by e.fecha_desde_aspvh desc
+) a
+
+group by  a.detalle_asmot,a.ide_gtemp]]>
+	</queryString>
+	<field name="detalle_asmot" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre de la novedad. ejempo: horas no laboradas por enfermedad, horas extras 100% etc.]]></fieldDescription>
+	</field>
+	<field name="horas" class="java.math.BigDecimal"/>
+	<field name="dias" class="java.lang.Long"/>
+	<field name="ide_gtemp" class="java.lang.Integer"/>
+	<variable name="dias_1" class="java.lang.Long" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{dias}]]></variableExpression>
+	</variable>
+	<variable name="horas_1" class="java.math.BigDecimal" resetType="Column" calculation="Sum">
+		<variableExpression><![CDATA[$F{horas}]]></variableExpression>
+	</variable>
+	<columnHeader>
+		<band height="49" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="9c121a94-b11f-4ca5-9176-65d595e1afa9" x="0" y="29" width="210" height="20"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top"/>
+				<text><![CDATA[MOTIVO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c5e84ecb-eb54-4163-9744-c12c1b8d129e" x="210" y="29" width="100" height="20"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<text><![CDATA[HORAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1bdcc2c2-2511-4c95-92e4-8618a3c06e9f" x="310" y="29" width="100" height="20"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[DIAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="14c8e346-e9d3-4546-9795-391cb25aa9b7" x="0" y="9" width="410" height="20"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top"/>
+				<text><![CDATA[DETALLE]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21">
+			<textField>
+				<reportElement uuid="8700a197-3da3-4734-81d0-061d331f6f18" x="0" y="0" width="210" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{detalle_asmot}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c5a8c92a-99d4-4939-83ee-b1eec384857a" x="210" y="0" width="100" height="20"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{horas}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8d17599e-699c-4515-be32-548c1ba609bf" x="310" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{dias}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

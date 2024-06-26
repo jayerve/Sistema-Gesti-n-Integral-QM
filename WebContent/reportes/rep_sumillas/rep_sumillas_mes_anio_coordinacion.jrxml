@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_demo" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8c754216-08e1-4e25-b876-37b3e83e1be1">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="p_anio" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[2018]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_mes_ini" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[1]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_gerencia" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[12]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select gerencia_acr,gerencia,coordinacion_acr,cordinacion,mes,mes_num,anio,sumillas
+from rep_sum_tramite_mes_anio
+where anio = $P{p_anio} and mes_num = $P{p_mes_ini} and ide_geareg = $P{p_gerencia}]]>
+	</queryString>
+	<field name="gerencia_acr" class="java.lang.String"/>
+	<field name="coordinacion_acr" class="java.lang.String"/>
+	<field name="mes" class="java.lang.String"/>
+	<field name="mes_num" class="java.lang.Integer"/>
+	<field name="anio" class="java.lang.Integer"/>
+	<field name="sumillas" class="java.lang.Long"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="802" splitType="Stretch">
+			<barChart>
+				<chart>
+					<reportElement uuid="42bf4975-14c7-4813-b699-73398b8c5c53" x="0" y="71" width="555" height="731"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{mes}]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{gerencia_acr} + ($F{coordinacion_acr}.compareTo( "" )?("-" +$F{coordinacion_acr}):"")]]></categoryExpression>
+						<valueExpression><![CDATA[$F{sumillas}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<barPlot>
+					<plot labelRotation="45.0"/>
+					<itemLabel/>
+					<categoryAxisFormat labelRotation="45.0">
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat/>
+					</valueAxisFormat>
+				</barPlot>
+			</barChart>
+			<textField>
+				<reportElement uuid="8b4c4aae-a29e-4e9b-9940-53c1ebeef803" x="0" y="0" width="555" height="71"/>
+				<textElement textAlignment="Center">
+					<font size="24"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Tramites sumillados  asignados por área "+$P{p_anio}+"\n"+($P{p_mes_ini}==1?"Enero":$P{p_mes_ini}==2?"Febrero":$P{p_mes_ini}==3?"Marzo":$P{p_mes_ini}==4?"Abril":$P{p_mes_ini}==5?"Mayo":$P{p_mes_ini}==6?"Junio":$P{p_mes_ini}==7?"Julio":$P{p_mes_ini}==8?"Agosto":$P{p_mes_ini}==9?"Septiembre":$P{p_mes_ini}==10?"Octubre":$P{p_mes_ini}==11?"Noviembre":"Diciembre")]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

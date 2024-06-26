@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rep_pagare" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="48621d12-2c04-4c4f-81e9-7f495db6df29">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="IDE_NRANT" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT a.IDE_NRANT,c.IDE_GTEMP,c.EMPLEADO,c.DOCUMENTO,
+a.FECHA_APROBACION_NRANT AS FECHA_APROBACION,
+a.FECHA_VENCIMIENTO_NRANT AS FECHA_VENCIMIENTO,
+a.MONTO_APROBADO_NRANT,
+g.NOM_SUCU,
+e.DIRECCION_EMPLEADO,
+d.GARANTE,
+d.DOCUMENTO_GARANTE,
+d.DIRECCION_GARANTE
+FROM NRH_ANTICIPO a
+LEFT JOIN (
+select b.ide_geedp,EMPLEADO,DOCUMENTO,ide_sucu,a.ide_gtemp
+from (
+SELECT IDE_GTEMP,APELLIDO_PATERNO_GTEMP ||' '|| APELLIDO_MATERNO_GTEMP ||' '|| PRIMER_NOMBRE_GTEMP||' '|| SEGUNDO_NOMBRE_GTEMP AS EMPLEADO,DOCUMENTO_IDENTIDAD_GTEMP AS DOCUMENTO FROM GTH_EMPLEADO
+) a, (
+SELECT IDE_GEEDP,IDE_GTEMP,IDE_SUCU FROM GEN_EMPLEADOS_DEPARTAMENTO_PAR
+) b
+where b.IDE_GTEMP=a.IDE_GTEMP
+)c ON c.ide_geedp=a.ide_geedp
+LEFT JOIN (
+SELECT IDE_NRGAR,IDE_nrant,IDE_GEEDP, APELLIDO_PATERNOG_NRGAR||' '|| APELLIDO_MATERNOG_NRGAR ||' '|| PRIMER_NOMBREG_NRGAR ||' '|| SEGUNDO_NOMBREG_NRGAR AS GARANTE,
+DOCUMENTO_IDENTIDADG_NRGAR AS DOCUMENTO_GARANTE,lugar_trabajo_nrgar as DIRECCION_GARANTE FROM NRH_GARANTE WHERE ACTIVO_NRGAR =1
+)d ON a.ide_nrant=d.ide_nrant
+LEFT JOIN (
+SELECT ide_gtdir,ide_gtemp,detalle_gtdir DIRECCION_EMPLEADO FROM gth_direccion where ide_gtdir in (
+SELECT max(ide_gtdir) FROM GTH_DIRECCION where activo_gtdir=1
+group by ide_gtemp)
+)e ON e.IDE_GTEMP=c.IDE_GTEMP
+LEFT JOIN (
+SELECT IDE_SUCU,NOM_SUCU FROM SIS_SUCURSAL
+)g ON g.IDE_SUCU=c.IDE_SUCU
+WHERE  a.IDE_NRANT=$P{IDE_NRANT}]]>
+	</queryString>
+	<field name="IDE_NRANT" class="java.math.BigDecimal"/>
+	<field name="IDE_GTEMP" class="java.math.BigDecimal"/>
+	<field name="EMPLEADO" class="java.lang.String"/>
+	<field name="DOCUMENTO" class="java.lang.String"/>
+	<field name="FECHA_APROBACION" class="java.sql.Timestamp"/>
+	<field name="FECHA_VENCIMIENTO" class="java.sql.Timestamp"/>
+	<field name="MONTO_APROBADO_NRANT" class="java.math.BigDecimal"/>
+	<field name="NOM_SUCU" class="java.lang.String"/>
+	<field name="DIRECCION_EMPLEADO" class="java.lang.String"/>
+	<field name="GARANTE" class="java.lang.String"/>
+	<field name="DOCUMENTO_GARANTE" class="java.lang.String"/>
+	<field name="DIRECCION_GARANTE" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="654" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="&apos;a&apos; dd &apos;de&apos; MMMMM &apos;del&apos; yyyy" isBlankWhenNull="true">
+				<reportElement uuid="8f7e728b-6f6c-4891-b51e-42601187a847" x="86" y="0" width="307" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{FECHA_APROBACION}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="7c603633-5bbe-41b7-9ffa-e0e01a024147" x="0" y="0" width="86" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{NOM_SUCU}+", "]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="08cf488a-30de-4e49-b4ae-04b3a0c73c1d" stretchType="RelativeToBandHeight" x="0" y="92" width="100" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[NOMBRE DEUDOR:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="bf7e5009-6a44-4cff-adab-250407f7e66b" stretchType="RelativeToBandHeight" x="100" y="92" width="455" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EMPLEADO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="950a9da8-0ad3-471e-94cf-7b084196e62a" stretchType="RelativeToBandHeight" x="0" y="106" width="27" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[C,C,]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="5259df84-28a4-4869-bc4d-dd533af28aff" stretchType="RelativeToBandHeight" x="27" y="106" width="208" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DOCUMENTO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="fe411fb6-5101-4b68-9821-756a954d4a51" stretchType="RelativeToBandHeight" x="0" y="120" width="62" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[DIRECCION:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="80c2d249-eab7-4504-940d-b1f594a267fe" stretchType="RelativeToBandHeight" x="62" y="120" width="493" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DIRECCION_EMPLEADO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="67f2b3ac-9205-45bd-80c5-a3e2006db553" stretchType="RelativeToBandHeight" x="0" y="191" width="100" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[VISTO BUENO]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="7b870d5a-0864-457c-8cd3-d2661389c12c" x="0" y="221" width="86" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{NOM_SUCU}+", "]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="&apos;a&apos; dd &apos;de&apos; MMMMM &apos;del&apos; yyyy" isBlankWhenNull="true">
+				<reportElement uuid="84dcd0bf-525b-475c-9c83-83968c9e1736" x="86" y="221" width="308" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{FECHA_APROBACION}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="a5c83e11-02fb-4d7b-84ee-2ebdaf03393f" x="0" y="286" width="18" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[F)]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="aa279aa3-7c2d-4b70-b559-63152a2afddd" stretchType="RelativeToBandHeight" x="100" y="355" width="455" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EMPLEADO}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b3f5cffe-a188-4abc-9d58-7b74fe364fa0" stretchType="RelativeToBandHeight" x="27" y="369" width="243" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DOCUMENTO}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="9382d703-6740-4831-92c4-6b6a96dcdeba" stretchType="RelativeToBandHeight" x="62" y="383" width="493" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DIRECCION_EMPLEADO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="b51a2413-2f7a-431a-9127-d002cc1355f0" stretchType="RelativeToBandHeight" x="0" y="355" width="100" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[NOMBRE DEUDOR:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1bcfa28a-a6b5-47f4-9e5c-6c434f0a1762" stretchType="RelativeToBandHeight" x="0" y="369" width="27" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[C,C,]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1d0856ea-350e-4d6b-bdb1-b01bd8cf7b83" stretchType="RelativeToBandHeight" x="0" y="383" width="62" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[DIRECCION:]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="5888b0dd-8b4f-434f-b01d-5ca05aba0324" x="18" y="300" width="317" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="5fabd98f-ee7d-4d0c-bb75-6c369d91efb9" x="18" y="80" width="317" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="55130e1e-c445-4ab6-b58b-e7534a896d42" x="0" y="66" width="18" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[F)]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b623d03b-eef5-45df-9345-da687d53a7fd" x="0" y="419" width="555" height="53"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["POR AVAL garantizo (amos) solidariamente e incondicionalmente el cumplimiento de las obligaciones de (de los) suscriptor (es) de este pagaré. Estipulo (amos) y me (nos) someto (emos) a los Jueces competentes de la ciudad de "+$F{NOM_SUCU}+" a los que elija el acreedor. Sin protesto. Eximese de presentación para el pago y de avisos por falta de pago. "]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="&apos;a&apos; dd &apos;de&apos; MMMMM &apos;del&apos; yyyy" isBlankWhenNull="true">
+				<reportElement uuid="e418c0e3-6ebc-4c95-a5b8-41b82d5a28e0" x="86" y="491" width="307" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{FECHA_APROBACION}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="c4b97d57-f14a-4df1-9590-8430931be192" x="0" y="491" width="86" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{NOM_SUCU}+", "]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="6253ac39-849a-43c8-96b9-6694a54bb3c9" x="18" y="571" width="317" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="606b3959-c62a-4532-becc-ead860d44010" x="0" y="556" width="18" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[F)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e1178651-84fd-4502-988a-5bdd4d0d9939" x="0" y="597" width="100" height="15"/>
+				<textElement/>
+				<text><![CDATA[NOMBRE GARANTE:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="6f3fc9c2-2ddd-4f46-b9e7-e38dd78763b7" stretchType="RelativeToBandHeight" x="100" y="597" width="455" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GARANTE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="4a7d8f2d-a9a8-4cdc-8513-b9eb87ceadf8" x="0" y="611" width="27" height="15"/>
+				<textElement/>
+				<text><![CDATA[C.C.]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="5e6b9b3f-905b-46bb-a41a-563a2e9c2463" stretchType="RelativeToBandHeight" x="27" y="611" width="528" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DOCUMENTO_GARANTE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="a6753eb1-f2ba-4713-a972-3341a1c9699e" x="0" y="625" width="62" height="15"/>
+				<textElement/>
+				<text><![CDATA[DIRECCION:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="8ce20828-a370-4f08-b714-584b37ed3cf8" stretchType="RelativeToBandHeight" x="62" y="625" width="493" height="15" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DIRECCION_GARANTE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

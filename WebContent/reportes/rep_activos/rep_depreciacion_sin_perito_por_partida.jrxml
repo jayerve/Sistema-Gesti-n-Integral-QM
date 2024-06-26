@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_kardex_individual_anual" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f2039012-673d-43a4-8ac7-378ca9838a39">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:/eclipse-jee-kepler-SR2-win32/Proyectos/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_usua" class="java.lang.Integer"/>
+	<parameter name="ide_sucu" class="java.lang.Integer"/>
+	<parameter name="ide_empr" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<parameter name="titulo" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Resumen General Anual"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_corte" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[WITH param AS (
+	SELECT
+	date_trunc('month', $P{fecha_corte}::date)::date AS fecha_inicio,
+	$P{fecha_corte}::date AS fecha_calculo,
+	360.0 AS dias_por_anio
+),
+calculo_inicial as (
+  SELECT
+       ide_afact, activo.ide_bocam, catalogo.cat_codigo_bocam, detalle_afact, fecha_alta_afact, valor_compra_afact, vida_util_afact,
+       valor_compra_afact*0.1 as valor_residual,
+       (SELECT fecha_calculo FROM param)::date - fecha_alta_afact::date as dias_transcurridos,
+       vida_util_afact - (((SELECT fecha_calculo FROM param)::date - fecha_alta_afact::date) / (SELECT dias_por_anio FROM param)) as tiempo_restante,
+       valor_compra_afact - valor_compra_afact*0.1 as valor_a_depreciar,
+       (valor_compra_afact - valor_compra_afact*0.1 ) / (NULLIF(vida_util_afact,0) * 12) as mensual,
+       (valor_compra_afact - valor_compra_afact*0.1 ) / (NULLIF(vida_util_afact,0) * (SELECT dias_por_anio FROM param)) as diario
+
+  FROM afi_activo as activo
+  LEFT JOIN bodt_catalogo_material as catalogo ON catalogo.ide_bocam = activo.ide_bocam
+  WHERE catalogo.cat_codigo_bocam LIKE '%84.%'
+
+),
+calculo_depreciacion AS (
+SELECT
+*,
+CASE WHEN vida_util_afact - (((SELECT fecha_calculo FROM param)::date - fecha_alta_afact::date) / (SELECT dias_por_anio FROM param)) <= 0 THEN valor_compra_afact * 0.9
+       ELSE (valor_compra_afact - valor_compra_afact*0.1 ) / (NULLIF(vida_util_afact,0) * (SELECT dias_por_anio FROM param)) * ((SELECT fecha_calculo FROM param)::date - fecha_alta_afact::date )  END as dep_acumulado
+FROM calculo_inicial
+),
+activos as (
+SELECT
+       activo.ide_afact, activo.ide_bocam, catalogo.cat_codigo_bocam, catalogo.descripcion_bocam,
+regexp_replace(activo.detalle_afact, E'[\\n\\r]+', ' ', 'g' ) as detalle_afact,
+       activo.fecha_alta_afact, (SELECT fecha_calculo FROM param) as fecha_corte,
+       activo.valor_compra_afact, activo.vida_util_afact,
+       depreciacion.valor_residual,  depreciacion.dias_transcurridos, depreciacion.tiempo_restante, depreciacion.valor_a_depreciar,
+       depreciacion.mensual, depreciacion.diario,
+       COALESCE(depreciacion.dep_acumulado, 0) as dep_acumulado, activo.valor_compra_afact - COALESCE(dep_acumulado,0)  as valor_en_libros,
+       (SELECT saca_del_inventario_empresarial  FROM afi_doc_detalle_activo as doc_detalle
+	LEFT JOIN afi_docu as doc ON doc.ide_afdoc = doc_detalle.ide_afdoc
+	LEFT JOIN afi_tipo_docu as tipo_doc ON tipo_doc.ide_aftidoc = doc.ide_aftidoc
+	WHERE doc_detalle.ide_afact = activo.ide_afact ORDER BY fecha_afdoc DESC LIMIT 1) as saca_del_inventario_empresarial
+  FROM afi_activo as activo
+  LEFT JOIN bodt_catalogo_material as catalogo ON catalogo.ide_bocam = activo.ide_bocam
+  LEFT JOIN calculo_depreciacion as depreciacion ON activo.ide_afact = depreciacion.ide_afact
+
+  ORDER BY catalogo.cat_codigo_bocam, activo.ide_bocam, activo.ide_afact
+),
+resultado AS(
+SELECT
+activos.*,
+descripcion_clasificador_prcla,
+CASE WHEN fecha_corte-(SELECT fecha_alta_afact FROM param) <= 30 THEN fecha_corte-(SELECT fecha_alta_afact FROM param) ELSE 30 END AS dias_periodo,
+CASE WHEN fecha_corte-(SELECT fecha_alta_afact FROM param) <= 30 THEN fecha_corte-(SELECT fecha_alta_afact FROM param) ELSE 30 END * activos.diario AS depreciacion_periodo
+FROM activos
+LEFT JOIN pre_clasificador AS clasificador ON clasificador.codigo_clasificador_prcla = activos.cat_codigo_bocam
+WHERE saca_del_inventario_empresarial=false AND cat_codigo_bocam LIKE '%84.%'
+AND fecha_alta_afact <= (SELECT fecha_calculo FROM param)::date
+
+)
+
+
+-- Reporte agrupado por partida
+SELECT
+cat_codigo_bocam, descripcion_clasificador_prcla, fecha_corte,
+SUM(valor_compra_afact) as sum_valor_compra, SUM(dep_acumulado) as sum_dep_acumulado,
+SUM(valor_en_libros) as sum_valor_en_libros,
+SUM(depreciacion_periodo) as sum_depreciacion_periodo
+FROM resultado
+GROUP BY 1,2,3
+ORDER BY cat_codigo_bocam]]>
+	</queryString>
+	<field name="cat_codigo_bocam" class="java.lang.String"/>
+	<field name="descripcion_clasificador_prcla" class="java.lang.String">
+		<fieldDescription><![CDATA[descripcion_clasificador_prcla]]></fieldDescription>
+	</field>
+	<field name="fecha_corte" class="java.sql.Date"/>
+	<field name="sum_valor_compra" class="java.math.BigDecimal"/>
+	<field name="sum_dep_acumulado" class="java.math.BigDecimal"/>
+	<field name="sum_valor_en_libros" class="java.math.BigDecimal"/>
+	<field name="sum_depreciacion_periodo" class="java.math.BigDecimal"/>
+	<variable name="sum_valor_compra_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{sum_valor_compra}]]></variableExpression>
+	</variable>
+	<variable name="sum_depreciacion_periodo_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{sum_depreciacion_periodo}]]></variableExpression>
+	</variable>
+	<variable name="sum_dep_acumulado_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{sum_dep_acumulado}]]></variableExpression>
+	</variable>
+	<variable name="sum_valor_en_libros_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{sum_valor_en_libros}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="63" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="3ad301b0-8107-4db1-b07e-46f8b23bab09" x="-1" y="0" width="802" height="63"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{ide_usua}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_horizontal.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="28" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="bd2147bd-496c-4dd9-8fc9-e8006d638008" x="617" y="14" width="105" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Depreciación acumulada]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="859f216c-ec39-4524-a85a-7ff50e70f64f" x="432" y="14" width="80" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Valor compra]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="62465d07-af3c-4146-ba40-e06c1d80d3d9" x="722" y="14" width="80" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Valor en libros]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="279c30c2-26e6-4153-ace6-28383fbff968" x="512" y="14" width="105" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Depreciación mes]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="7a70e317-f74b-4afe-923a-edef9ac30083" x="1" y="0" width="47" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cat_codigo_bocam}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="84dd0ef7-7ec3-4468-acf1-e782e4c95e81" x="48" y="0" width="232" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion_clasificador_prcla}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="012cb5cd-8201-4d01-9e1b-f5265892649a" x="432" y="0" width="80" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sum_valor_compra}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="22e4c92f-9cc0-4df4-9ca5-fe7b8601ceb8" x="512" y="0" width="105" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sum_depreciacion_periodo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="77e88dc7-a117-463f-bea5-6d27e700ccfc" x="617" y="0" width="105" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sum_dep_acumulado}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="ebcff603-a8d6-4deb-be81-82d318847ccf" x="722" y="0" width="79" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sum_valor_en_libros}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="23" splitType="Stretch">
+			<textField>
+				<reportElement uuid="fd5e51f1-7cef-4146-a2f9-a6fd5bdb8c87" x="681" y="1" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="96383702-1391-4c8c-bf74-033f0323d835" x="761" y="1" width="40" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="e1dcbe45-1c13-4ec0-85c4-217482110802" x="0" y="3" width="58" height="20"/>
+				<textElement>
+					<font size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Fecha de corte:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="ff559ff1-8672-4390-9ba7-d461d043b24c" x="58" y="3" width="100" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_corte}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="19" splitType="Stretch">
+			<textField pattern="#,##0.00">
+				<reportElement uuid="40836e6a-4907-4edb-a52a-a7e7744fcf51" x="432" y="0" width="80" height="19"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sum_valor_compra_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="911762a6-1b7c-4fc4-9b15-1615b3883ea9" x="512" y="0" width="105" height="19"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sum_depreciacion_periodo_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="35615306-47fa-4dde-8326-040582f20e76" x="617" y="0" width="105" height="19"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sum_dep_acumulado_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="8b16d891-7318-4c93-9763-b982a617e3c2" x="722" y="0" width="79" height="19"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sum_valor_en_libros_1}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

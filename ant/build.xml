@@ -1,0 +1,109 @@
+<project name="sampu" basedir="../" default="deploy-show">
+ 
+	<!-- Project settings -->
+	<property name="project.distname" value="sampu" />
+
+	<!-- Local system paths -->
+	<property file="${basedir}/ant/build.properties" />
+	<property name="webroot.dir" value="${basedir}/WebContent" />
+	<property name="webinf.dir" value="${webroot.dir}/WEB-INF" />
+	<property name="build.dir" value="build" />
+	<!-- variables para crear el jar de persistencia -->
+	<property name="persistence.tmp" value="persistenceTmp" />
+	<property name="persistence.metaInf" value="${persistence.tmp}/META-INF" />
+	<property name="persistence.jarFile" value="persistence.jar" />
+
+
+	<path id="compile.classpath">
+		<!-- Classpath WEB -->
+		<pathelement path="${webinf.dir}/classes" />
+		<pathelement path="${classpath.external}" />
+		<pathelement path="${classpath}" />
+	</path>
+
+	<!-- define your folder for deployment -->
+	<property name="deploy.dir" value="${jboss.home}/standalone/deployments" />
+
+	<!-- Check timestamp on files -->
+	<target name="prepare">
+		<tstamp />
+	</target>
+
+	<!-- Copy any resource or configuration files -->
+	<target name="resources">
+		<copy todir="${webinf.dir}/classes" includeEmptyDirs="no">
+			<fileset dir="JavaSource">
+				<patternset>
+					<include name="**/*.conf" />
+					<include name="**/*.properties" />
+					<include name="**/*.xml" />
+				</patternset>
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- Normal build of application -->
+	<target name="compile" depends="prepare,resources">
+		<javac srcdir="JavaSource" destdir="${webinf.dir}/classes" includeantruntime="false">
+			<classpath refid="compile.classpath" />
+		</javac>
+	</target>
+
+	<!-- genera un jar con el META-INF y coloca el jar en el lib del proyecto-->
+	<target name="generarPersistence">
+		<mkdir dir="${persistence.tmp}" />
+		<mkdir dir="${persistence.metaInf}" />
+		<copy todir="${persistence.metaInf}" file="${webroot.dir}/META-INF/MANIFEST.MF" />
+		<copy todir="${persistence.metaInf}" file="${webroot.dir}/META-INF/persistence.xml" />
+
+		<jar jarfile="${persistence.jarFile}">
+			<fileset dir="${persistence.tmp}">
+			</fileset>
+		</jar>
+		<copy todir="${webinf.dir}/lib" file="${persistence.jarFile}" />
+		<delete dir="${persistence.tmp}" />
+		<delete file="${persistence.jarFile}" />
+	</target>
+	<!-- Remove classes directory for clean build -->
+	<target name="clean" description="Prepare for clean build">
+		<delete dir="${webinf.dir}/classes" />
+		<mkdir dir="${webinf.dir}/classes" />
+	</target>
+
+	<!-- Build entire project -->
+	<target name="build" depends="prepare,compile" />
+	<target name="rebuild" depends="clean,prepare,compile" />
+
+	<!-- Create binary distribution -->
+	<target name="war" depends="build">
+		<mkdir dir="${build.dir}" />
+		<war basedir="${webroot.dir}" warfile="${build.dir}/${project.distname}.war" webxml="${webinf.dir}/web.xml">
+			<exclude name="WEB-INF/${build.dir}/**" />
+			<exclude name="WEB-INF/src/**" />
+			<exclude name="WEB-INF/web.xml" />
+		</war>
+	</target>
+
+	<target name="deploy" depends="war">
+		<delete file="${deploy.dir}/${project.distname}.war" />
+		<delete dir="${deploy.dir}/${project.distname}" />
+		<copy todir="${deploy.dir}" file="${build.dir}/${project.distname}.war" />
+	</target>
+
+	<!-- Abre la aplicacion en un browser -->
+	<target name="app-abrir">
+		<exec executable="${browser}" spawn="yes">
+			<arg line="http://${jboss.host}:${jboss.web.port}/${project.distname}/home.jsf" />
+		</exec>
+	</target>
+
+	<target name="app-esperar">
+		<echo message="Esperando 5 segundos hasta que la pagina este disponible...." />
+		<!-- Espera 5 segundos -->
+		<sleep seconds="5" />
+	</target>
+
+	<target name="deploy-show" depends="generarPersistence,deploy,app-esperar,app-abrir">
+
+	</target>
+</project>

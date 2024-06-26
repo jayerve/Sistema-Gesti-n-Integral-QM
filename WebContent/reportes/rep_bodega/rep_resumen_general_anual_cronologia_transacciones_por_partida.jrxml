@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_kardex_individual_anual" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f2039012-673d-43a4-8ac7-378ca9838a39">
+	<property name="ireport.zoom" value="1.5000000000000009"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_geani" class="java.lang.Long"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:/codigo_fuente/sampu-existencias/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_usua" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[10]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_sucu" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[1]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_empr" class="java.lang.Integer" isForPrompting="false">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<parameter name="titulo" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Resumen General Anual"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_prcla" class="java.lang.Long"/>
+	<parameter name="ide_inttr" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[WITH param AS (
+    SELECT
+    $P{ide_geani} as ide_geani,
+    $P{ide_inttr} AS ide_inttr,
+    $P{ide_prcla} AS ide_prcla
+)
+
+SELECT
+    transaccion.ide_ingeg, transaccion.ide_inttr, tipo.detalle_inttr, transaccion.fecha_ingeg, detalle.ide_inegd, catalogo.ide_prcla, codigo_clasificador_prcla, descripcion_clasificador_prcla,
+      detalle.ide_bocam, descripcion_bocam,  numero_documento_ingeg, cantidad_inegd, valor_existencia_inegd, total_inegd
+FROM bodt_ingreso_egreso_det as detalle
+LEFT JOIN bodt_ingreso_egreso AS transaccion ON transaccion.ide_ingeg = detalle.ide_ingeg
+LEFT JOIN bodt_catalogo_material AS catalogo ON catalogo.ide_bocam = detalle.ide_bocam
+LEFT JOIN pre_clasificador AS clasificador ON clasificador.ide_prcla = catalogo.ide_prcla
+LEFT JOIN bodt_inventario_tipo_transaccion AS tipo ON tipo.ide_inttr = transaccion.ide_inttr
+WHERE catalogo.ide_prcla = (SELECT ide_prcla FROM param) AND transaccion.ide_geani = (SELECT ide_geani FROM param) AND transaccion.ide_inttr = (SELECT ide_inttr FROM param) AND activo_ingeg = TRUE
+ORDER BY transaccion.fecha_ingeg, ide_inegd]]>
+	</queryString>
+	<field name="ide_ingeg" class="java.lang.Integer"/>
+	<field name="ide_inttr" class="java.lang.Long"/>
+	<field name="detalle_inttr" class="java.lang.String"/>
+	<field name="fecha_ingeg" class="java.sql.Date"/>
+	<field name="ide_inegd" class="java.lang.Integer"/>
+	<field name="ide_prcla" class="java.lang.Long">
+		<fieldDescription><![CDATA[Define la clave primaria de la tabla pre_clasificador.]]></fieldDescription>
+	</field>
+	<field name="codigo_clasificador_prcla" class="java.lang.String">
+		<fieldDescription><![CDATA[codigo_clasificador_prcla]]></fieldDescription>
+	</field>
+	<field name="descripcion_clasificador_prcla" class="java.lang.String">
+		<fieldDescription><![CDATA[descripcion_clasificador_prcla]]></fieldDescription>
+	</field>
+	<field name="ide_bocam" class="java.lang.Long">
+		<fieldDescription><![CDATA[Primary de bodt_catalogo_material con el cual se va a unir a todos los otros modulos]]></fieldDescription>
+	</field>
+	<field name="descripcion_bocam" class="java.lang.String"/>
+	<field name="numero_documento_ingeg" class="java.lang.Integer"/>
+	<field name="cantidad_inegd" class="java.math.BigDecimal"/>
+	<field name="valor_existencia_inegd" class="java.math.BigDecimal"/>
+	<field name="total_inegd" class="java.math.BigDecimal"/>
+	<variable name="sum_total" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_inegd}]]></variableExpression>
+	</variable>
+	<group name="Grupo">
+		<groupExpression><![CDATA[]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement uuid="b0e00e83-3d64-4f36-b94f-2a2deefdde22" x="100" y="0" width="180" height="20"/>
+					<textElement>
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{descripcion_clasificador_prcla}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="c765237b-3162-4d04-900f-f525985dca21" x="0" y="0" width="48" height="20"/>
+					<textElement>
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{ide_prcla}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="106b7962-63cd-4f93-af25-6b71cb4e4d07" x="48" y="0" width="52" height="20"/>
+					<textElement>
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{codigo_clasificador_prcla}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="5"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="63" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="3ad301b0-8107-4db1-b07e-46f8b23bab09" x="-1" y="0" width="802" height="63"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="titulo">
+					<subreportParameterExpression><![CDATA[$P{titulo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_geani">
+					<subreportParameterExpression><![CDATA[$P{ide_geani}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_empr">
+					<subreportParameterExpression><![CDATA[$P{ide_empr}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_sucu">
+					<subreportParameterExpression><![CDATA[$P{ide_sucu}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_usua">
+					<subreportParameterExpression><![CDATA[$P{ide_usua}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_sistema/rep_cabecera_horizontal.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="33" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="d92da50a-6cfb-423b-94cd-412e4dd8d8f6" x="540" y="14" width="77" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c4f89c0a-eac5-4752-bfed-0aa45e0d6c13" x="410" y="14" width="65" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bd2147bd-496c-4dd9-8fc9-e8006d638008" x="617" y="14" width="87" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Valor existencia]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="859f216c-ec39-4524-a85a-7ff50e70f64f" x="475" y="14" width="65" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Documento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3a6cb621-8e8b-4a7e-b13a-db9f159b7857" x="704" y="14" width="96" height="14"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="494d4f77-9670-455a-990c-e2953d4cf2ba" x="1" y="0" width="65" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_inttr}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="7a70e317-f74b-4afe-923a-edef9ac30083" x="1" y="0" width="47" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ide_inegd}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="84dd0ef7-7ec3-4468-acf1-e782e4c95e81" x="47" y="0" width="363" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descripcion_bocam}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="bd2e0512-7ecf-49c3-ac91-d447515da85f" x="540" y="0" width="77" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cantidad_inegd}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="d491545c-2125-48d8-b27d-b1eb270ceb4e" x="410" y="0" width="65" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_ingeg}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="012cb5cd-8201-4d01-9e1b-f5265892649a" x="617" y="0" width="87" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor_existencia_inegd}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0">
+				<reportElement uuid="44c3a80f-9e46-4ba1-a1e6-aa3ea4adf742" x="475" y="0" width="65" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numero_documento_ingeg}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="22e4c92f-9cc0-4df4-9ca5-fe7b8601ceb8" x="704" y="0" width="96" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_inegd}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="8" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="23" splitType="Stretch">
+			<textField>
+				<reportElement uuid="fd5e51f1-7cef-4146-a2f9-a6fd5bdb8c87" x="681" y="1" width="80" height="20"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="96383702-1391-4c8c-bf74-033f0323d835" x="761" y="1" width="40" height="20"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="50" splitType="Stretch">
+			<textField>
+				<reportElement uuid="b57529a2-a190-451b-b81c-81bc6f0d4fc9" x="704" y="0" width="97" height="20"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sum_total}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

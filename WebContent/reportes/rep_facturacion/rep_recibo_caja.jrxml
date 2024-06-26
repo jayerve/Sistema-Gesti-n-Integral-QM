@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_factura" language="groovy" pageWidth="595" pageHeight="396" columnWidth="586" leftMargin="4" rightMargin="5" topMargin="20" bottomMargin="20" uuid="ebfe7de5-9a41-4610-9687-0c7e64ec5332">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="pide_fafac" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="plugar_cobro" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select row_number() over(order by a.ide_recli,grupo,ide_fafac) as codigo,ide_fafac,a.ide_recli,detalle_bogrm,secuencial_fafac,total_fafac,grupo,
+    razon_social_recli,ruc_comercial_recli,now() as fecha_Actual
+    from (
+    select 1 as ide_fafac,ide_recli,substring(detalle_bogrm from 1 for 25) as detalle_bogrm,'De las Facturas ('||textcat_all(secuencial_fafac || ', ')||')' as secuencial_fafac,sum(total_fafac) as total_fafac,grupo from (
+    select ide_fafac,ide_recli,detalle_bogrm,secuencial_fafac,total_fafac,1 as grupo
+    from (
+    select ide_fafac,ide_fadaf,secuencial_fafac,total_fafac,ide_recli,ide_coest from fac_factura
+    ) a , (
+    select ide_fadaf,autorizacion_sri_bogrm,serie_factura_fadaf, detalle_bogrm
+    from fac_datos_factura a, bodt_grupo_material b where a.ide_bogrm = b.ide_bogrm
+    order by autorizacion_sri_bogrm
+    ) b
+    where a.ide_fadaf = b.ide_fadaf
+    and a.ide_fafac in (select ide_factura from fac_cobro where tipo=1 and ide_lugar_cobro=$P{plugar_cobro} and ide_caja=$P{pide_fafac})
+    ) a group by ide_recli,detalle_bogrm,grupo
+
+    union
+    select 1,ide_recli,'NOTA DE DEBITO','De las Facturas ('||textcat_all(detalle_fenod || ', ')||')' as detalle,sum(interes_generado_fanod) as interes_generado_fanod,2 as grupo
+    from (
+    select ide_fanod,ide_recli,'NOTA DE DEBITO',detalle_fenod,interes_generado_fanod,2 as grupo
+    from fac_nota_debito where ide_fanod in (select ide_factura from fac_cobro where tipo=2 and ide_lugar_cobro=$P{plugar_cobro} and ide_caja=$P{pide_fafac})
+    ) a group by ide_recli
+
+    ) a,rec_clientes b
+    where a.ide_recli =b.ide_recli
+    order by a.ide_recli,grupo,ide_fafac]]>
+	</queryString>
+	<field name="codigo" class="java.lang.Long"/>
+	<field name="ide_fafac" class="java.lang.Integer">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla fac_factura.]]></fieldDescription>
+	</field>
+	<field name="ide_recli" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla rec_clientes.]]></fieldDescription>
+	</field>
+	<field name="detalle_bogrm" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_bogrm]]></fieldDescription>
+	</field>
+	<field name="secuencial_fafac" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el numero secuencial de la factura.]]></fieldDescription>
+	</field>
+	<field name="total_fafac" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[Este campo define el valor total de la factura.]]></fieldDescription>
+	</field>
+	<field name="grupo" class="java.lang.Integer"/>
+	<field name="razon_social_recli" class="java.lang.String"/>
+	<field name="ruc_comercial_recli" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el ruc comercial del cliente.]]></fieldDescription>
+	</field>
+	<field name="fecha_actual" class="java.sql.Timestamp"/>
+	<variable name="suma_total" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_fafac}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="205" splitType="Stretch">
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="3ba322a8-edc0-4ac8-9242-c6cb39e94722" key="textField" x="117" y="130" width="405" height="17"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{razon_social_recli}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement uuid="62161d9b-c201-40c0-8a28-6146c0fec87f" x="117" y="110" width="405" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{fecha_actual}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="bd14d357-769f-4066-b601-ded885d94a1e" key="textField" x="117" y="147" width="405" height="17"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ruc_comercial_recli}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField pattern="###0" isBlankWhenNull="true">
+				<reportElement uuid="d173146f-e6ca-4ea1-904b-160e4f7b4612" x="6" y="0" width="72" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="0591d753-06db-4b6a-8802-6a8dbe780a1b" x="101" y="0" width="341" height="15"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_bogrm}+"  --  "+$F{secuencial_fafac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="34ae276b-6015-4103-9ce8-3c2fad06b4d4" x="462" y="0" width="100" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_fafac}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="88" splitType="Stretch">
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="e9acb78d-3b74-4971-bc9f-a3bf56b415d2" x="462" y="5" width="100" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{suma_total}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

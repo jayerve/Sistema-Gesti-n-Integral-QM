@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_cliente_comprobante_movDET_Comp" pageWidth="554" pageHeight="842" whenNoDataType="BlankPage" columnWidth="554" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e417e812-fc9d-4d5d-81e0-d26a47801e5c">
+	<property name="ireport.zoom" value="1.6105100000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="p_ide_fafac" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT ide_fanod, 'NOTA DEBITO' as tipo_doc, detalle_coest, fecha_emision_fanod, coalesce(nro_nota_debito_elect_fanod,'---') AS nro_doc, interes_generado_fanod,
+                       autorizada_sri_fanod
+                  FROM public.fac_nota_debito nd
+                  join fac_factura fac on fac.secuencial_fafac=nd.detalle_fenod
+                left join cont_estado est on est.ide_coest=fac.ide_coest
+                where fac.ide_fafac=$P{p_ide_fafac}
+
+                union all
+
+                SELECT ide_fanoc, 'NOTA CREDITO' as tipo_doc, detalle_coest, fecha_fanoc, coalesce(nro_nota_credito_fanoc,'---') AS nro_doc, total_fanoc,
+                       autorizada_sri_fanoc
+                  FROM public.fac_nota_credito nc
+                left join cont_estado est on est.ide_coest=nc.ide_coest
+                where ide_fafac=$P{p_ide_fafac}]]>
+	</queryString>
+	<field name="ide_fanod" class="java.lang.Long">
+		<fieldDescription><![CDATA[Este campo define la clave primaria de la tabla fac_nota_debito]]></fieldDescription>
+	</field>
+	<field name="tipo_doc" class="java.lang.String"/>
+	<field name="detalle_coest" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_coest]]></fieldDescription>
+	</field>
+	<field name="fecha_emision_fanod" class="java.sql.Date">
+		<fieldDescription><![CDATA[fecha_emision_fanod]]></fieldDescription>
+	</field>
+	<field name="nro_doc" class="java.lang.String"/>
+	<field name="interes_generado_fanod" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[interes_generado_fanod]]></fieldDescription>
+	</field>
+	<field name="autorizada_sri_fanod" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[autorizada_sri_fanod]]></fieldDescription>
+	</field>
+	<columnHeader>
+		<band height="40">
+			<staticText>
+				<reportElement uuid="39855739-2785-4928-881e-55092678bdda" x="0" y="20" width="554" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ TIPO COMP.		ESTADO	FECHA		NRO COMPROBANTE		VALOR		AUT.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3da7a739-9c52-4c0a-b67a-7a7f67a1829f" x="0" y="0" width="555" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COMPROBANTES RELACIONADOS]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="fa445641-4a59-4e30-8816-c47a0b6945a4" x="262" y="0" width="136" height="15"/>
+				<textElement textAlignment="Center">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nro_doc}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy-MM-dd" isBlankWhenNull="true">
+				<reportElement uuid="206ccd28-f176-4b7d-81b6-c2d69737a47e" x="176" y="0" width="82" height="15"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{fecha_emision_fanod}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="ff121ee3-da6c-4b5e-9bd9-6c5c1596f7be" x="399" y="0" width="85" height="15"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{interes_generado_fanod}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="32667067-e2b9-4c87-8008-1115c6f44123" x="554" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="2c8deda5-1213-4037-9df9-3e49834ff3ae" x="0" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="e82b3dd2-0cdf-4902-99f1-bdf819e83d43" x="174" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="ca6ca4f9-2e36-4294-98ea-32dfc8ec7c18" x="398" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="308b92f6-601d-4590-9775-64ae3c33f3f8" x="486" y="0" width="1" height="15"/>
+			</line>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="e7b6dc12-003c-4df3-92f6-114a696929e6" x="488" y="0" width="66" height="15"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{autorizada_sri_fanod}?"SI":"NO"]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="ebc165a4-4661-4688-9b7b-195d0ce8dedf" x="1" y="0" width="95" height="15"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{tipo_doc}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="13ec17f9-7ae8-450b-b47b-0f022468c25b" x="97" y="0" width="75" height="15"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{detalle_coest}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="5ea138ef-62f5-469a-a2c4-6877cbb252ef" x="96" y="0" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="798ce7c4-2e10-431d-b1e5-f508dd82fa77" x="260" y="0" width="1" height="15"/>
+			</line>
+		</band>
+	</detail>
+</jasperReport>

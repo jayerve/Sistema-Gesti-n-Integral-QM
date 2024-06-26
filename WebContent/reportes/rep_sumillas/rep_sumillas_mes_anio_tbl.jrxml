@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_demo" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8c754216-08e1-4e25-b876-37b3e83e1be1">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="p_anio" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[2018]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_mes_ini" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[1]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_mes_fin" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[12]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select gerencia_acr,gerencia,coordinacion_acr,cordinacion,mes,mes_num,anio,sumillas from rep_sum_tramite_mes_anio where anio = $P{p_anio} and (mes_num between $P{p_mes_ini} and $P{p_mes_fin})]]>
+	</queryString>
+	<field name="gerencia_acr" class="java.lang.String"/>
+	<field name="gerencia" class="java.lang.String"/>
+	<field name="coordinacion_acr" class="java.lang.String"/>
+	<field name="cordinacion" class="java.lang.String"/>
+	<field name="mes" class="java.lang.String"/>
+	<field name="mes_num" class="java.lang.Integer"/>
+	<field name="anio" class="java.lang.Integer"/>
+	<field name="sumillas" class="java.lang.Long"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="555" splitType="Stretch">
+			<textField>
+				<reportElement uuid="8b4c4aae-a29e-4e9b-9940-53c1ebeef803" x="0" y="0" width="802" height="71"/>
+				<textElement textAlignment="Center">
+					<font size="24"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Tramites sumillados  asignados por área "+$P{p_anio}+"\n ("+($P{p_mes_ini}==1?"Enero":$P{p_mes_ini}==2?"Febrero":$P{p_mes_ini}==3?"Marzo":$P{p_mes_ini}==4?"Abril":$P{p_mes_ini}==5?"Mayo":$P{p_mes_ini}==6?"Junio":$P{p_mes_ini}==7?"Julio":$P{p_mes_ini}==8?"Agosto":$P{p_mes_ini}==9?"Septiembre":$P{p_mes_ini}==10?"Octubre":$P{p_mes_ini}==11?"Noviembre":"Diciembre")+"-"+($P{p_mes_fin}==1?"Enero":$P{p_mes_fin}==2?"Febrero":$P{p_mes_fin}==3?"Marzo":$P{p_mes_fin}==4?"Abril":$P{p_mes_fin}==5?"Mayo":$P{p_mes_fin}==6?"Junio":$P{p_mes_fin}==7?"Julio":$P{p_mes_fin}==8?"Agosto":$P{p_mes_fin}==9?"Septiembre":$P{p_mes_fin}==10?"Octubre":$P{p_mes_fin}==11?"Noviembre":"Diciembre")+")"]]></textFieldExpression>
+			</textField>
+			<crosstab>
+				<reportElement uuid="ce38d28a-c9fb-4f62-b60f-0074c385f01b" x="217" y="100" width="361" height="154"/>
+				<rowGroup name="gerencia" width="144" totalPosition="End">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{gerencia}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement uuid="4e3033fa-54af-4f92-9659-f921de290f7f" style="Crosstab Data Text" x="0" y="0" width="144" height="50"/>
+								<textElement/>
+								<textFieldExpression><![CDATA[$V{gerencia}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents backcolor="#005FB3" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement uuid="29a251e2-95cf-4186-8085-6e577acda079" x="0" y="0" width="140" height="25" forecolor="#FFFFFF"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[Total gerencia]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<rowGroup name="cordinacion" width="114" totalPosition="End">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{cordinacion}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement uuid="54e0e6d8-990d-4c37-8446-70f5b8985066" style="Crosstab Data Text" x="0" y="0" width="114" height="34"/>
+								<textElement/>
+								<textFieldExpression><![CDATA[$V{cordinacion}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement uuid="fd515b35-ec7a-4a71-b491-7034d721bf9d" x="0" y="0" width="114" height="25"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[Total cordinacion]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="anio" height="30" totalPosition="End">
+					<bucket class="java.lang.Integer">
+						<bucketExpression><![CDATA[$F{anio}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement uuid="0fe07c3b-17fb-4303-9aa4-449e8e3678cc" style="Crosstab Data Text" x="0" y="0" width="50" height="30"/>
+								<textElement/>
+								<textFieldExpression><![CDATA[$V{anio}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents backcolor="#005FB3" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement uuid="8acbb5e7-dbf6-42f8-98fc-2ce1a20ba99f" x="0" y="0" width="50" height="60" forecolor="#FFFFFF"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<text><![CDATA[Total periodo]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<columnGroup name="mes" height="30" totalPosition="End">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{mes}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<textField>
+								<reportElement uuid="11c16cd3-51a2-4c0b-b145-9a47838e4ab9" style="Crosstab Data Text" x="0" y="0" width="50" height="30"/>
+								<textElement/>
+								<textFieldExpression><![CDATA[$V{mes}]]></textFieldExpression>
+							</textField>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="sumillasMeasure" class="java.lang.Long" calculation="Sum">
+					<measureExpression><![CDATA[$F{sumillas}]]></measureExpression>
+				</measure>
+				<crosstabCell width="50" height="34">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="44c33a6c-14c4-472d-8b7b-41d32fd4cd42" style="Crosstab Data Text" x="0" y="0" width="50" height="34"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{sumillasMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="gerencia">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="1507397f-cc55-44a4-8e73-fa92a4099989" style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{sumillasMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" height="34" columnTotalGroup="anio">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="961e756a-cac3-47e3-af36-611a6670ad9a" style="Crosstab Data Text" x="0" y="0" width="50" height="34" forecolor="#FFFFFF"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{sumillasMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="gerencia" columnTotalGroup="anio">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="71d104e8-2a80-450c-b901-81bc749d61b9" style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{sumillasMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="0" height="34" columnTotalGroup="mes">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="0" rowTotalGroup="gerencia" columnTotalGroup="mes">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="cordinacion">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="6af02d61-e1fd-4693-9bde-fc48e3c85730" style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{sumillasMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="cordinacion" columnTotalGroup="anio">
+					<cellContents backcolor="#005FB3" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement uuid="351f579e-0dec-465f-ae4c-30bfa482d7fd" style="Crosstab Data Text" x="0" y="0" width="50" height="25" forecolor="#FFFFFF"/>
+							<textElement/>
+							<textFieldExpression><![CDATA[$V{sumillasMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="0" rowTotalGroup="cordinacion" columnTotalGroup="mes">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>

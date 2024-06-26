@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_estado_ejec_presGrp" pageWidth="560" pageHeight="842" whenNoDataType="BlankPage" columnWidth="560" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="e417e812-fc9d-4d5d-81e0-d26a47801e5c">
+	<property name="ireport.zoom" value="1.6105100000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="ide_prgre" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_inicial" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fecha_final" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ide_geani" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA["C:/eclipse-jee-kepler-SR2-win32/Proyectos/sampu/WebContent"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select ide_prcla,codigo_clasificador_prcla,descripcion_clasificador_prcla,tipo_prcla as ingresoGasto
+            from pre_clasificador where nivel_prcla=1 and ide_prgre = $P{ide_prgre} order by 1;]]>
+	</queryString>
+	<field name="ide_prcla" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ide_prcla]]></fieldDescription>
+	</field>
+	<field name="ingresoGasto" class="java.lang.Integer">
+		<fieldDescription><![CDATA[ingresoGasto]]></fieldDescription>
+	</field>
+	<field name="descripcion_clasificador_prcla" class="java.lang.String">
+		<fieldDescription><![CDATA[descripcion_clasificador_prcla]]></fieldDescription>
+	</field>
+	<variable name="valor_codificado" class="java.math.BigDecimal" calculation="Sum"/>
+	<variable name="valor_devengado_pres" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<variable name="valor_diferencia" class="java.math.BigDecimal" calculation="Sum"/>
+	<variable name="codificado_ingreso" class="java.math.BigDecimal" calculation="Sum"/>
+	<variable name="devengado_ingreso" class="java.math.BigDecimal" calculation="Sum"/>
+	<variable name="codificado_gasto" class="java.math.BigDecimal" calculation="Sum"/>
+	<variable name="devengado_gastos" class="java.math.BigDecimal" calculation="Sum"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="38">
+			<subreport>
+				<reportElement uuid="27e6b6fe-ee69-41fc-b68b-037fb342b1cc" x="0" y="0" width="555" height="38"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="fecha_inicial">
+					<subreportParameterExpression><![CDATA[$P{fecha_inicial}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="fecha_final">
+					<subreportParameterExpression><![CDATA[$P{fecha_final}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_geani">
+					<subreportParameterExpression><![CDATA[$P{ide_geani}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ingresoGasto">
+					<subreportParameterExpression><![CDATA[$F{ingresoGasto}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="descripcion">
+					<subreportParameterExpression><![CDATA[$F{descripcion_clasificador_prcla}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="ide_prcla">
+					<subreportParameterExpression><![CDATA[$F{ide_prcla}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<returnValue subreportVariable="valor_codificado" toVariable="valor_codificado" calculation="Sum"/>
+				<returnValue subreportVariable="valor_diferencia" toVariable="valor_diferencia"/>
+				<returnValue subreportVariable="valor_devengado_pres" toVariable="valor_devengado_pres" calculation="Sum"/>
+				<returnValue subreportVariable="codificado_ingreso" toVariable="codificado_ingreso" calculation="Sum"/>
+				<returnValue subreportVariable="devengado_ingreso" toVariable="devengado_ingreso" calculation="Sum"/>
+				<returnValue subreportVariable="codificado_gasto" toVariable="codificado_gasto" calculation="Sum"/>
+				<returnValue subreportVariable="devengado_gastos" toVariable="devengado_gastos" calculation="Sum"/>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/reportes/rep_contabilidad/rep_estado_ejec_presDet.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>

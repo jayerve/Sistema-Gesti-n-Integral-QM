@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rep_notificacion_extrajudicial" language="groovy" pageWidth="595" pageHeight="842" columnWidth="495" leftMargin="50" rightMargin="50" topMargin="25" bottomMargin="0" uuid="7cff85d4-06f0-45eb-a3e3-1dff7de44a9f">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<parameter name="p_fecha_larga" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_notificacion_nro" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_notificacion" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_jurisdiccion" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_ruc" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_total" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_total_letras" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select detalle_bogrm,secuencial_fafac,ruc_comercial_recli,razon_social_recli,ruc_representante_recli,representante_legal_recli,direccion_recld,coalesce(email_recle,'') as email_recle,coalesce(email_reclt,'') as email_reclt,
+ coalesce(total_fafac,0)-coalesce(valor_cobro,0) as saldo,
+ coalesce(interes_generado_fanod,0) as interes,
+ (coalesce(total_fafac,0)-coalesce(valor_cobro,0)) + coalesce(interes_generado_fanod,0) as total,
+ fecha_transaccion_fafac,fecha_vencimiento_fafac
+ from rec_clientes cli
+ left join (select ide_recli,(case when barrio_recld='SN' then '' else coalesce(barrio_recld||' ','') end)
+		|| coalesce(direccion_recld,'')
+		|| (case when nmro_casa_lote_dpto_recld='SN' then '' else coalesce(' '||nmro_casa_lote_dpto_recld,'') end)
+		|| (case when interseccion_recld='SN' then '' else coalesce(' y '||interseccion_recld,'') end)
+		as direccion_recld from rec_cliente_direccion where activo_recld=true and ide_recld in (select min(ide_recld) from rec_cliente_direccion
+	where activo_recld=true group by ide_recli)) dir on dir.ide_recli=cli.ide_recli
+
+ left join (select ide_recli, string_agg(email_recle, ',') as email_recle from rec_cliente_email where notificacion_recle=true and activo_recle=true group by ide_recli ) em on em.ide_recli=cli.ide_recli
+ left join (select ide_recli, string_agg(email_reclt, ',') as email_reclt from rec_cliente_telefono where length(coalesce(email_reclt,''))>0 group by ide_recli ) emc on emc.ide_recli=cli.ide_recli
+
+ left join fac_factura fac on fac.ide_recli=cli.ide_recli
+ left join ( select nd.ide_fanod,nd.ide_recli,dnd.ide_fafac,detalle_fenod,interes_generado_fanod,fecha_emision_fanod
+   from fac_nota_debito nd, fac_detalle_debito dnd
+   where nd.ide_fanod=dnd.ide_fanod and ide_coest = (select cast(valor_para as integer) from sis_parametros where nom_para ='p_factura_emitido')
+   ) c on c.ide_fafac=fac.ide_fafac and c.ide_recli=fac.ide_recli
+ left join (select ide_fafac, sum(coalesce(valor_cobro_facob,0)+coalesce(valor_cobro_iva_facob,0)) as valor_cobro from fac_cobro group by ide_fafac) d on d.ide_fafac=fac.ide_fafac
+ left join cont_estado est on est.ide_coest=fac.ide_coest
+ left join (select ide_fadaf,autorizacion_sri_bogrm,serie_factura_fadaf, detalle_bogrm from fac_datos_factura a, bodt_grupo_material b where a.ide_bogrm = b.ide_bogrm order by autorizacion_sri_bogrm ) b on b.ide_fadaf = fac.ide_fadaf
+ where fac.ide_coest not in (1,16) and (current_date - date(fecha_vencimiento_fafac))>80
+and ruc_comercial_recli = $P{p_ruc}
+order by fecha_transaccion_fafac]]>
+	</queryString>
+	<field name="detalle_bogrm" class="java.lang.String">
+		<fieldDescription><![CDATA[detalle_bogrm]]></fieldDescription>
+	</field>
+	<field name="secuencial_fafac" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el numero secuencial de la factura.]]></fieldDescription>
+	</field>
+	<field name="ruc_comercial_recli" class="java.lang.String"/>
+	<field name="razon_social_recli" class="java.lang.String"/>
+	<field name="ruc_representante_recli" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el ruc o documento de indentidad del representante legal.]]></fieldDescription>
+	</field>
+	<field name="representante_legal_recli" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del resepentante legal del cliente o empresa.]]></fieldDescription>
+	</field>
+	<field name="direccion_recld" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del tipo de asistencia, ejemplo: Continuo, Ocasional.]]></fieldDescription>
+	</field>
+	<field name="email_recle" class="java.lang.String">
+		<fieldDescription><![CDATA[Este campo define el nombre del tipo de asistencia, ejemplo: Continuo, Ocasional.]]></fieldDescription>
+	</field>
+	<field name="email_reclt" class="java.lang.String"/>
+	<field name="saldo" class="java.math.BigDecimal"/>
+	<field name="interes" class="java.math.BigDecimal"/>
+	<field name="total" class="java.math.BigDecimal"/>
+	<field name="fecha_transaccion_fafac" class="java.sql.Date"/>
+	<field name="fecha_vencimiento_fafac" class="java.sql.Date">
+		<fieldDescription><![CDATA[Este campo define la fecha de vencimiento de la factura.]]></fieldDescription>
+	</field>
+	<title>
+		<band height="301" splitType="Stretch">
+			<image>
+				<reportElement uuid="4116195a-8d8b-4225-bba8-2875a4205d48" x="351" y="0" width="143" height="68"/>
+				<imageExpression><![CDATA["C:\\proyecto\\sampu\\web\\upload\\logos\\logo.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement uuid="c7ce01f2-d1c6-4bfc-9b15-44460123318c" x="291" y="72" width="203" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Quito D.M., " + $P{p_fecha_larga}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="875af695-3f52-4011-a17d-9067a4e96662" x="201" y="96" width="293" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="10" isBold="true" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Notificación Extrajudicial No. EMGIRS-EP " + $P{p_notificacion_nro}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3ca3ac98-e55b-457e-a052-17824e2dc466" x="291" y="108" width="203" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="10" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{p_notificacion}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="8c01acd9-3abd-42e9-9cd5-b85feed97c34" x="1" y="154" width="72" height="12"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="10" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[RUC/CEDULA: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a1a48dc2-adeb-4b4b-9d60-066867f44470" x="1" y="166" width="63" height="12"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="10" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[DIRECCION: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="88816746-4820-4ca6-8380-803776fffa65" x="1" y="178" width="127" height="12"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="10" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[CORREO ELECTRÓNICO: ]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="51df4adc-6f25-4954-a548-51735d1918d2" x="73" y="154" width="119" height="12"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ruc_comercial_recli}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ac5d0de0-5564-4d3d-a943-d456f18d8551" x="64" y="166" width="425" height="12"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{direccion_recld}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f45d05c7-c8c5-4fa8-ad65-e72e29403cb8" x="129" y="178" width="359" height="33"/>
+				<textElement verticalAlignment="Top">
+					<font fontName="Times New Roman" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{email_recle}.toLowerCase()+" - "+$F{email_reclt}.toLowerCase()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e2717c58-e74d-4eb1-a272-401a77ed9268" x="1" y="142" width="487" height="12"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{razon_social_recli}.toUpperCase()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="26599655-4cf0-4651-ad81-8e2842430740" x="1" y="120" width="52" height="12"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Señor/es:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="98f150d4-4bcc-4256-9d75-ca510ec97941" x="1" y="215" width="111" height="12"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[De mi Consideración:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="87720f46-fba7-4808-985e-ffe98b69fac0" x="1" y="235" width="492" height="65"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="html">
+					<font fontName="Times New Roman" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Reciba un cordial saludo, por medio del presente me permito informar a usted que una vez verificada la información en los archivos de facturación y cartera a la fecha, su representada adeuda a la Empresa Pública Metropolitana de Gestión Integral de Residuos Sólidos EMGIRS-EP, la suma de <b>USD "+ $P{p_total}+" </b> ("+$P{p_total_letras}+" DOLARES DE LOS ESTADOS UNIDOS DE NORTE AMERICA), de conformidad al siguiente detalle de facturas:"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="14">
+			<staticText>
+				<reportElement uuid="9d6ae183-a42d-4c0c-a0b8-aa674f9a08bf" style="table" x="148" y="0" width="66" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="7" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[FECHA EMISIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="39ff9a02-bc73-4c1e-8bdf-144ecfc05e8d" style="table" x="214" y="0" width="78" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="7" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[No. FACTURA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="02fe0db8-eda2-4841-9633-999049182657" style="table" x="292" y="0" width="51" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="7" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[SALDO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="641c62fd-8d40-4e31-9515-aa4c59410cc4" style="table" x="343" y="0" width="79" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="7" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[INTERÉS GENERADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c3e09bac-69a1-4826-81e3-10868c25167f" style="table" x="422" y="0" width="72" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="7" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[FECHA VENCI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="148caf6b-ac58-4a5c-a409-82979b252041" style="table" x="0" y="0" width="148" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="7" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[TIPO DE SERVICIO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<textField>
+				<reportElement uuid="3ea5922f-75d5-4817-8ddf-d270dd5e9298" style="table" x="0" y="0" width="148" height="23"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
+					<font fontName="Times New Roman" size="7" isBold="false" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{detalle_bogrm}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="5f6e8670-1fe9-4eed-a4cf-2b44029e2476" style="table" x="148" y="0" width="66" height="23"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Times New Roman" size="7" isBold="false" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_transaccion_fafac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="db096d13-47d0-43a9-bfdc-4190412a55a7" style="table" x="422" y="0" width="72" height="23"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Times New Roman" size="7" isBold="false" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_vencimiento_fafac}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ce4a1cc6-c4c3-45e4-a441-bc19b0c939e1" style="table" x="214" y="0" width="78" height="23"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Times New Roman" size="7" isBold="false" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{secuencial_fafac}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="646f133e-41bb-4b48-9346-5faf6fcd369c" style="table" x="292" y="0" width="51" height="23"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="Times New Roman" size="7" isBold="false" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{saldo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="501e25b1-f57c-4ec3-a34e-a5643481b201" style="table" x="343" y="0" width="79" height="23"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="Times New Roman" size="7" isBold="false" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{interes}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="45">
+			<staticText>
+				<reportElement uuid="7ed94bdd-f869-44d3-b471-0b89881c1c82" x="70" y="2" width="174" height="14"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pje: OE3G - N51-84 y Av. Río Amazonas]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6dd3a2b3-a1d9-4fb3-b718-dcae2924b6d1" x="252" y="2" width="65" height="14"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PBX: 023930600]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b6180c82-7439-4f6b-9dce-f72bff5b6c0b" x="324" y="2" width="85" height="14"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[www.emgirs.gob.ec]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="d5ddcf1e-4800-4a21-b968-0df1254ea751" x="244" y="2" width="1" height="15"/>
+			</line>
+			<line>
+				<reportElement uuid="26cf2943-4b53-4ff2-bf66-4347e513cbba" x="319" y="2" width="1" height="15"/>
+			</line>
+			<staticText>
+				<reportElement uuid="38d1a31c-3d36-46e6-9571-432ce4e1af97" x="0" y="17" width="493" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Century Gothic" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quito - Ecuador]]></text>
+			</staticText>
+			<image scaleImage="FillFrame">
+				<reportElement uuid="1a684178-1d2f-47e2-a46d-1842bb82c491" x="-50" y="31" width="557" height="13"/>
+				<imageExpression><![CDATA["C:\\proyecto\\sampu\\web\\upload\\logos\\footer.jpg"]]></imageExpression>
+			</image>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="231" splitType="Stretch">
+			<textField>
+				<reportElement uuid="aef8ae5a-328c-40fc-aa9f-690bba1ae1dc" x="1" y="10" width="492" height="49"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="html">
+					<font fontName="Times New Roman" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Por lo anteriormente expuesto, agradeceré de usted, se proceda con el correspondiente pago en el <u>término de 48 horas</u> contadas a partir de la recepción de la presente notificación de cobro, o de ser el caso remitir los respaldos del pago realizado; caso contrario la EMGIRS-EP <b><i>"+$P{p_jurisdiccion}+"</i></b> en razón de recuperación de los valores adeudados. "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b95825a1-87aa-43c6-b924-588492b379e0" x="1" y="66" width="492" height="28"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="html">
+					<font fontName="Times New Roman" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["En caso de requerir algún tipo de información adicional relacionada con este tema favor comunicarse a los correos electrónicos: <u>christian.proano@emgirs.gob.ec</u> o <u>fernanda.cevallos@emgirs.gob.ec</u> "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f839c3ef-633e-4781-9337-01fd89ef705c" x="1" y="106" width="69" height="14"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="html">
+					<font fontName="Times New Roman" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Atentamente, "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6bf65d7e-07eb-4079-9516-415cb77bb87a" x="1" y="165" width="146" height="14"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="html">
+					<font fontName="Times New Roman" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Abg. Christian Román Proaño "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="649f7610-50c1-427c-b509-d1694706a512" x="1" y="179" width="146" height="14"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="html">
+					<font fontName="Times New Roman" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["SECRETARIO DE COACTIVAS"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="1b05e7d0-2c24-4ca9-a56e-893988ca2a8c" x="1" y="193" width="69" height="21"/>
+				<textElement textAlignment="Justified" verticalAlignment="Top" markup="html">
+					<font fontName="Times New Roman" size="8"/>
+				</textElement>
+				<text><![CDATA[Adjuntos:
+S/A]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>
